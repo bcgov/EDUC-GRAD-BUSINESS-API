@@ -13,26 +13,16 @@
     <properties>
         <sonar.language>java</sonar.language>
         <sonar.exclusions>
-            src/main/resources/**,
-            src/main/java/ca/bc/gov/educ/api/gradstudent/config/**,
-            src/main/java/ca/bc/gov/educ/api/gradstudent/model/**,
-            src/main/java/ca/bc/gov/educ/api/gradstudent/util/**
+            src/main/resources/**,src/main/java/ca/bc/gov/educ/api/studentgraduation/exception/**,src/main/java/ca/bc/gov/educ/api/studentgraduation/model/**
         </sonar.exclusions>
-        <sonar.junit.exclusions>
-            src/main/java/ca/bc/gov/educ/api/gradstudent/messaging/**,
-            src/main/java/ca/bc/gov/educ/api/gradstudent/scheduler/**
-        </sonar.junit.exclusions>
         <java.version>11</java.version>
-		<maven.compiler.version>3.8.0</maven.compiler.version>
+        <maven.compiler.version>3.8.0</maven.compiler.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <org.mapstruct.version>1.3.1.Final</org.mapstruct.version>
         <springdoc.version>1.4.3</springdoc.version>
-        <shedlock.version>4.20.0</shedlock.version>
-        <nats.version>2.11.0</nats.version>
-        <resilience4j.version>1.7.0</resilience4j.version>
-        <guava.version>30.1.1-jre</guava.version>
         <log4j.version>2.17.1</log4j.version>
+        <junit>4.12</junit>
     </properties>
 
     <parent>
@@ -80,12 +70,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -117,11 +101,6 @@
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
@@ -129,6 +108,11 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -150,22 +134,22 @@
             <artifactId>validation-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        <dependency>
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
             <version>1</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.retry</groupId>
-            <artifactId>spring-retry</artifactId>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>7.12.0</version>
         </dependency>
         <dependency>
             <groupId>org.junit.vintage</groupId>
@@ -177,11 +161,6 @@
                     <artifactId>hamcrest-core</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>io.github.resilience4j</groupId>
-            <artifactId>resilience4j-spring-boot2</artifactId>
-            <version>${resilience4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -219,6 +198,11 @@
                     <version>0.8.4</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.hibernate.orm.tooling</groupId>
+                    <artifactId>hibernate-enhance-maven-plugin</artifactId>
+                    <version>5.4.10.Final</version>
+                </plugin>
+                <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                 </plugin>
@@ -237,6 +221,9 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+
+        </plugins>
     </build>
     <repositories>
         <repository>
@@ -290,6 +277,22 @@
                                 <goals>
                                     <goal>integration-test</goal>
                                     <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.hibernate.orm.tooling</groupId>
+                        <artifactId>hibernate-enhance-maven-plugin</artifactId>
+                        <version>5.4.10.Final</version>
+                        <executions>
+                            <execution>
+                                <configuration>
+                                    <failOnError>true</failOnError>
+                                    <enableLazyInitialization>true</enableLazyInitialization>
+                                </configuration>
+                                <goals>
+                                    <goal>enhance</goal>
                                 </goals>
                             </execution>
                         </executions>
