@@ -84,13 +84,6 @@ public class EducGradStudentApiConstants {
     public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
     public static final String TRAX_DATE_FORMAT = "yyyyMM";
 
-    //NATS
-    @Value("${nats.url}")
-    String natsUrl;
-
-    @Value("${nats.maxReconnect}")
-    Integer natsMaxReconnect;
-
     //Endpoints
     @Value("${endpoint.grad-trax-api.school-by-min-code.url}")
     private String schoolByMincodeUrl;
