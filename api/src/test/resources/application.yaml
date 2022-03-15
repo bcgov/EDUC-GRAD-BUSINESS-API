@@ -1,0 +1,73 @@
+#DB Properties
+spring:
+  jmx:
+    enabled: false
+  mvc:
+    log-request-details: true
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: false
+
+#Logging properties
+logging:
+  file:
+    max-history: 1
+    clean-history-on-start: true
+    max-size: 20MB
+    name: /logs/app.log
+  #pattern:
+  #  file: %d | [${HOSTNAME}] | %clr(%5p) | [%t]   | %logger{36}:%L | %msg%n
+  #  console: %d | [${HOSTNAME}] | %clr(%5p) | [%t]   | %logger{36}:%L | %msg%n
+  level:
+    ca:
+      bc:
+        gov:
+          educ:
+            api:
+              gradstudent: INFO
+    org:
+      springframework:
+        web: INFO
+        security: INFO
+        boot:
+          autoconfigure:
+            logging: INFO
+
+#Local properties
+server:
+  undertow:
+    threads:
+      worker: 128
+      io: 16
+  port: 9999
+  tomcat:
+    connection-timeout: 200s
+
+#API Documentation
+springdoc:
+  api-docs:
+    path: /api/v1/api-docs
+  swagger-ui:
+    path: /api/v1/api-docs-ui.html
+    operationsSorter: alpha
+
+#Endpoint properties
+endpoint:
+  grad-student-graduation-api:
+    ungrad-reason:
+      ungrad-reason-by-reason-code:
+        url: https://educ-grad-student-graduation-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/ungrad/ungradreason/%s
+    save-student-ungrad-reason:
+      url: https://educ-grad-student-graduation-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/ungrad/studentungradreason/studentid/%s
+  pen-student-api:
+    by-studentid:
+      url: https://student-api-75e61b-tools.apps.silver.devops.gov.bc.ca/api/v1/student/%s
+    search:
+      url: https://student-api-75e61b-tools.apps.silver.devops.gov.bc.ca/api/v1/student/paginated
+    by-pen:
+      url: https://student-api-75e61b-tools.apps.silver.devops.gov.bc.ca/api/v1/student?pen=%s
+    student:
+      url: https://student-api-75e61b-tools.apps.silver.devops.gov.bc.ca/api/v1/student
+  grad-graduation-report-api:
+    delete-student-achievement:
+      url: https://educ-grad-graduation-report-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/graduationreports/studentachievement/%s
