@@ -14,13 +14,13 @@
         <sonar.language>java</sonar.language>
         <sonar.exclusions>
             src/main/resources/**,
-            src/main/java/ca/bc/gov/educ/api/gradstudent/config/**,
-            src/main/java/ca/bc/gov/educ/api/gradstudent/model/**,
-            src/main/java/ca/bc/gov/educ/api/gradstudent/util/**
+            src/main/java/ca/bc/gov/educ/api/gradbusiness/config/**,
+            src/main/java/ca/bc/gov/educ/api/gradbusiness/model/**,
+            src/main/java/ca/bc/gov/educ/api/gradbusiness/util/**
         </sonar.exclusions>
         <sonar.junit.exclusions>
-            src/main/java/ca/bc/gov/educ/api/gradstudent/messaging/**,
-            src/main/java/ca/bc/gov/educ/api/gradstudent/scheduler/**
+            src/main/java/ca/bc/gov/educ/api/gradbusiness/messaging/**,
+            src/main/java/ca/bc/gov/educ/api/gradbusiness/scheduler/**
         </sonar.junit.exclusions>
         <java.version>11</java.version>
 		<maven.compiler.version>3.8.0</maven.compiler.version>
@@ -57,10 +57,6 @@
             <artifactId>spring-boot-starter-undertow</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
         </dependency>
@@ -71,10 +67,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>javax.persistence-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -91,11 +83,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle.jdbc</groupId>
-            <artifactId>ojdbc8</artifactId>
-            <version>12.2.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
@@ -115,11 +102,6 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
