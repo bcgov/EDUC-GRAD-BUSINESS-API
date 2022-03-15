@@ -28,6 +28,14 @@ public class GradBusinessController {
         this.gradBusinessService = gradBusinessService;
     }
 
+    /**
+     *
+     * @param pen
+     * PEN
+     * Doc Format - PDF/XML
+     * Document TYPE
+     * @return
+     */
     @GetMapping("/document/{pen}")
     //@PreAuthorize("#oauth2.hasScope('READ_GRAD_STUDENT_DATA')")
     @Operation(summary = "Get student document by PEN", description = "Get a specific document for a student by PEN", tags = { "Student Demographics" })
@@ -36,6 +44,11 @@ public class GradBusinessController {
         return "200 OK ".concat(pen);
     }
 
+    /**
+     *
+     * @param pen
+     * @return
+     */
     @GetMapping("/pen/{pen}")
     @PreAuthorize("#oauth2.hasScope('READ_GRAD_STUDENT_DATA')")
     @Operation(summary = "Search For Students by PEN", description = "Search for Student Demographics by PEN", tags = { "Student Demographics" })

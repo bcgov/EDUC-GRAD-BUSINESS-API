@@ -85,29 +85,8 @@ public class EducGradStudentApiConstants {
     public static final String TRAX_DATE_FORMAT = "yyyyMM";
 
     //Endpoints
-    @Value("${endpoint.grad-trax-api.school-by-min-code.url}")
-    private String schoolByMincodeUrl;
-
-    @Value("${endpoint.grad-program-api.career_program-by-career-code.url}")
-    private String careerProgramByCodeUrl;
-
-	@Value("${endpoint.grad-program-api.optional_program_name_by_optional_program_id.url}")
-	private String gradOptionalProgramNameUrl;
-
-    @Value("${endpoint.grad-program-api.optional_program_id_by_program_code_optional_program_code.url}")
-    private String gradOptionalProgramDetailsUrl;
-
-    @Value("${endpoint.grad-program-api.program_name_by_program_code.url}")
-    private String gradProgramNameUrl;
-
     @Value("${endpoint.pen-student-api.by-studentid.url}")
     private String penStudentApiByStudentIdUrl;
-
-    @Value("${endpoint.grad-student-graduation-api.save-student-ungrad-reason.url}")
-    private String saveStudentUngradReasonByStudentIdUrl;
-
-    @Value("${endpoint.grad-student-graduation-api.ungrad-reason.ungrad-reason-by-reason-code.url}")
-    private String ungradReasonDetailsUrl;
 
     @Value("${endpoint.pen-student-api.search.url}")
     private String penStudentApiSearchUrl;
@@ -117,8 +96,5 @@ public class EducGradStudentApiConstants {
 
     @Value("${endpoint.pen-student-api.student.url}")
     private String penStudentApiUrl;
-    
-    @Value("${endpoint.grad-graduation-report-api.delete-student-achievement.url}")
-    private String deleteStudentAchievements;
     
 }
