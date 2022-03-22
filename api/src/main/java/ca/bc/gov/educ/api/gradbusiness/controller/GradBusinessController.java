@@ -40,8 +40,13 @@ public class GradBusinessController {
     //@PreAuthorize("#oauth2.hasScope('READ_GRAD_STUDENT_DATA')")
     @Operation(summary = "Get student document by PEN", description = "Get a specific document for a student by PEN", tags = { "Student Demographics" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
-    public String getDocumentByPEN(@PathVariable String pen) {
-        return "200 OK ".concat(pen);
+    public String getDocumentByPEN(@PathVariable String pen,
+                                   @RequestParam(required = false, defaultValue = "PDF") String docType,
+                                   @RequestParam(required = false, defaultValue = "PDF") String docFormat) {
+        return "200 OK "
+                .concat("PEN: ").concat(pen)
+                .concat(", Document Type: ").concat(docType)
+                .concat(", Document Format: ").concat(docFormat);
     }
 
     /**
