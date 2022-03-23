@@ -2,7 +2,6 @@ kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: allow-traffic-from-gateway-to-grad-business-api
-  namespace: 77c02f-tools
 spec:
   podSelector:
     matchLabels:
