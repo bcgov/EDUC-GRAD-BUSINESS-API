@@ -64,6 +64,8 @@ objects:
                     name: educ-grad-business-api-config-map
                 - secretRef:
                     name: grad-keycloak-pk-secret
+                - secretRef:
+                    name: grad-sts-client-secret
               resources: {}
           volumes:
             - name: log-storage
