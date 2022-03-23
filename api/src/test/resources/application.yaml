@@ -4,7 +4,7 @@ spring:
     enabled: false
   datasource:
     hikari:
-      pool-name: grad-algorithm-api-cp
+      pool-name: grad-business-api-cp
       maximum-pool-size: 1
       connection-timeout: 6000
       max-lifetime: 600000
@@ -35,7 +35,7 @@ logging:
         gov:
           educ:
             api:
-              gradalgorithm: INFO
+              gradbusiness: INFO
     org:
       springframework:
         web: INFO
