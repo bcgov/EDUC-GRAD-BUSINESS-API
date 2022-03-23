@@ -1,0 +1,45 @@
+services:
+- name: educ-grad-business-dev
+  host: educ-grad-business-api.77c02f-tools.svc.cluster.local
+  tags: [ ns.educ-grad ]
+  port: 8080
+  protocol: http
+  retries: 0
+  routes:
+  - name: educ-grad-business-dev-route
+    tags: [ ns.educ-grad ]
+    hosts:
+    - educ-grad-business.dev.api.gov.bc.ca
+    paths:
+    - /
+    methods:
+    - GET
+    - PUT
+    - POST
+    - DELETE
+    - HEAD
+    strip_path: false
+    https_redirect_status_code: 426
+    path_handling: v0
+- name: educ-grad-business-test
+  host: educ-grad-business-api.77c02f-test.svc.cluster.local
+  tags: [ ns.educ-grad ]
+  port: 8080
+  protocol: http
+  retries: 0
+  routes:
+  - name: educ-grad-business-test-route
+    tags: [ ns.educ-grad ]
+    hosts:
+    - educ-grad-business.test.api.gov.bc.ca
+    paths:
+    - /
+    methods:
+    - GET
+    - PUT
+    - POST
+    - DELETE
+    - HEAD
+    strip_path: false
+    https_redirect_status_code: 426
+    path_handling: v0

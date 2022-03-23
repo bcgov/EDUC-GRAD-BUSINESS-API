@@ -12,5 +12,10 @@ spec:
             matchLabels:
               environment: test
               name: 264e6f
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              environment: prod
+              name: 264e6f
   policyTypes:
     - Ingress
