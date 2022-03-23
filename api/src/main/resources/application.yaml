@@ -48,6 +48,10 @@ springdoc:
     path: /api/v1/api-docs-ui.html
     operationsSorter: alpha
 
+authorization:
+  user: ${GRAD_STS_CLIENT_NAME}
+  password: ${GRAD_STS_CLIENT_SECRET}
+
 #Resilience
 resilience4j.retry:
   instances:
