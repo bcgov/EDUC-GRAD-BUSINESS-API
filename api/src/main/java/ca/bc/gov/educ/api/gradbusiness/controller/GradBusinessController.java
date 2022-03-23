@@ -37,7 +37,7 @@ public class GradBusinessController {
      * @return
      */
     @GetMapping("/document/{pen}")
-    //@PreAuthorize("#oauth2.hasScope('READ_GRAD_STUDENT_DATA')")
+    @PreAuthorize("#oauth2.hasScope('GRAD_BUSINESS_R','READ_GRAD_STUDENT_DATA')")
     @Operation(summary = "Get student document by PEN", description = "Get a specific document for a student by PEN", tags = { "Student Demographics" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
     public String getDocumentByPEN(@PathVariable String pen,
@@ -55,7 +55,7 @@ public class GradBusinessController {
      * @return
      */
     @GetMapping("/pen/{pen}")
-    @PreAuthorize("#oauth2.hasScope('READ_GRAD_STUDENT_DATA')")
+    @PreAuthorize("#oauth2.hasScope('GRAD_BUSINESS_R','READ_GRAD_STUDENT_DATA')")
     @Operation(summary = "Search For Students by PEN", description = "Search for Student Demographics by PEN", tags = { "Student Demographics" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
     public List<GradSearchStudent> getGradStudentByPenFromStudentAPI(@PathVariable String pen) {

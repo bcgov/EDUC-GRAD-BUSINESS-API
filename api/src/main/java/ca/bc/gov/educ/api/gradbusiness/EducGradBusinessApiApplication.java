@@ -66,8 +66,7 @@ public class EducGradBusinessApiApplication {
 		public void configure(WebSecurity web) {
 			web.ignoring().antMatchers("/api/v1/api-docs-ui.html",
 					"/api/v1/swagger-ui/**", "/api/v1/api-docs/**",
-					"/actuator/health", "/actuator/prometheus", "/health",
-					"/api/v1/document/**");
+					"/actuator/health", "/actuator/prometheus", "/health");
 		}
 	}
 }
