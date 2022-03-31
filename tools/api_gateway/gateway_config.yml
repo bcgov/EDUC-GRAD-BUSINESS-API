@@ -1,6 +1,6 @@
 services:
 - name: educ-grad-business-dev
-  host: educ-grad-business-api.77c02f-tools.svc.cluster.local
+  host: educ-grad-business-api.77c02f-dev.svc.cluster.local
   tags: [ ns.educ-grad ]
   port: 8080
   protocol: http

@@ -3,13 +3,13 @@ pipeline{
         label 'maven'
     }
     environment{
-        OCP_PROJECT = '77c02f-dev'
+        OCP_PROJECT = '77c02f-test'
         IMAGE_PROJECT = '77c02f-tools'
         IMAGE_TAG = 'latest'
         APP_SUBDOMAIN_SUFFIX = '77c02f-test'
         APP_DOMAIN = 'apps.silver.devops.gov.bc.ca'
         TAG = 'test'
-        REPO_NAME = 'educ-grad-student-api'
+        REPO_NAME = 'educ-grad-business-api'
         ORG = 'bcgov'
         BRANCH = 'main'
         SOURCE_REPO_URL = 'https://github.com/${ORG}/${REPO_NAME}'
@@ -19,7 +19,7 @@ pipeline{
         buildDiscarder(logRotator(daysToKeepStr: '', numToKeepStr: '5'))
     }
     parameters {
-        choice( name: 'IMAGE_TAG', choices: ['latest', 'main', 'release-1.0.0', 'dev' ] )
+        choice( name: 'IMAGE_TAG', choices: ['latest', 'main', 'grad-release', 'dev' ] )
     }
     stages{
         stage('Deploy to TEST') {

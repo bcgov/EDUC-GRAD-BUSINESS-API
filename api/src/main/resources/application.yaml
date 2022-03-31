@@ -18,24 +18,20 @@ spring:
 #Logging properties
 logging:
   file:
+    max-history: 1
+    clean-history-on-start: true
+    max-size: 20MB
     name: /logs/app.log
-  logback:
-    rollingpolicy:
-      max-history: 1
-      max-file-size: 20MB
-      clean-history-on-start: true
-  pattern:
-    #  file: "%d | [${HOSTNAME}] | %clr(%5p) | [%t]   | %logger{36}:%L | %msg%n"
-    #  console: "%d | [${HOSTNAME}] | %clr(%5p) | [%t]   | %logger{36}:%L | %msg%n"
-    file: '{"time_stamp":"%d{yyyy-MM-dd HH:mm:ss.SSS}","level":"%3p" ,"thread":"%t" ,"class":"%logger{36}","msg":"%replace(%msg){"[\n\r\"]",""}", "exception":"%replace(%rEx{10}){"[\n\r\"]",""}","http_event":%X{httpEvent:-""},"message_event":%X{messageEvent:-""}}%nopex%n'
-    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%5p] [%t] [%logger{36}] [%replace(%msg){'[\n\r\"]',''} %X{httpEvent} %X{messageEvent}] %replace(%rEx{10}){'[\n\r\"]',''}%nopex%n"
+  #pattern:
+  #  file: %d | [${HOSTNAME}] | %clr(%5p) | [%t]   | %logger{36}:%L | %msg%n
+  #  console: %d | [${HOSTNAME}] | %clr(%5p) | [%t]   | %logger{36}:%L | %msg%n
   level:
     ca:
       bc:
         gov:
           educ:
             api:
-              gradstudent: ${APP_LOG_LEVEL}
+              gradbusiness: ${APP_LOG_LEVEL}
     org:
       springframework:
         web: ${SPRING_WEB_LOG_LEVEL}
@@ -43,19 +39,6 @@ logging:
         boot:
           autoconfigure:
             logging: ${SPRING_BOOT_AUTOCONFIG_LOG_LEVEL}
-    com:
-      zaxxer:
-        hikari: ERROR
-
-#Local properties
-server:
-  undertow:
-    threads:
-      worker: 128
-      io: 16
-  #port: ${HTTP_PORT}
-  tomcat:
-    connection-timeout: 200s
 
 #API Documentation
 springdoc:
@@ -106,12 +89,6 @@ resilience4j.retry:
 
 #Endpoint properties
 endpoint:
-  grad-student-graduation-api:
-    ungrad-reason: 
-      ungrad-reason-by-reason-code: 
-        url: ${GRAD_STUDENT_GRADUATION_API}api/v1/ungrad/ungradreason/%s
-    save-student-ungrad-reason:
-      url: ${GRAD_STUDENT_GRADUATION_API}api/v1/ungrad/studentungradreason/studentid/%s
   pen-student-api:
     by-studentid:
       url: ${PEN_API}api/v1/student/%s
@@ -121,6 +98,3 @@ endpoint:
       url: ${PEN_API}api/v1/student?pen=%s
     student:
       url: ${PEN_API}api/v1/student
-  grad-graduation-report-api:
-    delete-student-achievement:
-      url: ${GRAD_GRADUATION_REPORT_API}api/v1/graduationreports/studentachievement/%s
