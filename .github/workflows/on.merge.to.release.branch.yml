@@ -33,8 +33,9 @@ jobs:
     name: Run Smoke Tests
     needs: [build-and-deploy]
     uses: bcgov/EDUC-GRAD-TEST-AUTOMATION/.github/workflows/test.smoke-test.yml@main
+    with:
+      BASE_URL: https://dev.grad.gov.bc.ca/?login=noidir
     secrets:
       TEST_ADMIN_USERNAME: ${{ secrets.TEST_ADMIN_USERNAME }}
       TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
-      BASE_URL: ${{ secrets.DEV_BASE_URL }}
       TEST_PEN: ${{ secrets.TEST_PEN }} 
