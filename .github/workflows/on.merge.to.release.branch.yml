@@ -32,7 +32,7 @@ jobs:
   run-smoke-test:
     name: Run Smoke Tests
     needs: [build-and-deploy]
-    uses: bcgov/EDUC-GRAD-TEST-AUTOMATION/blob/main/.github/workflows/test.smoke-test.yml@main
+    uses: bcgov/EDUC-GRAD-TEST-AUTOMATION/.github/workflows/test.smoke-test.yml@main
     secrets:
       TEST_ADMIN_USERNAME: ${{ secrets.TEST_ADMIN_USERNAME }}
       TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
