@@ -36,5 +36,3 @@ jobs:
       # todo: call out to test automation here
     - name: Run Smoke Test
       run: echo "Running smoke tests on new deployment"
-      run: echo "Installing OC"
-    - name: 
