@@ -7,9 +7,9 @@ on:
   push:
     branches: 
       - release
-  
-
+      
 jobs:
+
   build-and-deploy:
     name: Build, package and deploy to Dev
     runs-on: ubuntu-latest
@@ -28,7 +28,7 @@ jobs:
       run: echo "Installing OC"
     - name: Deploy to environment
       run: echo "Deploying to DEV on OpenShift"
-      # todo: call out to test automation here
+      
   run-smoke-test:
     name: Run Smoke Tests
     needs: [build-and-deploy]
