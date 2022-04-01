@@ -21,7 +21,8 @@ jobs:
       run:
         working-directory: ./api
     steps:
-      - uses: actions/checkout@v2
+      - name: Git pull
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
       - name: Set up JDK 11
