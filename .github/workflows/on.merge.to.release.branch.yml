@@ -1,5 +1,4 @@
-# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
-# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
+# This workflow builds to dev any direct commits to the release branch or pull requests (note there is no 'merge' trigger for github actions)
 
 name: On Merge to Release Branch
 
@@ -30,5 +29,12 @@ jobs:
     - name: Deploy to environment
       run: echo "Deploying to DEV on OpenShift"
       # todo: call out to test automation here
-    - name: Run Smoke Test
-      run: echo "Running smoke tests on new deployment"
+  run-smoke-test:
+    name: Run Smoke Tests
+    needs: [build-and-deploy]
+    uses: bcgov/EDUC-GRAD-TEST-AUTOMATION/edit/main/.github/workflows/test.smoke-test.yml@main
+    secrets:
+      TEST_ADMIN_USERNAME: ${{ secrets.TEST_ADMIN_USERNAME }}
+      TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
+      BASE_URL: ${{ secrets.DEV_BASE_URL }}
+      TEST_PEN: ${{ secrets.TEST_PEN }} 
