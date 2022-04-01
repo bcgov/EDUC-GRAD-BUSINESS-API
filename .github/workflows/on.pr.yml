@@ -21,8 +21,9 @@ jobs:
       run:
         working-directory: ./api
     steps:
-      - name: checkout code
-        run: echo "checked out repository"
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Set up JDK 11
         run: echo "setting up jdk 11"
       - name: Cache SonarQube packages
