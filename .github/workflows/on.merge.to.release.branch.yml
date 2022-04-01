@@ -11,8 +11,8 @@ on:
   
 
 jobs:
-  build:
-    name: Build, package and push to repo
+  build-and-deploy:
+    name: Build, package and deploy to Dev
     runs-on: ubuntu-latest
     steps:
     - name: Git pull
@@ -25,10 +25,6 @@ jobs:
       run: echo "Creating docker image"
     - name: Push to registry
       run: echo "Pushing image to registry"
-  deploy:
-    name: Deploy to DEV
-    runs-on: ubuntu-latest
-    steps:
     - name: Install OC
       run: echo "Installing OC"
     - name: Deploy to environment
