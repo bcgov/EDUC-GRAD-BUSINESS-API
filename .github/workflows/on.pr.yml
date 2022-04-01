@@ -8,6 +8,7 @@
 name: On PR to Release Branch
 
 on:
+  workflow_dispatch:
   pull_request:
     branches: 
     - 'release'
