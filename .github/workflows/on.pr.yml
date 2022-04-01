@@ -1,0 +1,37 @@
+# This workflow will be run whenever there is a PR to the Release branch
+# It will do the following:
+# Build
+# Unit Test
+# Sonar Scan
+# Security scan
+
+name: On PR to Release Branch
+
+on:
+  pull_request:
+    branches: 
+    - 'release'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./api
+    steps:
+      - name: checkout code
+        run: echo "checked out repository"
+      - name: Set up JDK 11
+        run: echo "setting up jdk 11"
+      - name: Cache SonarQube packages
+        run: echo "caching sonarQube packages
+      - name: Cache Maven packages
+        run: echo "caching maven packages"
+      - name: Run unit tests
+        run: echo "running unit tests"
+      - name: Sonar scan
+        run: echo "running sonar scan"
+      - name: Snyk security scan
+        run: echo "running security scan"
+  
