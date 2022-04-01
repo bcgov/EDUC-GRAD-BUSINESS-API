@@ -1,0 +1,40 @@
+# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
+
+name: On Merge to Release Branch
+
+on:
+  workflow_dispatch:
+  push:
+    branches: 
+      - release
+  
+
+jobs:
+  build:
+    name: Build, package and push to repo
+    runs-on: ubuntu-latest
+    steps:
+    - name: Git pull
+      uses: actions/checkout@v3
+    - name: Set up JDK 11
+      run: echo "Setting up jdk 11"
+    - name: Build with Maven
+      run: echo "Building with maven"
+    - name: Creating docker image
+      run: echo "Creating docker image"
+    - name: Push to registry
+      run: echo "Pushing image to registry"
+  deploy:
+    name: Deploy to DEV
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install OC
+      run: echo "Installing OC"
+    - name: Deploy to environment
+      run: echo "Deploying to DEV on OpenShift"
+      # todo: call out to test automation here
+    - name: Run Smoke Test
+      run: echo "Running smoke tests on new deployment"
+      run: echo "Installing OC"
+    - name: 
