@@ -15,7 +15,7 @@ on:
 
 jobs:
   build:
-    name: Build
+    name: Unit Test and Analyze
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -27,7 +27,7 @@ jobs:
       - name: Set up JDK 11
         run: echo "setting up jdk 11"
       - name: Cache SonarQube packages
-        run: echo "caching sonarQube packages
+        run: echo "caching sonarQube packages"
       - name: Cache Maven packages
         run: echo "caching maven packages"
       - name: Run unit tests
