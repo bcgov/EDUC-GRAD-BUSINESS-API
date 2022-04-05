@@ -34,7 +34,7 @@ public class GradBusinessService {
 
     @Transactional
     @Retry(name = "searchbypen")
-    public List<GradSearchStudent> getStudentByPenFromStudentAPI(String pen, String accessToken) {
+    public List<Student> getStudentByPenFromStudentAPI(String pen, String accessToken) {
         List<GradSearchStudent> gradStudentList = new ArrayList<>();
         List<Student> stuDataList = webClient.get().uri(String.format(constants.getPenStudentApiByPenUrl(), pen)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(new ParameterizedTypeReference<List<Student>>() {}).block();
 
@@ -45,7 +45,7 @@ public class GradBusinessService {
             });
         }*/
 
-        return gradStudentList;
+        return stuDataList;
     }
 
     /*private GradSearchStudent populateGradSearchStudent(Student student, String accessToken) {
