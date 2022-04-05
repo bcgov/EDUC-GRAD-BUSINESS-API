@@ -6,7 +6,7 @@ name: On RC tag
 
 on:
   push:
-    branches: [ main ]
+    branches: [ develop/chris ]
     tags: ['*-RC']
 
   # Allows you to run this workflow manually from the Actions tab
