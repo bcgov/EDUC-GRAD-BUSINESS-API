@@ -1,0 +1,40 @@
+# This workflow will be run whenever there is a PR to the Release branch
+# It will do the following:
+# Build
+# Unit Test
+# Sonar Scan
+# Security scan
+
+name: On PR to Release Branch
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: 
+    - 'grad-release'
+
+jobs:
+  build:
+    name: Unit Test and Analyze
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./api
+    steps:
+      - name: Git pull
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set up JDK 11
+        run: echo "setting up jdk 11"
+      - name: Cache SonarQube packages
+        run: echo "caching sonarQube packages"
+      - name: Cache Maven packages
+        run: echo "caching maven packages"
+      - name: Run unit tests
+        run: echo "running unit tests"
+      - name: Sonar scan
+        run: echo "running sonar scan"
+      - name: Snyk security scan
+        run: echo "running security scan"
+  

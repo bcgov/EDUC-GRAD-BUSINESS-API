@@ -1,6 +1,7 @@
 package ca.bc.gov.educ.api.gradbusiness.controller;
 
 import ca.bc.gov.educ.api.gradbusiness.model.dto.GradSearchStudent;
+import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
 import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,7 +11,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
@@ -66,7 +66,7 @@ public class GradBusinessController {
     @PreAuthorize("#oauth2.hasAnyScope('GRAD_BUSINESS_R','READ_GRAD_STUDENT_DATA')")
     @Operation(summary = "Search For Students by PEN", description = "Search for Student Demographics by PEN", tags = { "Student Demographics" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
-    public List<GradSearchStudent> getGradStudentByPenFromStudentAPI(@PathVariable String pen) {
+    public List<Student> getGradStudentByPenFromStudentAPI(@PathVariable String pen) {
         OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
         String accessToken = auth.getTokenValue();
         return gradBusinessService.getStudentByPenFromStudentAPI(pen,accessToken);

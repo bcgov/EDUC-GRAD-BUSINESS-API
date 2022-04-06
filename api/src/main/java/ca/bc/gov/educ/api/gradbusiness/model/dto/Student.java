@@ -149,5 +149,4 @@ public class Student {
 	   */
 	  @Null(message = "updateDate should be null.")
 	  public String updateDate;
-	  
 }
