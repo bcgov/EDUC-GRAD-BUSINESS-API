@@ -1,0 +1,39 @@
+# This workflow triggers when a tag is pushed to the main branch containing *-RC.
+# An *-RC tag denotes a release candidate and will automatically build to the 
+# test environment. 
+
+name: On RC tag
+
+on:
+  push:
+    branches: [ main ]
+    tags: ['*-RC']
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  buildToTest:
+    # Contingent on -RC tag
+    if: contains(${{ github.ref }}, '-RC')
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout
+      - name: Git checkout
+        uses: actions/checkout@v3
+      # Build
+      - name: Run a one-line script
+        run: echo Building!
+      # Unit test
+      - name: Unit test
+        run: echo Unit testing
+      # Docker build
+      - name: Docker build and deploy
+        run: echo Building image and pushing to repository
+      # Deploy to test
+      - name: Install OC
+        run: echo Installing OC
+      - name: OC deploy
+        run: echo Deploying to OS and tagging image
