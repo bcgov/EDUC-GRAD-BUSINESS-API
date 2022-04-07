@@ -2,11 +2,13 @@ package ca.bc.gov.educ.api.gradbusiness.service;
 
 import ca.bc.gov.educ.api.gradbusiness.model.dto.GradSearchStudent;
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
+import ca.bc.gov.educ.api.gradbusiness.model.entity.GraduationStudentRecordEntity;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradStudentApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -40,20 +42,16 @@ public class GradBusinessService {
         this.webClient = webClient;
     }
 
+    /**
+     * @param pen
+     * @param accessToken
+     * @return
+     */
     @Transactional
     @Retry(name = "searchbypen")
-    public List<GradSearchStudent> getStudentByPenFromStudentAPI(String pen, String accessToken) {
-        List<GradSearchStudent> gradStudentList = new ArrayList<>();
+    public List<Student> getStudentByPenFromStudentAPI(String pen, String accessToken) {
         List<Student> stuDataList = webClient.get().uri(String.format(educGradStudentApiConstants.getPenStudentApiByPenUrl(), pen)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(new ParameterizedTypeReference<List<Student>>() {}).block();
-
-        /*if (stuDataList != null && !stuDataList.isEmpty()) {
-            stuDataList.forEach(st -> {
-                GradSearchStudent gradStu = populateGradSearchStudent(st, accessToken);
-                gradStudentList.add(gradStu);
-            });
-        }*/
-
-        return gradStudentList;
+        return stuDataList;
     }
 
     public ResponseEntity<byte[]> prepareReportDataByPen(String pen, String accessToken) {
@@ -77,26 +75,6 @@ public class GradBusinessService {
             return getInternalServerErrorResponse(e);
         }
     }
-
-    /*private GradSearchStudent populateGradSearchStudent(Student student, String accessToken) {
-        GradSearchStudent gradStu = new GradSearchStudent();
-        BeanUtils.copyProperties(student, gradStu);
-        GraduationStudentRecordEntity graduationStatusEntity = graduationStatusRepository.findByStudentID(UUID.fromString(student.getStudentID()));
-        if(graduationStatusEntity != null) {
-            GraduationStudentRecord gradObj = graduationStatusTransformer.transformToDTO(graduationStatusEntity);
-            gradStu.setProgram(gradObj.getProgram());
-            gradStu.setStudentGrade(gradObj.getStudentGrade());
-            gradStu.setStudentStatus(gradObj.getStudentStatus());
-            gradStu.setSchoolOfRecord(gradObj.getSchoolOfRecord());
-
-            School school = webClient.get().uri(String.format(constants.getSchoolByMincodeUrl(), gradStu.getSchoolOfRecord())).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(School.class).block();
-            if (school != null) {
-                gradStu.setSchoolOfRecordName(school.getSchoolName());
-                gradStu.setSchoolOfRecordindependentAffiliation(school.getIndependentAffiliation());
-            }
-        }
-        return gradStu;
-    }*/
 
     protected ResponseEntity<byte[]> getInternalServerErrorResponse(Throwable t) {
         ResponseEntity<byte[]> result = null;

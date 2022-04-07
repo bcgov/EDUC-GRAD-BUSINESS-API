@@ -1,6 +1,7 @@
 package ca.bc.gov.educ.api.gradbusiness.controller;
 
 import ca.bc.gov.educ.api.gradbusiness.model.dto.GradSearchStudent;
+import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
 import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
@@ -66,10 +67,10 @@ public class GradBusinessController {
     @PreAuthorize("#oauth2.hasAnyScope('GRAD_BUSINESS_R','READ_GRAD_STUDENT_DATA')")
     @Operation(summary = "Search For Students by PEN", description = "Search for Student Demographics by PEN", tags = { "Student Demographics" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
-    public List<GradSearchStudent> getGradStudentByPenFromStudentAPI(@PathVariable String pen) {
+    public List<Student> getGradStudentByPenFromStudentAPI(@PathVariable String pen) {
         OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
         String accessToken = auth.getTokenValue();
-        return gradBusinessService.getStudentByPenFromStudentAPI(pen, accessToken);
+        return gradBusinessService.getStudentByPenFromStudentAPI(pen,accessToken);
     }
 
     @GetMapping("/report/data/{pen}")

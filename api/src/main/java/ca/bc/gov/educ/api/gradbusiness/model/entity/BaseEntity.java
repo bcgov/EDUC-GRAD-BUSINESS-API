@@ -18,8 +18,7 @@ public class BaseEntity {
 	@Temporal(TemporalType.TIMESTAMP)
 	@DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
     private Date createDate;
-	
-	
+
 	@Column(name = "UPDATE_USER", nullable = false)
     private String updateUser;
 	
@@ -38,7 +37,6 @@ public class BaseEntity {
 		}		
 		this.createDate = new Date(System.currentTimeMillis());
 		this.updateDate = new Date(System.currentTimeMillis());
-
 	}
 
 	@PreUpdate
