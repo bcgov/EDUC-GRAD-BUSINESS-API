@@ -19,6 +19,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -66,7 +67,11 @@ public class GradBusinessService {
 
     public ResponseEntity<byte[]> prepareReportDataByGraduation(String graduationData, String accessToken) {
         try {
-            byte[] result = webClient.post().uri(educGraduationApiConstants.getGaduateReportDataByGraduation()).headers(h -> h.setBearerAuth(accessToken)).body(BodyInserters.fromValue(graduationData)).retrieve().bodyToMono(byte[].class).block();
+            HttpHeaders headers = new HttpHeaders();
+            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList("Bearer " + accessToken));
+            headers.put(HttpHeaders.ACCEPT, Collections.singletonList("application/json"));
+            headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList("application/json"));
+            byte[] result = webClient.post().uri(educGraduationApiConstants.getGaduateReportDataByGraduation()).headers(h -> h.addAll(headers)).body(BodyInserters.fromValue(graduationData)).retrieve().bodyToMono(byte[].class).block();
             return handleBinaryResponse(result, "graduation_report_data.json", MediaType.APPLICATION_JSON);
         } catch (Exception e) {
             return getInternalServerErrorResponse(e);
