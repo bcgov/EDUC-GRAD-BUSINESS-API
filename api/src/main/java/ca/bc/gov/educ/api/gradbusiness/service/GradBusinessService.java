@@ -2,21 +2,24 @@ package ca.bc.gov.educ.api.gradbusiness.service;
 
 import ca.bc.gov.educ.api.gradbusiness.model.dto.GradSearchStudent;
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
-import ca.bc.gov.educ.api.gradbusiness.model.entity.GraduationStudentRecordEntity;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradStudentApiConstants;
+import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class GradBusinessService {
@@ -24,19 +27,23 @@ public class GradBusinessService {
     private static final Logger logger = LoggerFactory.getLogger(GradBusinessService.class);
 
     final WebClient webClient;
-    final EducGradStudentApiConstants constants;
 
     @Autowired
-    public GradBusinessService(WebClient webClient, EducGradStudentApiConstants constants) {
+    EducGradStudentApiConstants educGradStudentApiConstants;
+
+    @Autowired
+    EducGraduationApiConstants educGraduationApiConstants;
+
+    @Autowired
+    public GradBusinessService(WebClient webClient) {
         this.webClient = webClient;
-        this.constants = constants;
     }
 
     @Transactional
     @Retry(name = "searchbypen")
     public List<GradSearchStudent> getStudentByPenFromStudentAPI(String pen, String accessToken) {
         List<GradSearchStudent> gradStudentList = new ArrayList<>();
-        List<Student> stuDataList = webClient.get().uri(String.format(constants.getPenStudentApiByPenUrl(), pen)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(new ParameterizedTypeReference<List<Student>>() {}).block();
+        List<Student> stuDataList = webClient.get().uri(String.format(educGradStudentApiConstants.getPenStudentApiByPenUrl(), pen)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(new ParameterizedTypeReference<List<Student>>() {}).block();
 
         /*if (stuDataList != null && !stuDataList.isEmpty()) {
             stuDataList.forEach(st -> {
@@ -46,6 +53,24 @@ public class GradBusinessService {
         }*/
 
         return gradStudentList;
+    }
+
+    public ResponseEntity<byte[]> prepareReportDataByPen(String pen, String accessToken) {
+        try {
+            byte[] result = webClient.get().uri(String.format(educGraduationApiConstants.getGraduateReportDataByPenUrl(), pen)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(byte[].class).block();
+            return handleBinaryResponse(result, "graduation_report_data.json", MediaType.APPLICATION_JSON);
+        } catch (Exception e) {
+            return getInternalServerErrorResponse(e);
+        }
+    }
+
+    public ResponseEntity<byte[]> prepareReportDataByGraduation(String graduationData, String accessToken) {
+        try {
+            byte[] result = webClient.post().uri(educGraduationApiConstants.getGaduateReportDataByGraduation()).headers(h -> h.setBearerAuth(accessToken)).body(BodyInserters.fromValue(graduationData)).retrieve().bodyToMono(byte[].class).block();
+            return handleBinaryResponse(result, "graduation_report_data.json", MediaType.APPLICATION_JSON);
+        } catch (Exception e) {
+            return getInternalServerErrorResponse(e);
+        }
     }
 
     /*private GradSearchStudent populateGradSearchStudent(Student student, String accessToken) {
@@ -67,4 +92,40 @@ public class GradBusinessService {
         }
         return gradStu;
     }*/
+
+    protected ResponseEntity<byte[]> getInternalServerErrorResponse(Throwable t) {
+        ResponseEntity<byte[]> result = null;
+
+        Throwable tmp = t;
+        String message = null;
+        if (tmp.getCause() != null) {
+            tmp = tmp.getCause();
+            message = tmp.getMessage();
+        } else {
+            message = tmp.getMessage();
+        }
+        if(message == null) {
+            message = tmp.getClass().getName();
+        }
+
+        result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message.getBytes());
+        return result;
+    }
+
+    private ResponseEntity<byte[]> handleBinaryResponse(byte[] resultBinary, String reportFile, MediaType contentType) {
+        ResponseEntity<byte[]> response = null;
+
+        if(resultBinary.length > 0) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Disposition", "inline; filename=" + reportFile);
+            response = ResponseEntity
+                    .ok()
+                    .headers(headers)
+                    .contentType(contentType)
+                    .body(resultBinary);
+        } else {
+            response = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return response;
+    }
 }

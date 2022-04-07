@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
@@ -69,6 +69,28 @@ public class GradBusinessController {
     public List<GradSearchStudent> getGradStudentByPenFromStudentAPI(@PathVariable String pen) {
         OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
         String accessToken = auth.getTokenValue();
-        return gradBusinessService.getStudentByPenFromStudentAPI(pen,accessToken);
+        return gradBusinessService.getStudentByPenFromStudentAPI(pen, accessToken);
+    }
+
+    @GetMapping("/report/data/{pen}")
+    @PreAuthorize("#oauth2.hasAnyScope('GET_GRADUATION_DATA')")
+    @Operation(summary = "Get Report data from graduation by student pen", description = "Get Report data from graduation by student pen", tags = { "Graduation Data" })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
+    public ResponseEntity<byte[]> reportDataByPen(@PathVariable String pen) {
+        logger.debug("Report Data By Student Pen: " + pen);
+        OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        String accessToken = auth.getTokenValue();
+        return gradBusinessService.prepareReportDataByPen(pen, accessToken);
+    }
+
+    @PostMapping("/report/data")
+    @PreAuthorize("#oauth2.hasAnyScope('GET_GRADUATION_DATA')")
+    @Operation(summary = "Adapt graduation data for reporting", description = "Adapt graduation data for reporting", tags = { "Graduation Data" })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
+    public ResponseEntity<byte[]> reportDataFromGraduation(@RequestBody String graduationData) {
+        logger.debug("Report Data from graduation by graduation:\n" + graduationData);
+        OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        String accessToken = auth.getTokenValue();
+        return gradBusinessService.prepareReportDataByGraduation(graduationData, accessToken);
     }
 }

@@ -55,6 +55,11 @@ springdoc:
 #Endpoints
 #Endpoint properties
 endpoint:
+  graduation-api:
+    report-data-by-pen:
+      url: https://educ-grad-student-graduation-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/graduate/report/data/%s
+    report-data-by-graduation:
+      url: https://educ-grad-student-graduation-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/graduate/report/data
   grad-trax-api:
     school-by-min-code:
       url: https://educ-grad-trax-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/school/%s
@@ -72,6 +77,10 @@ endpoint:
     get-assessment-algorithm-data:
       url: https://grad-assessment-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/assessment/assessment-algorithm/pen/%s
   grad-student-graduation-api:
+    report-data-by-pen:
+      url: https://educ-grad-student-graduation-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/graduate/report/data/%s
+    report-data-by-graduation:
+      url: https://educ-grad-student-graduation-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/graduate/report/data
     get-algorithm-data:
       url: https://educ-grad-student-graduation-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/algo
     get-graduation-message:
