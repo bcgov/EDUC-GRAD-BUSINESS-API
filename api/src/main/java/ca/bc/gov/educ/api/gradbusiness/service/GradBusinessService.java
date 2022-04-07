@@ -1,14 +1,11 @@
 package ca.bc.gov.educ.api.gradbusiness.service;
 
-import ca.bc.gov.educ.api.gradbusiness.model.dto.GradSearchStudent;
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
-import ca.bc.gov.educ.api.gradbusiness.model.entity.GraduationStudentRecordEntity;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradStudentApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +17,6 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

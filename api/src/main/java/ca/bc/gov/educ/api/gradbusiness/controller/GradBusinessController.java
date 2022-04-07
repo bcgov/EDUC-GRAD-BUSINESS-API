@@ -1,6 +1,5 @@
 package ca.bc.gov.educ.api.gradbusiness.controller;
 
-import ca.bc.gov.educ.api.gradbusiness.model.dto.GradSearchStudent;
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
 import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
