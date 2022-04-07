@@ -100,7 +100,7 @@ endpoint:
       url: ${PEN_API}api/v1/student
   grad-student-graduation-api:
     report-data-by-pen:
-      url: ${GRADUATION_API}api/v1/graduate/report/data/%s
+      url: ${GRAD_STUDENT_GRADUATION_API}api/v1/graduate/report/data/%s
     report-data-by-graduation:
-      url: ${GRADUATION_API}api/v1/graduate/report/data
+      url: ${GRAD_STUDENT_GRADUATION_API}api/v1/graduate/report/data
 
