@@ -20,28 +20,47 @@ import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The type Grad business service.
+ */
 @Service
 public class GradBusinessService {
 
     private static final Logger logger = LoggerFactory.getLogger(GradBusinessService.class);
 
+    /**
+     * The Web client.
+     */
     final WebClient webClient;
 
+    /**
+     * The Educ grad student api constants.
+     */
     @Autowired
     EducGradStudentApiConstants educGradStudentApiConstants;
 
+    /**
+     * The Educ graduation api constants.
+     */
     @Autowired
     EducGraduationApiConstants educGraduationApiConstants;
 
+    /**
+     * Instantiates a new Grad business service.
+     *
+     * @param webClient the web client
+     */
     @Autowired
     public GradBusinessService(WebClient webClient) {
         this.webClient = webClient;
     }
 
     /**
-     * @param pen
-     * @param accessToken
-     * @return
+     * Gets student by pen from student api.
+     *
+     * @param pen         the pen
+     * @param accessToken the access token
+     * @return student by pen from student api
      */
     @Transactional
     @Retry(name = "searchbypen")
@@ -50,6 +69,13 @@ public class GradBusinessService {
         return stuDataList;
     }
 
+    /**
+     * Prepare report data by pen response entity.
+     *
+     * @param pen         the pen
+     * @param accessToken the access token
+     * @return the response entity
+     */
     public ResponseEntity<byte[]> prepareReportDataByPen(String pen, String accessToken) {
         try {
             byte[] result = webClient.get().uri(String.format(educGraduationApiConstants.getGraduateReportDataByPenUrl(), pen)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(byte[].class).block();
@@ -59,6 +85,13 @@ public class GradBusinessService {
         }
     }
 
+    /**
+     * Prepare report data by graduation response entity.
+     *
+     * @param graduationData the graduation data
+     * @param accessToken    the access token
+     * @return the response entity
+     */
     public ResponseEntity<byte[]> prepareReportDataByGraduation(String graduationData, String accessToken) {
         try {
             HttpHeaders headers = new HttpHeaders();
@@ -72,6 +105,12 @@ public class GradBusinessService {
         }
     }
 
+    /**
+     * Gets internal server error response.
+     *
+     * @param t the t
+     * @return the internal server error response
+     */
     protected ResponseEntity<byte[]> getInternalServerErrorResponse(Throwable t) {
         ResponseEntity<byte[]> result = null;
 
