@@ -77,7 +77,7 @@ class EducGradBusinessApiApplicationTests {
 		String studentGradData = readFile("json/gradstatus.json");
 		assertNotNull(studentGradData);
 
-		String pen = "129382610";
+		String pen = "128385861";
 
 		String reportData = readFile("json/studentTranscriptReportData.json");
 		assertNotNull(reportData);
