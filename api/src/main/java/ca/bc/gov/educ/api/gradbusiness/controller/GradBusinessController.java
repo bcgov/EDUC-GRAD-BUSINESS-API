@@ -2,6 +2,7 @@ package ca.bc.gov.educ.api.gradbusiness.controller;
 
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
 import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
+import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -72,7 +73,7 @@ public class GradBusinessController {
         return gradBusinessService.getStudentByPenFromStudentAPI(pen,accessToken);
     }
 
-    @GetMapping("/report/data/{pen}")
+    @GetMapping(EducGraduationApiConstants.GRADUATE_REPORT_DATA_BY_PEN)
     @PreAuthorize("#oauth2.hasAnyScope('GET_GRADUATION_DATA')")
     @Operation(summary = "Get Report data from graduation by student pen", description = "Get Report data from graduation by student pen", tags = { "Graduation Data" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
@@ -83,7 +84,7 @@ public class GradBusinessController {
         return gradBusinessService.prepareReportDataByPen(pen, accessToken);
     }
 
-    @PostMapping("/report/data")
+    @PostMapping(EducGraduationApiConstants.GRADUATE_REPORT_DATA)
     @PreAuthorize("#oauth2.hasAnyScope('GET_GRADUATION_DATA')")
     @Operation(summary = "Adapt graduation data for reporting", description = "Adapt graduation data for reporting", tags = { "Graduation Data" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})

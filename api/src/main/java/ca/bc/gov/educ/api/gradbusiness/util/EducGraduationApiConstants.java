@@ -29,10 +29,10 @@ public class EducGraduationApiConstants {
     public static final String TRAX_DATE_FORMAT = "yyyyMM";
 
     //Endpoints
-    @Value("${endpoint.grad-student-graduation-api.report-data-by-pen.url}")
+    @Value("${endpoint.grad-graduation-api.report-data-by-pen.url}")
     private String graduateReportDataByPenUrl;
 
-    @Value("${endpoint.grad-student-graduation-api.report-data-by-graduation.url}")
+    @Value("${endpoint.grad-graduation-api.report-data-by-graduation.url}")
     private String gaduateReportDataByGraduation;
     
 }
