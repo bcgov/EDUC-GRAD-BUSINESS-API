@@ -98,3 +98,9 @@ endpoint:
       url: ${PEN_API}api/v1/student?pen=%s
     student:
       url: ${PEN_API}api/v1/student
+  grad-graduation-api:
+    report-data-by-pen:
+      url: ${GRAD_GRADUATION_API}api/v1/graduate/report/data/%s
+    report-data-by-graduation:
+      url: ${GRAD_GRADUATION_API}api/v1/graduate/report/data
+

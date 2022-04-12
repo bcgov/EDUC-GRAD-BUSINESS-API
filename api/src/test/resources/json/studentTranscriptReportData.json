@@ -1,0 +1,1224 @@
+{
+  "student": {
+    "pen": {
+      "pen": "128385861",
+      "entityId": null
+    },
+    "firstName": "JOHN",
+    "middelName": "PIRATE",
+    "lastName": "SILVER",
+    "gender": "M",
+    "birthdate": "2002-08-05",
+    "address": {
+      "streetLine1": "HISPANIOLA",
+      "streetLine2": "",
+      "city": "SHOONER",
+      "region": "BOAT",
+      "country": "VESSEL",
+      "code": "PAC SEA"
+    },
+    "grade": "12",
+    "studStatus": "CUR",
+    "sccDate": "",
+    "mincodeGrad": "03939008",
+    "englishCert": "E",
+    "frenchCert": "F"
+  },
+  "school": {
+    "mincode": "03939008",
+    "name": "LORD BYNG SECONDARY",
+    "typeIndicator": "",
+    "typeBanner": "",
+    "signatureCode": "039",
+    "distno": "039",
+    "schlno": "03939008",
+    "schoolCategoryCode": "",
+    "address": {
+      "streetLine1": "3939 16TH AVENUE W",
+      "streetLine2": "",
+      "city": "VANCOUVER",
+      "region": "BC",
+      "country": "",
+      "code": "V6R3C9"
+    }
+  },
+  "logo": "BC",
+  "nonGradReasons": [
+    {
+      "code": "101",
+      "description": "No Language Arts 10"
+    },
+    {
+      "code": "107",
+      "description": "No Mathematics 11 or 12"
+    }
+  ],
+  "transcript": {
+    "interim": false,
+    "issueDate": "2021-04-26",
+    "code": {
+      "code": "BC2018-IND",
+      "description": "2018 Independent School Transcript"
+    },
+    "results": [
+      {
+        "course": {
+          "name": "ENGLISH 10",
+          "code": "EN",
+          "level": "10",
+          "credits": "4",
+          "sessionDate": "201806",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "52",
+          "finalLetterGrade": "C-",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "1",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "FOUNDATIONS OF MATH AND PRE-CALCULUS 10",
+          "code": "FMP",
+          "level": "10",
+          "credits": "4",
+          "sessionDate": "201806",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "50",
+          "finalLetterGrade": "C-",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "6",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "JAPANESE 10",
+          "code": "JA",
+          "level": "10",
+          "credits": "4",
+          "sessionDate": "201806",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "62",
+          "finalLetterGrade": "C",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "MUSIC 10",
+          "code": "MCB",
+          "level": "10",
+          "credits": "4",
+          "sessionDate": "201806",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "79",
+          "finalLetterGrade": "B",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "11",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "PHYSICAL EDUCATION 10  ",
+          "code": "PE",
+          "level": "10",
+          "credits": "4",
+          "sessionDate": "201806",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "78",
+          "finalLetterGrade": "B",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "10",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "PLANNING 10",
+          "code": "PLAN",
+          "level": "10",
+          "credits": "4",
+          "sessionDate": "201806",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "50",
+          "finalLetterGrade": "C-",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "12",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "SCIENCE 10",
+          "code": "SC",
+          "level": "10",
+          "credits": "4",
+          "sessionDate": "201806",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "53",
+          "finalLetterGrade": "C-",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "8",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "SOCIAL STUDIES 10",
+          "code": "SS",
+          "level": "10",
+          "credits": "4",
+          "sessionDate": "201806",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "61",
+          "finalLetterGrade": "C",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "4",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "BIOLOGY 11",
+          "code": "BI",
+          "level": "11",
+          "credits": "4",
+          "sessionDate": "201906",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "65",
+          "finalLetterGrade": "C",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "9",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "ENGLISH 11",
+          "code": "EN",
+          "level": "11",
+          "credits": "4",
+          "sessionDate": "201906",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "51",
+          "finalLetterGrade": "C-",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "2",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "FOUNDATIONS OF MATHEMATICS 11",
+          "code": "FOM",
+          "level": "11",
+          "credits": "4",
+          "sessionDate": "202009",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "50",
+          "finalLetterGrade": "C-",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "7",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "PHYSICAL EDUCATION 11",
+          "code": "PE",
+          "level": "11",
+          "credits": "4",
+          "sessionDate": "201906",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "82",
+          "finalLetterGrade": "B",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "MARINE RADIO",
+          "code": "MR",
+          "level": "11",
+          "credits": "6",
+          "sessionDate": "202005",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "90",
+          "finalLetterGrade": "A",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "FIRST AID",
+          "code": "FAID",
+          "level": "12",
+          "credits": "3",
+          "sessionDate": "202005",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "85",
+          "finalLetterGrade": "A",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "MARINE NAVIGATION",
+          "code": "MN",
+          "level": "11",
+          "credits": "6",
+          "sessionDate": "202005",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "90",
+          "finalLetterGrade": "A",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "ADVANCE FIREFIGHTING",
+          "code": "ADVFIRE",
+          "level": "11",
+          "credits": "6",
+          "sessionDate": "202005",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "90",
+          "finalLetterGrade": "A",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "SHIP COOK ASSESSMENT",
+          "code": "SCA",
+          "level": "11",
+          "credits": "6",
+          "sessionDate": "202005",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "90",
+          "finalLetterGrade": "A",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "MARINE ENGINES",
+          "code": "MENG",
+          "level": "11",
+          "credits": "6",
+          "sessionDate": "202005",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "90",
+          "finalLetterGrade": "A",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "YACHTMASTER OFFSHORE",
+          "code": "YMO",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "202005",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "76",
+          "finalLetterGrade": "B",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "YACHTMASTER OCEAN",
+          "code": "YMO",
+          "level": "11",
+          "credits": "4",
+          "sessionDate": "202005",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "76",
+          "finalLetterGrade": "B",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "ACTIVE LIVING 12 ",
+          "code": "ACLV",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "202005",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "50",
+          "finalLetterGrade": "C-",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "ANATOMY AND PHYSIOLOGY 12",
+          "code": "ATPH",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "202004",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "50",
+          "finalLetterGrade": "C-",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "COMPARATIVE CULTURES 12",
+          "code": "CMCL",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "202005",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "76",
+          "finalLetterGrade": "B",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "ENGLISH FIRST PEOPLES 12",
+          "code": "ENFP",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "202005",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "73",
+          "finalLetterGrade": "B",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "3",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "GEOGRAPHY 12",
+          "code": "GEO",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "201906",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "79",
+          "finalLetterGrade": "B",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "5",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "20TH CENTURY WORLD HISTORY 12",
+          "code": "WH",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "202005",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "60",
+          "finalLetterGrade": "C",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "GRADUATION TRANSITIONS",
+          "code": "GT",
+          "level": "",
+          "credits": "4",
+          "sessionDate": "201906",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "",
+          "finalLetterGrade": "RM",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "13",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "LITERACY ASSESSMENT 10",
+          "code": "LTE10",
+          "level": "",
+          "credits": "4",
+          "sessionDate": "201906",
+          "type": "3",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "XMT",
+          "finalLetterGrade": "NA",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "15",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "LITERACY ASSESSMENT 12",
+          "code": "LTE12",
+          "level": "",
+          "credits": "4",
+          "sessionDate": "202106",
+          "type": "3",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "XMT",
+          "finalLetterGrade": "NA",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "18",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "NUMERACY ASSESSMENT 10",
+          "code": "NME",
+          "level": "",
+          "credits": "4",
+          "sessionDate": "201806",
+          "type": "3",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "3",
+          "finalLetterGrade": "NA",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "16",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "NUMERACY ASSESSMENT 11",
+          "code": "NME",
+          "level": "",
+          "credits": "4",
+          "sessionDate": "201806",
+          "type": "3",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "3",
+          "finalLetterGrade": "NA",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "16",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "YACHTMASTER COSTAL",
+          "code": "YMC",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "200106",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "75",
+          "finalLetterGrade": "B",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "MARINE FIRST AID",
+          "code": "FAID",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "200106",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "80",
+          "finalLetterGrade": "B",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "MARINE RADIO",
+          "code": "RADIO",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "200106",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "80",
+          "finalLetterGrade": "B",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "STORM SURVIVAL",
+          "code": "STORM",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "200106",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "75",
+          "finalLetterGrade": "B",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "DIESEL ENGINE MECHANIC",
+          "code": "MDM",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "200106",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "70",
+          "finalLetterGrade": "B",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "NAVIGATION",
+          "code": "NAV",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "200106",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "75",
+          "finalLetterGrade": "A",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "MARINE ELECTRONICS",
+          "code": "MELECT",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "200106",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "70",
+          "finalLetterGrade": "B",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "BOAT SURVEYING",
+          "code": "SURV",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "200106",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "85",
+          "finalLetterGrade": "B",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "METEOROLOGY",
+          "code": "METEO",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "200106",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "70",
+          "finalLetterGrade": "A",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "PASSAGE PLANNING",
+          "code": "PASPLAN",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "200106",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "75",
+          "finalLetterGrade": "B",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "CREW MANAGEMENT",
+          "code": "CREW",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "200106",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "60",
+          "finalLetterGrade": "C",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "SEXTANT",
+          "code": "STN",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "200106",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "75",
+          "finalLetterGrade": "B",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "OCEANOGRAPHY",
+          "code": "OCEAN",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "200106",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "75",
+          "finalLetterGrade": "B",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "PILOTAGE",
+          "code": "PILOT",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "200106",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "75",
+          "finalLetterGrade": "B",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "INTERNATIONAL COLLISION REGULATIONS",
+          "code": "COLREG",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "200106",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "75",
+          "finalLetterGrade": "B",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      },
+      {
+        "course": {
+          "name": "MARINE TRAFFIC RULES AND REGULATIONS",
+          "code": "MTR",
+          "level": "12",
+          "credits": "4",
+          "sessionDate": "200106",
+          "type": "2",
+          "relatedCourse": "",
+          "relatedLevel": ""
+        },
+        "mark": {
+          "schoolPercent": "",
+          "examPercent": "",
+          "finalPercent": "80",
+          "finalLetterGrade": "A",
+          "interimPercent": "",
+          "interimLetterGrade": ""
+        },
+        "requirement": "",
+        "requirementName": "",
+        "equivalency": "",
+        "usedForGrad": ""
+      }
+    ]
+  },
+  "gradProgram": {
+    "description": null,
+    "code": {
+      "code": "2018",
+      "description": "Graduation Program 2018",
+      "credits": 80
+    }
+  },
+  "graduationData": {
+    "graduationDate": "2020-09-01",
+    "honorsFlag": false,
+    "dogwoodFlag": false,
+    "programCodes": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "programNames": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "totalCreditsUsedForGrad": "0"
+  },
+  "gradMessage": "Based on the information provided by the school, this student has not yet graduated in the Graduation Program 2018. Students with questions should contact their schools immediately. This student is participating in Carrier Program(s): Career Program TRADES and TECHNOLOGY",
+  "updateDate": "2021-04-26"
+}
