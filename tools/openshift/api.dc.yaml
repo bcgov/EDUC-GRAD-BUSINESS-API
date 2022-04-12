@@ -33,9 +33,6 @@ objects:
           containers:
             - image: image-registry.openshift-image-registry.svc:5000/77c02f-tools/${REPO_NAME}:${TAG_NAME}
               imagePullPolicy: Always
-              volumeMounts:
-              - name: log-storage
-                mountPath: /logs
               readinessProbe:
                 tcpSocket:
                   port: 8080
@@ -65,12 +62,6 @@ objects:
                 - secretRef:
                     name: grad-keycloak-pk-secret
               resources: {}
-          volumes:
-            - name: log-storage
-              emptyDir: { }
-            - name: flb-sc-config-volume
-              configMap:
-                name: "${REPO_NAME}-flb-sc-config-map"
       test: false
   - apiVersion: v1
     kind: Service
