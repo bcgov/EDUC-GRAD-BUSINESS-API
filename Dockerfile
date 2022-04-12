@@ -20,4 +20,4 @@ ENTRYPOINT ["java","-Duser.name=EDUC_GRAD_BUSINESS_API","-Xms1G","-Xmx1G","-nove
             "-Djava.util.concurrent.ForkJoinPool.common.parallelism=1","-XX:CICompilerCount=2",\
             "-XX:+ExitOnOutOfMemoryError","-Djava.security.egd=file:/dev/./urandom",\
             "-Dspring.backgroundpreinitializer.ignore=true","-cp","app:app/lib/*",\
-            "ca.bc.gov.educ.api.distribution.EducDistributionApiApplication"]
+            "ca.bc.gov.educ.api.gradbusiness.EducGradBusinessApiApplication"]
