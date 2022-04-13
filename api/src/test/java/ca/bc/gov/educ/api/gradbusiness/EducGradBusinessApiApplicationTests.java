@@ -25,8 +25,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -92,7 +91,7 @@ class EducGradBusinessApiApplicationTests {
 		assertNotNull(byteData);
 		assertTrue(byteData.getBody().length > 0);
 		String json = new String(byteData.getBody());
-		assertTrue(json.equals(reportData));
+		assertEquals(json,reportData);
 
 		reportData = readFile("json/studentCertificateReportData.json");
 		assertNotNull(reportData);
@@ -107,7 +106,7 @@ class EducGradBusinessApiApplicationTests {
 		assertNotNull(byteData);
 		assertTrue(byteData.getBody().length > 0);
 		json = new String(byteData.getBody());
-		assertTrue(json.equals(reportData));
+		assertEquals(json,reportData);
 
 	}
 
@@ -132,7 +131,7 @@ class EducGradBusinessApiApplicationTests {
 		assertNotNull(byteData);
 		assertTrue(byteData.getBody().length > 0);
 		String json = new String(byteData.getBody());
-		assertTrue(json.equals(reportData));
+		assertEquals(json,reportData);
 
 		reportData = readFile("json/studentCertificateReportData.json");
 		assertNotNull(reportData);
@@ -149,7 +148,7 @@ class EducGradBusinessApiApplicationTests {
 		assertNotNull(byteData);
 		assertTrue(byteData.getBody().length > 0);
 		json = new String(byteData.getBody());
-		assertTrue(json.equals(reportData));
+		assertEquals(json,reportData);
 
 	}
 

@@ -78,7 +78,6 @@ public class GradBusinessController {
     @Operation(summary = "Get Transcript Report data from graduation by student pen", description = "Get Transcript Report data from graduation by student pen", tags = { "Graduation Data" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
     public ResponseEntity<byte[]> transcriptReportDataByPen(@PathVariable String pen) {
-        //logger.debug("Transcript Report Data By Student Pen: " + pen);
         OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
         String accessToken = auth.getTokenValue();
         return gradBusinessService.prepareReportDataByPen(pen, null, accessToken);
@@ -89,7 +88,6 @@ public class GradBusinessController {
     @Operation(summary = "Get Certificate Report data from graduation by student pen", description = "Get Certificate Report data from graduation by student pen", tags = { "Graduation Data" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
     public ResponseEntity<byte[]> certificateReportDataByPen(@PathVariable String pen) {
-        //logger.debug("Ceretificate Report Data By Student Pen: " + pen);
         OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
         String accessToken = auth.getTokenValue();
         return gradBusinessService.prepareReportDataByPen(pen, "CERT", accessToken);
@@ -100,7 +98,6 @@ public class GradBusinessController {
     @Operation(summary = "Adapt graduation data for transcript reporting", description = "Adapt graduation data for transcript reporting", tags = { "Graduation Data" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
     public ResponseEntity<byte[]> transcriptReportDataFromGraduation(@RequestBody String graduationData) {
-        //logger.debug("Transcript Report Data from graduation by graduation:\n" + graduationData);
         OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
         String accessToken = auth.getTokenValue();
         return gradBusinessService.prepareReportDataByGraduation(graduationData, null, accessToken);
@@ -111,7 +108,6 @@ public class GradBusinessController {
     @Operation(summary = "Adapt graduation data for certificate reporting", description = "Adapt graduation data for certificate reporting", tags = { "Graduation Data" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
     public ResponseEntity<byte[]> certificateReportDataFromGraduation(@RequestBody String graduationData) {
-        //logger.debug("Certificate Report Data from graduation by graduation:\n" + graduationData);
         OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
         String accessToken = auth.getTokenValue();
         return gradBusinessService.prepareReportDataByGraduation(graduationData, "CERT", accessToken);
