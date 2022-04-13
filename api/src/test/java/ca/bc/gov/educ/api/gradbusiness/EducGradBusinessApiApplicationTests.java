@@ -83,7 +83,7 @@ class EducGradBusinessApiApplicationTests {
 		assertNotNull(reportData);
 
 		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
-		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getGraduateReportDataByPenUrl(),"128385861"))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getGraduateReportDataByPenUrl(),"128385861") + "?type=")).thenReturn(this.requestHeadersMock);
 		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
 		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
 		when(this.responseMock.bodyToMono(byte[].class)).thenReturn(Mono.just(reportData.getBytes()));
@@ -92,6 +92,21 @@ class EducGradBusinessApiApplicationTests {
 		assertNotNull(byteData);
 		assertTrue(byteData.getBody().length > 0);
 		String json = new String(byteData.getBody());
+		assertTrue(json.equals(reportData));
+
+		reportData = readFile("json/studentCertificateReportData.json");
+		assertNotNull(reportData);
+
+		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
+		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getGraduateReportDataByPenUrl(),"128385861") + "?type=CERT")).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
+		when(this.responseMock.bodyToMono(byte[].class)).thenReturn(Mono.just(reportData.getBytes()));
+
+		byteData = gradBusinessService.prepareReportDataByPen(pen, "CERT", "accessToken");
+		assertNotNull(byteData);
+		assertTrue(byteData.getBody().length > 0);
+		json = new String(byteData.getBody());
 		assertTrue(json.equals(reportData));
 
 	}
@@ -106,7 +121,7 @@ class EducGradBusinessApiApplicationTests {
 		assertNotNull(reportData);
 
 		when(this.webClient.post()).thenReturn(this.requestBodyUriMock);
-		when(this.requestBodyUriMock.uri(educGraduationApiConstants.getGaduateReportDataByGraduation())).thenReturn(this.requestBodyUriMock);
+		when(this.requestBodyUriMock.uri(educGraduationApiConstants.getGaduateReportDataByGraduation() + "?type=")).thenReturn(this.requestBodyUriMock);
 		when(this.requestBodyUriMock.headers(any(Consumer.class))).thenReturn(this.requestBodyMock);
 		when(this.requestBodyMock.contentType(any())).thenReturn(this.requestBodyMock);
 		when(this.requestBodyMock.body(any(BodyInserter.class))).thenReturn(this.requestHeadersMock);
@@ -117,6 +132,23 @@ class EducGradBusinessApiApplicationTests {
 		assertNotNull(byteData);
 		assertTrue(byteData.getBody().length > 0);
 		String json = new String(byteData.getBody());
+		assertTrue(json.equals(reportData));
+
+		reportData = readFile("json/studentCertificateReportData.json");
+		assertNotNull(reportData);
+
+		when(this.webClient.post()).thenReturn(this.requestBodyUriMock);
+		when(this.requestBodyUriMock.uri(educGraduationApiConstants.getGaduateReportDataByGraduation() + "?type=CERT")).thenReturn(this.requestBodyUriMock);
+		when(this.requestBodyUriMock.headers(any(Consumer.class))).thenReturn(this.requestBodyMock);
+		when(this.requestBodyMock.contentType(any())).thenReturn(this.requestBodyMock);
+		when(this.requestBodyMock.body(any(BodyInserter.class))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
+		when(this.responseMock.bodyToMono(byte[].class)).thenReturn(Mono.just(reportData.getBytes()));
+
+		byteData = gradBusinessService.prepareReportDataByGraduation(studentGradData, "CERT", "accessToken");
+		assertNotNull(byteData);
+		assertTrue(byteData.getBody().length > 0);
+		json = new String(byteData.getBody());
 		assertTrue(json.equals(reportData));
 
 	}
