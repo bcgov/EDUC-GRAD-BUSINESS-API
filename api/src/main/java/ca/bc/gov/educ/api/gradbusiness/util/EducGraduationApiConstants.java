@@ -17,9 +17,10 @@ public class EducGraduationApiConstants {
     //API end-point Mapping constants
     public static final String API_ROOT_MAPPING = "";
     public static final String API_VERSION = "v1";
-    public static final String GRADUATIONT_API_ROOT_MAPPING = "/api/" + API_VERSION + "/graduate" ;
-    public static final String GRADUATE_REPORT_DATA_BY_PEN = "/report/data/{pen}";
-    public static final String GRADUATE_REPORT_DATA = "/report/data";
+    public static final String GRADUATE_TRANSCRIPT_REPORT_DATA_BY_PEN = "/transcript/report/data/{pen}";
+    public static final String GRADUATE_TRANSCRIPT_REPORT_DATA = "/transcript/report/data";
+    public static final String GRADUATE_CERTIFICATE_REPORT_DATA_BY_PEN = "/certificate/report/data/{pen}";
+    public static final String GRADUATE_CERTIFICATE_REPORT_DATA = "/certificate/report/data";
 
     //Default Date format constants
     public static final String DEFAULT_CREATED_BY = "API_GRADUATION";

@@ -88,7 +88,7 @@ class EducGradBusinessApiApplicationTests {
 		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
 		when(this.responseMock.bodyToMono(byte[].class)).thenReturn(Mono.just(reportData.getBytes()));
 
-		ResponseEntity<byte[]> byteData = gradBusinessService.prepareReportDataByPen(pen, "accessToken");
+		ResponseEntity<byte[]> byteData = gradBusinessService.prepareReportDataByPen(pen, null, "accessToken");
 		assertNotNull(byteData);
 		assertTrue(byteData.getBody().length > 0);
 		String json = new String(byteData.getBody());
@@ -113,7 +113,7 @@ class EducGradBusinessApiApplicationTests {
 		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
 		when(this.responseMock.bodyToMono(byte[].class)).thenReturn(Mono.just(reportData.getBytes()));
 
-		ResponseEntity<byte[]> byteData = gradBusinessService.prepareReportDataByGraduation(studentGradData, "accessToken");
+		ResponseEntity<byte[]> byteData = gradBusinessService.prepareReportDataByGraduation(studentGradData, null, "accessToken");
 		assertNotNull(byteData);
 		assertTrue(byteData.getBody().length > 0);
 		String json = new String(byteData.getBody());
