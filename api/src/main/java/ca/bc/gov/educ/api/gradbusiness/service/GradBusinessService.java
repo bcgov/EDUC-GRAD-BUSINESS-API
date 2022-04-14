@@ -19,6 +19,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The type Grad business service.
@@ -76,9 +77,10 @@ public class GradBusinessService {
      * @param accessToken the access token
      * @return the response entity
      */
-    public ResponseEntity<byte[]> prepareReportDataByPen(String pen, String accessToken) {
+    public ResponseEntity<byte[]> prepareReportDataByPen(String pen, String type, String accessToken) {
+        type = Optional.ofNullable(type).orElse("");
         try {
-            byte[] result = webClient.get().uri(String.format(educGraduationApiConstants.getGraduateReportDataByPenUrl(), pen)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(byte[].class).block();
+            byte[] result = webClient.get().uri(String.format(educGraduationApiConstants.getGraduateReportDataByPenUrl(), pen) + "?type=" + type).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(byte[].class).block();
             return handleBinaryResponse(result, "graduation_report_data.json", MediaType.APPLICATION_JSON);
         } catch (Exception e) {
             return getInternalServerErrorResponse(e);
@@ -92,13 +94,14 @@ public class GradBusinessService {
      * @param accessToken    the access token
      * @return the response entity
      */
-    public ResponseEntity<byte[]> prepareReportDataByGraduation(String graduationData, String accessToken) {
+    public ResponseEntity<byte[]> prepareReportDataByGraduation(String graduationData, String type, String accessToken) {
+        type = Optional.ofNullable(type).orElse("");
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList("Bearer " + accessToken));
             headers.put(HttpHeaders.ACCEPT, Collections.singletonList("application/json"));
             headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList("application/json"));
-            byte[] result = webClient.post().uri(educGraduationApiConstants.getGaduateReportDataByGraduation()).headers(h -> h.addAll(headers)).body(BodyInserters.fromValue(graduationData)).retrieve().bodyToMono(byte[].class).block();
+            byte[] result = webClient.post().uri(educGraduationApiConstants.getGaduateReportDataByGraduation() + "?type=" + type).headers(h -> h.addAll(headers)).body(BodyInserters.fromValue(graduationData)).retrieve().bodyToMono(byte[].class).block();
             return handleBinaryResponse(result, "graduation_report_data.json", MediaType.APPLICATION_JSON);
         } catch (Exception e) {
             return getInternalServerErrorResponse(e);
