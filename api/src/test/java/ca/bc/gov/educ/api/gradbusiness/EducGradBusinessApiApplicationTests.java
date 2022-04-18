@@ -120,7 +120,7 @@ class EducGradBusinessApiApplicationTests {
 		assertNotNull(reportData);
 
 		when(this.webClient.post()).thenReturn(this.requestBodyUriMock);
-		when(this.requestBodyUriMock.uri(educGraduationApiConstants.getGaduateReportDataByGraduation() + "?type=")).thenReturn(this.requestBodyUriMock);
+		when(this.requestBodyUriMock.uri(educGraduationApiConstants.getGraduateReportDataByGraduation() + "?type=")).thenReturn(this.requestBodyUriMock);
 		when(this.requestBodyUriMock.headers(any(Consumer.class))).thenReturn(this.requestBodyMock);
 		when(this.requestBodyMock.contentType(any())).thenReturn(this.requestBodyMock);
 		when(this.requestBodyMock.body(any(BodyInserter.class))).thenReturn(this.requestHeadersMock);
@@ -137,7 +137,7 @@ class EducGradBusinessApiApplicationTests {
 		assertNotNull(reportData);
 
 		when(this.webClient.post()).thenReturn(this.requestBodyUriMock);
-		when(this.requestBodyUriMock.uri(educGraduationApiConstants.getGaduateReportDataByGraduation() + "?type=CERT")).thenReturn(this.requestBodyUriMock);
+		when(this.requestBodyUriMock.uri(educGraduationApiConstants.getGraduateReportDataByGraduation() + "?type=CERT")).thenReturn(this.requestBodyUriMock);
 		when(this.requestBodyUriMock.headers(any(Consumer.class))).thenReturn(this.requestBodyMock);
 		when(this.requestBodyMock.contentType(any())).thenReturn(this.requestBodyMock);
 		when(this.requestBodyMock.body(any(BodyInserter.class))).thenReturn(this.requestHeadersMock);
@@ -149,6 +149,31 @@ class EducGradBusinessApiApplicationTests {
 		assertTrue(byteData.getBody().length > 0);
 		json = new String(byteData.getBody());
 		assertEquals(json,reportData);
+
+	}
+
+	@org.junit.jupiter.api.Test
+	public void testXmlTranscriptReportData() throws Exception {
+
+		String xmlReportRequest = readFile("json/xmlTranscriptReportRequest.json");
+		assertNotNull(xmlReportRequest);
+
+		String xmlTranscriptReportData = readFile("json/xml_report_sample.xml");
+		assertNotNull(xmlTranscriptReportData);
+
+		when(this.webClient.post()).thenReturn(this.requestBodyUriMock);
+		when(this.requestBodyUriMock.uri(educGraduationApiConstants.getXmlTranscriptReportData())).thenReturn(this.requestBodyUriMock);
+		when(this.requestBodyUriMock.headers(any(Consumer.class))).thenReturn(this.requestBodyMock);
+		when(this.requestBodyMock.contentType(any())).thenReturn(this.requestBodyMock);
+		when(this.requestBodyMock.body(any(BodyInserter.class))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
+		when(this.responseMock.bodyToMono(byte[].class)).thenReturn(Mono.just(xmlTranscriptReportData.getBytes()));
+
+		ResponseEntity<byte[]> byteData = gradBusinessService.prepareXmlTranscriptReportDataByXmlRequest(xmlReportRequest, "accessToken");
+		assertNotNull(byteData);
+		assertTrue(byteData.getBody().length > 0);
+		String json = new String(byteData.getBody());
+		assertEquals(json,xmlTranscriptReportData);
 
 	}
 

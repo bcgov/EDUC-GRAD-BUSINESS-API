@@ -141,6 +141,37 @@ class EducGradBusinessApiControllerTests {
 		Mockito.verify(gradBusinessService).prepareReportDataByGraduation(studentGradData, "CERT", details.getTokenValue());
 	}
 
+	@org.junit.jupiter.api.Test
+	public void testXmlTranscriptData() throws Exception {
+
+		String xmlReportRequest = readFile("json/xmlTranscriptReportRequest.json");
+		assertNotNull(xmlReportRequest);
+
+		String xmlTranscriptReportData = readFile("json/xml_report_sample.xml");
+		assertNotNull(xmlTranscriptReportData);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Disposition", "inline; filename=xmlTranscriptData.json");
+		ResponseEntity response = ResponseEntity
+				.ok()
+				.headers(headers)
+				.contentType(MediaType.APPLICATION_XML)
+				.body(xmlTranscriptReportData.getBytes());
+
+		Authentication authentication = Mockito.mock(Authentication.class);
+		OAuth2AuthenticationDetails details = Mockito.mock(OAuth2AuthenticationDetails.class);
+		// Mockito.whens() for your authorization object
+		SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+		Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+		Mockito.when(authentication.getDetails()).thenReturn(details);
+		SecurityContextHolder.setContext(securityContext);
+
+		Mockito.when(gradBusinessService.prepareXmlTranscriptReportDataByXmlRequest(xmlReportRequest, details.getTokenValue())).thenReturn(response);
+		gradBusinessController.transcriptXmlReportDataFromXmlRequest(xmlReportRequest);
+		Mockito.verify(gradBusinessService).prepareXmlTranscriptReportDataByXmlRequest(xmlReportRequest, details.getTokenValue());
+
+	}
+
 	private String readFile(String jsonPath) throws Exception {
 		ClassLoader classLoader = getClass().getClassLoader();
 		InputStream inputStream = classLoader.getResourceAsStream(jsonPath);

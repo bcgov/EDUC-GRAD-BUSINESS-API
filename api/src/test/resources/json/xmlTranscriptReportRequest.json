@@ -1,0 +1,21 @@
+{
+  "options": {
+    "convertTo": "xml",
+    "reportName": "xmltranscript-xml",
+    "reportFile": "%s - XML Transcript Report.xml"
+  },
+  "data": {
+    "requestTrackId": "AB0001",
+    "pen": {
+      "pen": "126929710",
+      "studentID": "f10ca501fe8a"
+    },
+    "authorizeDate": "2022-02-22",
+    "psis": "59001000",
+    "organizationName": "University of British Columbia",
+    "addressLine1": "2016-1874 East Mall",
+    "city": "Vancouver",
+    "stateProvince": "BC",
+    "postalCode": "V6T 1Z1"
+  }
+}

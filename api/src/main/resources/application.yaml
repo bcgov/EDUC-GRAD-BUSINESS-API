@@ -103,4 +103,7 @@ endpoint:
       url: ${GRAD_GRADUATION_API}api/v1/graduate/report/data/%s
     report-data-by-graduation:
       url: ${GRAD_GRADUATION_API}api/v1/graduate/report/data
+  grad-report-api:
+    report-data-by-xml:
+      url: ${GRAD_REPORT_API}api/v1/reports/xmltranscriptreport
 
