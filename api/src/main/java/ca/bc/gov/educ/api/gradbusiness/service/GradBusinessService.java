@@ -101,8 +101,28 @@ public class GradBusinessService {
             headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList("Bearer " + accessToken));
             headers.put(HttpHeaders.ACCEPT, Collections.singletonList("application/json"));
             headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList("application/json"));
-            byte[] result = webClient.post().uri(educGraduationApiConstants.getGaduateReportDataByGraduation() + "?type=" + type).headers(h -> h.addAll(headers)).body(BodyInserters.fromValue(graduationData)).retrieve().bodyToMono(byte[].class).block();
+            byte[] result = webClient.post().uri(educGraduationApiConstants.getGraduateReportDataByGraduation() + "?type=" + type).headers(h -> h.addAll(headers)).body(BodyInserters.fromValue(graduationData)).retrieve().bodyToMono(byte[].class).block();
             return handleBinaryResponse(result, "graduation_report_data.json", MediaType.APPLICATION_JSON);
+        } catch (Exception e) {
+            return getInternalServerErrorResponse(e);
+        }
+    }
+
+    /**
+     * Prepare report data by graduation response entity.
+     *
+     * @param xmlRequest the graduation data
+     * @param accessToken    the access token
+     * @return the response entity
+     */
+    public ResponseEntity<byte[]> prepareXmlTranscriptReportDataByXmlRequest(String xmlRequest, String accessToken) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList("Bearer " + accessToken));
+            headers.put(HttpHeaders.ACCEPT, Collections.singletonList("application/json"));
+            headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList("application/json"));
+            byte[] result = webClient.post().uri(educGraduationApiConstants.getXmlTranscriptReportData()).headers(h -> h.addAll(headers)).body(BodyInserters.fromValue(xmlRequest)).retrieve().bodyToMono(byte[].class).block();
+            return handleBinaryResponse(result, "xml_transcript_report_data.json", MediaType.APPLICATION_JSON);
         } catch (Exception e) {
             return getInternalServerErrorResponse(e);
         }

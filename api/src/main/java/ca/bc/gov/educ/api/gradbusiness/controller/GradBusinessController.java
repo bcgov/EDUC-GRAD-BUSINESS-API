@@ -103,6 +103,16 @@ public class GradBusinessController {
         return gradBusinessService.prepareReportDataByGraduation(graduationData, null, accessToken);
     }
 
+    @PostMapping(EducGraduationApiConstants.GRADUATE_TRANSCRIPT_XML_REPORT_DATA)
+    @PreAuthorize("#oauth2.hasAnyScope('GET_GRADUATION_DATA')")
+    @Operation(summary = "Get Xml Data for transcript reporting", description = "Get Xml Data for transcript reporting", tags = { "Graduation Data" })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
+    public ResponseEntity<byte[]> transcriptXmlReportDataFromXmlRequest(@RequestBody String xmlRequest) {
+        OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        String accessToken = auth.getTokenValue();
+        return gradBusinessService.prepareXmlTranscriptReportDataByXmlRequest(xmlRequest, accessToken);
+    }
+
     @PostMapping(EducGraduationApiConstants.GRADUATE_CERTIFICATE_REPORT_DATA)
     @PreAuthorize("#oauth2.hasAnyScope('GET_GRADUATION_DATA')")
     @Operation(summary = "Adapt graduation data for certificate reporting", description = "Adapt graduation data for certificate reporting", tags = { "Graduation Data" })

@@ -100,6 +100,9 @@ endpoint:
     get-graduation-student-record:
       get-optional-programs:
         url: https://gradstudent-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/student/optionalprogram/studentid/%s
+  grad-report-api:
+    report-data-by-xml:
+      url: https://report-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/reports/xmltranscriptreport
   rule-engine-api:
     base-domain: https://rule-engine-api-77c02f-dev.apps.silver.devops.gov.bc.ca
     api-keyword: api
