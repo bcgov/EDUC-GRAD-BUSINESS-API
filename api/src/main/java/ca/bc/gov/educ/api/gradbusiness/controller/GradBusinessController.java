@@ -77,10 +77,10 @@ public class GradBusinessController {
     @PreAuthorize("#oauth2.hasAnyScope('GET_GRADUATION_DATA')")
     @Operation(summary = "Get Transcript Report data from graduation by student pen", description = "Get Transcript Report data from graduation by student pen", tags = { "Graduation Data" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
-    public ResponseEntity<byte[]> transcriptReportDataByPen(@PathVariable String pen) {
+    public ResponseEntity<byte[]> transcriptReportDataByPen(@PathVariable String pen, @RequestParam(required = false) String type) {
         OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
         String accessToken = auth.getTokenValue();
-        return gradBusinessService.prepareReportDataByPen(pen, null, accessToken);
+        return gradBusinessService.prepareReportDataByPen(pen, type, accessToken);
     }
 
     @GetMapping(EducGraduationApiConstants.GRADUATE_CERTIFICATE_REPORT_DATA_BY_PEN)
@@ -97,10 +97,10 @@ public class GradBusinessController {
     @PreAuthorize("#oauth2.hasAnyScope('GET_GRADUATION_DATA')")
     @Operation(summary = "Adapt graduation data for transcript reporting", description = "Adapt graduation data for transcript reporting", tags = { "Graduation Data" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
-    public ResponseEntity<byte[]> transcriptReportDataFromGraduation(@RequestBody String graduationData) {
+    public ResponseEntity<byte[]> transcriptReportDataFromGraduation(@RequestBody String graduationData, @RequestParam(required = false) String type) {
         OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
         String accessToken = auth.getTokenValue();
-        return gradBusinessService.prepareReportDataByGraduation(graduationData, null, accessToken);
+        return gradBusinessService.prepareReportDataByGraduation(graduationData, type, accessToken);
     }
 
     @PostMapping(EducGraduationApiConstants.GRADUATE_TRANSCRIPT_XML_REPORT_DATA)

@@ -76,7 +76,7 @@ class EducGradBusinessApiControllerTests {
 		SecurityContextHolder.setContext(securityContext);
 
 		Mockito.when(gradBusinessService.prepareReportDataByPen(pen, null, details.getTokenValue())).thenReturn(response);
-		gradBusinessController.transcriptReportDataByPen(pen);
+		gradBusinessController.transcriptReportDataByPen(pen, null);
 		Mockito.verify(gradBusinessService).prepareReportDataByPen(pen, null, details.getTokenValue());
 
 		reportData = readFile("json/studentCertificateReportData.json");
@@ -122,7 +122,7 @@ class EducGradBusinessApiControllerTests {
 		SecurityContextHolder.setContext(securityContext);
 
 		Mockito.when(gradBusinessService.prepareReportDataByGraduation(studentGradData, null, details.getTokenValue())).thenReturn(response);
-		gradBusinessController.transcriptReportDataFromGraduation(studentGradData);
+		gradBusinessController.transcriptReportDataFromGraduation(studentGradData, null);
 		Mockito.verify(gradBusinessService).prepareReportDataByGraduation(studentGradData, null, details.getTokenValue());
 
 		reportData = readFile("json/studentCertificateReportData.json");
