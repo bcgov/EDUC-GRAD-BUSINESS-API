@@ -133,6 +133,20 @@ class EducGradBusinessApiApplicationTests {
 		String json = new String(byteData.getBody());
 		assertEquals(json,reportData);
 
+		when(this.webClient.post()).thenReturn(this.requestBodyUriMock);
+		when(this.requestBodyUriMock.uri(educGraduationApiConstants.getGraduateReportDataByGraduation() + "?type=XML")).thenReturn(this.requestBodyUriMock);
+		when(this.requestBodyUriMock.headers(any(Consumer.class))).thenReturn(this.requestBodyMock);
+		when(this.requestBodyMock.contentType(any())).thenReturn(this.requestBodyMock);
+		when(this.requestBodyMock.body(any(BodyInserter.class))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
+		when(this.responseMock.bodyToMono(byte[].class)).thenReturn(Mono.just(reportData.getBytes()));
+
+		byteData = gradBusinessService.prepareReportDataByGraduation(studentGradData, "XML", "accessToken");
+		assertNotNull(byteData);
+		assertTrue(byteData.getBody().length > 0);
+		json = new String(byteData.getBody());
+		assertEquals(json,reportData);
+
 		reportData = readFile("json/studentCertificateReportData.json");
 		assertNotNull(reportData);
 
