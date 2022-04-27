@@ -4,26 +4,53 @@ name: On Merge to Release Branch
 
 on:
   workflow_dispatch:
-  push:
-    branches: 
-      - grad-release
+  #push:
+    #branches: 
+      #- grad-release
+
+env:
+  APP_NAME: grad-business-api
       
 jobs:
-
   build-and-deploy:
     name: Build, package and deploy to Dev
+    environment: dev
     runs-on: ubuntu-latest
     steps:
     - name: Git pull
       uses: actions/checkout@v3
-    - name: Set up JDK 11
-      run: echo "Setting up jdk 11"
-    - name: Build with Maven
-      run: echo "Building with maven"
-    - name: Creating docker image
-      run: echo "Creating docker image"
-    - name: Push to registry
-      run: echo "Pushing image to registry"
+    - name: Login to Artifactory
+      uses: docker/login-action@v1
+      with:
+        registry: ${{ secrets.DOCKER_ARTIFACTORY_REPO }}
+        username: ${{ secrets.DOCKER_ARTIFACTORY_USERNAME }}
+        password: ${{ secrets.DOCKER_ARTIFACTORY_ACCESS_TOKEN }}
+
+    # https://github.com/redhat-actions/buildah-build#readme
+    - name: Build api from Dockerfile
+      id: build-image
+      uses: redhat-actions/buildah-build@v2
+      with:
+        image: ${{ env.APP_NAME }}
+        tags: ${{ env.IMAGE_TAGS }}
+
+        # If you don't have a Dockerfile/Containerfile, refer to https://github.com/redhat-actions/buildah-build#scratch-build-inputs
+        # Or, perform a source-to-image build using https://github.com/redhat-actions/s2i-build
+        # Otherwise, point this to your Dockerfile/Containerfile relative to the repository root.
+        dockerfiles: |
+          ./backend/Dockerfile
+        context: ./backend
+
+      # https://github.com/redhat-actions/push-to-registry#readme
+    - name: Push backend to registry
+      id: push-image-backend
+      uses: redhat-actions/push-to-registry@v2
+      with:
+        image: ${{ steps.build-image.outputs.image }}
+        tags: ${{ steps.build-image.outputs.tags }}
+        registry: ${{ env.IMAGE_REGISTRY }}
+        username: ${{ env.IMAGE_REGISTRY_USER }}
+        password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
     - name: Install OC
       run: echo "Installing OC"
     - name: Deploy to environment

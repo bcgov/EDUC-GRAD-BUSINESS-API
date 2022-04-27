@@ -1,0 +1,85 @@
+{
+  "student": {
+    "pen": {
+      "pen": "128385861",
+      "entityID": null
+    },
+    "firstName": "CAYMAN",
+    "lastName": "HILL",
+    "gender": "M",
+    "birthdate": "2004-08-17",
+    "address": null,
+    "grade": "11",
+    "gradProgram": null,
+    "studStatus": "CUR",
+    "sccDate": null,
+    "mincodeGrad": null,
+    "englishCert": "E",
+    "frenchCert": null,
+    "localId": null,
+    "hasOtherProgram": null,
+    "otherProgramParticipation": []
+  },
+  "school": {
+    "mincode": "00502001",
+    "name": "MOUNT BAKER SECONDARY",
+    "typeIndicator": "",
+    "typeBanner": null,
+    "signatureCode": "005",
+    "distno": "005",
+    "schlno": "00502001",
+    "schoolCategoryCode": null,
+    "address": {
+      "streetLine1": "1410 BAKER STREET",
+      "streetLine2": "",
+      "city": "CRANBROOK",
+      "region": "BC",
+      "country": "CN",
+      "code": "V1C1B2"
+    },
+    "phoneNumber": "",
+    "dogwoodElig": ""
+  },
+  "logo": null,
+  "transcript": null,
+  "assessment": null,
+  "gradProgram": {
+    "code": {
+      "code": "2018-EN",
+      "description": "Graduation Program 2018",
+      "credits": 0,
+      "name": "Graduation Program 2018"
+    }
+  },
+  "graduationData": {
+    "graduationDate": null,
+    "honorsFlag": false,
+    "dogwoodFlag": false,
+    "programCodes": null,
+    "programNames": null,
+    "totalCreditsUsedForGrad": null
+  },
+  "gradMessage": null,
+  "updateDate": "2022-04-12",
+  "certificate": {
+    "issued": "2022-04-13",
+    "certStyle": "Original",
+    "orderType": {
+      "name": "Certificate",
+      "certificateType": {
+        "reportName": "E",
+        "paperType": {
+          "code": "YEDR"
+        }
+      }
+    },
+    "isOrigin": false
+  },
+  "graduationStatus": null,
+  "orgCode": null,
+  "issueDate": null,
+  "nonGradReasons": null,
+  "studentCourses": null,
+  "studentExams": null,
+  "optionalPrograms": null
+}

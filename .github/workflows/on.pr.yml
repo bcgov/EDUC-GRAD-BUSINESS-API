@@ -1,40 +1,49 @@
-# This workflow will be run whenever there is a PR to the Release branch
-# It will do the following:
-# Build
-# Unit Test
-# Sonar Scan
-# Security scan
-
-name: On PR to Release Branch
-
+name: Build
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main # or the name of your main branch
   pull_request:
-    branches: 
-    - 'grad-release'
-
+    branches:
+      - main
+      - grad-release
 jobs:
   build:
-    name: Unit Test and Analyze
+    name: Build, unit test and analyze
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./api
     steps:
-      - name: Git pull
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Set up JDK 11
-        run: echo "setting up jdk 11"
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
       - name: Cache SonarQube packages
-        run: echo "caching sonarQube packages"
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
       - name: Cache Maven packages
-        run: echo "caching maven packages"
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
       - name: Run unit tests
-        run: echo "running unit tests"
-      - name: Sonar scan
-        run: echo "running sonar scan"
-      - name: Snyk security scan
-        run: echo "running security scan"
-  
+        run: mvn clean package
+      - name: Build and analyze
+        env:
+          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_ORG: ${{ secrets.SONAR_ORG }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        #run: mvn sonar:sonar -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.organization=$SONAR_ORG
+        
