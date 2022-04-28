@@ -23,8 +23,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${TOKEN_ISSUER_URL}
-          jwk-set-uri: ${TOKEN_ISSUER_URL}/protocol/openid-connect/certs
+          issuer-uri: https://soam-dev.apps.silver.devops.gov.bc.ca/auth/realms/master
+          jwk-set-uri: https://soam-dev.apps.silver.devops.gov.bc.ca/auth/realms/master/protocol/openid-connect/certs
 
 #Logging properties
 logging:
