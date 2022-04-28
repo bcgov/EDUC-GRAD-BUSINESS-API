@@ -64,7 +64,7 @@ public class GradBusinessController {
     @Operation(summary = "Search For Students by PEN", description = "Search for Student Demographics by PEN", tags = { "Student Demographics" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
     public List<Student> getGradStudentByPenFromStudentAPI(@PathVariable String pen, @RequestHeader(name="Authorization") String accessToken) {
-        return gradBusinessService.getStudentByPenFromStudentAPI(pen,accessToken);
+        return gradBusinessService.getStudentByPenFromStudentAPI(pen,accessToken.replaceAll("Bearer ", ""));
     }
 
     @GetMapping(EducGraduationApiConstants.GRADUATE_TRANSCRIPT_REPORT_DATA_BY_PEN)
@@ -73,7 +73,7 @@ public class GradBusinessController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
     public ResponseEntity<byte[]> transcriptReportDataByPen(@PathVariable String pen, @RequestParam(required = false) String type,
                                                             @RequestHeader(name="Authorization") String accessToken) {
-        return gradBusinessService.prepareReportDataByPen(pen, type, accessToken);
+        return gradBusinessService.prepareReportDataByPen(pen, type, accessToken.replaceAll("Bearer ", ""));
     }
 
     @GetMapping(EducGraduationApiConstants.GRADUATE_CERTIFICATE_REPORT_DATA_BY_PEN)
@@ -81,7 +81,7 @@ public class GradBusinessController {
     @Operation(summary = "Get Certificate Report data from graduation by student pen", description = "Get Certificate Report data from graduation by student pen", tags = { "Graduation Data" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
     public ResponseEntity<byte[]> certificateReportDataByPen(@PathVariable String pen, @RequestHeader(name="Authorization") String accessToken) {
-        return gradBusinessService.prepareReportDataByPen(pen, "CERT", accessToken);
+        return gradBusinessService.prepareReportDataByPen(pen, "CERT", accessToken.replaceAll("Bearer ", ""));
     }
 
     @PostMapping(EducGraduationApiConstants.GRADUATE_TRANSCRIPT_REPORT_DATA)
@@ -91,7 +91,7 @@ public class GradBusinessController {
     public ResponseEntity<byte[]> transcriptReportDataFromGraduation(@RequestBody String graduationData,
                                                                      @RequestParam(required = false) String type,
                                                                      @RequestHeader(name="Authorization") String accessToken) {
-        return gradBusinessService.prepareReportDataByGraduation(graduationData, type, accessToken);
+        return gradBusinessService.prepareReportDataByGraduation(graduationData, type, accessToken.replaceAll("Bearer ", ""));
     }
 
     @PostMapping(EducGraduationApiConstants.GRADUATE_TRANSCRIPT_XML_REPORT_DATA)
@@ -100,7 +100,7 @@ public class GradBusinessController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
     public ResponseEntity<byte[]> transcriptXmlReportDataFromXmlRequest(@RequestBody String xmlRequest,
                                                                         @RequestHeader(name="Authorization") String accessToken) {
-        return gradBusinessService.prepareXmlTranscriptReportDataByXmlRequest(xmlRequest, accessToken);
+        return gradBusinessService.prepareXmlTranscriptReportDataByXmlRequest(xmlRequest, accessToken.replaceAll("Bearer ", ""));
     }
 
     @PostMapping(EducGraduationApiConstants.GRADUATE_CERTIFICATE_REPORT_DATA)
@@ -109,6 +109,6 @@ public class GradBusinessController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
     public ResponseEntity<byte[]> certificateReportDataFromGraduation(@RequestBody String graduationData,
                                                                       @RequestHeader(name="Authorization") String accessToken) {
-        return gradBusinessService.prepareReportDataByGraduation(graduationData, "CERT", accessToken);
+        return gradBusinessService.prepareReportDataByGraduation(graduationData, "CERT", accessToken.replaceAll("Bearer ", ""));
     }
 }
