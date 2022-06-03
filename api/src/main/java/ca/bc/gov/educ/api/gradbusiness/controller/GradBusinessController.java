@@ -11,10 +11,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
 import java.util.List;
 
 @RestController
@@ -28,9 +31,24 @@ public class GradBusinessController {
     private static Logger logger = LoggerFactory.getLogger(GradBusinessController.class);
 
     private final GradBusinessService gradBusinessService;
+    private HttpServletRequest httpServletRequest;
 
-    public GradBusinessController(GradBusinessService gradBusinessService) {
+    @Autowired
+    public GradBusinessController(GradBusinessService gradBusinessService, HttpServletRequest httpServletRequest) {
         this.gradBusinessService = gradBusinessService;
+        this.httpServletRequest = httpServletRequest;
+    }
+
+    /**
+     * For testing proxy connection (unsecured)
+     * TODO: Remove
+     * @return
+     */
+    @GetMapping("/logRequest")
+    public ResponseEntity<?> logRequest() {
+        // TODO: remove after testing
+        logger.info(formatRequestDetails(httpServletRequest));
+        return ResponseEntity.ok(formatRequestDetails(httpServletRequest));
     }
 
     /**
@@ -110,5 +128,24 @@ public class GradBusinessController {
     public ResponseEntity<byte[]> certificateReportDataFromGraduation(@RequestBody String graduationData,
                                                                       @RequestHeader(name="Authorization") String accessToken) {
         return gradBusinessService.prepareReportDataByGraduation(graduationData, "CERT", accessToken.replaceAll("Bearer ", ""));
+    }
+
+    /**
+     * Used for testing proxy
+     * @param httpServletRequest
+     * @return
+     */
+    private static String formatRequestDetails(HttpServletRequest httpServletRequest){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Request: \n");
+        stringBuilder.append("\tHeaders: \n");
+        Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
+        if(headerNames != null){
+            while (headerNames.hasMoreElements()) {
+                String headerName = headerNames.nextElement();
+                stringBuilder.append("\t\t" + headerName + ": " + httpServletRequest.getHeader(headerNames.nextElement()) + "\n");
+            }
+        }
+        return stringBuilder.toString();
     }
 }
