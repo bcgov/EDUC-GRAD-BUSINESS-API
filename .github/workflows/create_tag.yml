@@ -8,7 +8,7 @@ env:
   OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
   OPENSHIFT_NAMESPACE: ${{ secrets.GRAD_NAMESPACE }}
 
-  REPO_NAME: "educ-grad-trax-api"
+  REPO_NAME: "educ-grad-business-api"
 
 on:
   # https://docs.github.com/en/actions/reference/events-that-trigger-workflows
