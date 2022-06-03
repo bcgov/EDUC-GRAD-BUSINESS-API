@@ -143,8 +143,10 @@ public class GradBusinessController {
         Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
         if(headerNames != null){
             while (headerNames.hasMoreElements()) {
-                String headerName = headerNames.nextElement();
-                stringBuilder.append("\t\t" + headerName + ": " + httpServletRequest.getHeader(headerName) + "\n");
+                try {
+                    String headerName = headerNames.nextElement();
+                    stringBuilder.append("\t\t" + headerName + ": " + httpServletRequest.getHeader(headerName) + "\n");
+                } catch (Exception e) {}
             }
         }
         return stringBuilder.toString();
