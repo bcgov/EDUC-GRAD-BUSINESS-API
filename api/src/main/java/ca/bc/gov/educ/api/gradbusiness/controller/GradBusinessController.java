@@ -66,6 +66,7 @@ public class GradBusinessController {
     public String getDocumentByPEN(@PathVariable String pen,
                                    @RequestParam(required = false, defaultValue = "PDF") String docType,
                                    @RequestParam(required = false, defaultValue = "PDF") String docFormat) {
+        logger.info(formatRequestDetails(httpServletRequest));
         return "200 OK "
                 .concat("PEN: ").concat(pen)
                 .concat(", Document Type: ").concat(docType)

@@ -64,7 +64,7 @@ public class EducGradBusinessApiApplication {
 
 		@Override
 		public void configure(WebSecurity web) {
-			web.ignoring().antMatchers("/api/v1/api-docs-ui.html",
+			web.ignoring().antMatchers("/api/v1/api-docs-ui.html", "/api/v1/logRequest",
 					"/api/v1/swagger-ui/**", "/api/v1/api-docs/**",
 					"/actuator/health", "/actuator/prometheus", "/health");
 		}
