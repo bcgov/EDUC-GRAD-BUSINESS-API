@@ -143,7 +143,7 @@ public class GradBusinessController {
         if(headerNames != null){
             while (headerNames.hasMoreElements()) {
                 String headerName = headerNames.nextElement();
-                stringBuilder.append("\t\t" + headerName + ": " + httpServletRequest.getHeader(headerNames.nextElement()) + "\n");
+                stringBuilder.append("\t\t" + headerName + ": " + httpServletRequest.getHeader(headerName) + "\n");
             }
         }
         return stringBuilder.toString();
