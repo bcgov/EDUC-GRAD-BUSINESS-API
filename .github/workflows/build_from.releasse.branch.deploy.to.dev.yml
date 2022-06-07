@@ -80,8 +80,18 @@ jobs:
           username: ${{ env.IMAGE_REGISTRY_USER }}
           password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
 
-      # The path the image was pushed to is now stored in ${{ steps.push-image.outputs.registry-path }}
+      # scan the image for vulnerabilities
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ steps.push-image.outputs.registry-path }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
 
+      # The path the image was pushed to is now stored in ${{ steps.push-image.outputs.registry-path }}
       - name: Install oc
         uses: redhat-actions/openshift-tools-installer@v1
         with:
@@ -112,7 +122,8 @@ jobs:
           # Get status, returns 0 if rollout is successful
           oc rollout status dc/${{ env.SPRING_BOOT_IMAGE_NAME }}
 
-#      - name: ZAP Scan
-#        uses: zaproxy/action-api-scan@v0.1.0
-#        with:
-#         target: 'https://${{ env.REPO_NAME }}-${{ env.OPENSHIFT_NAMESPACE }}-dev.apps.silver.devops.gov.bc.ca/api/v1/api-docs'
+      # now hit it with a zap scan
+      - name: ZAP Scan
+        uses: zaproxy/action-api-scan@v0.1.0
+        with:
+         target: 'https://${{ env.REPO_NAME }}-${{ env.OPENSHIFT_NAMESPACE }}-dev.apps.silver.devops.gov.bc.ca/api/v1/api-docs'
