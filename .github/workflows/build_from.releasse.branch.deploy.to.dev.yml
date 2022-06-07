@@ -81,15 +81,15 @@ jobs:
           password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
 
       # scan the image for vulnerabilities
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: '${{ steps.push-image.outputs.registry-path }}'
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
+      #- name: Run Trivy vulnerability scanner
+        #uses: aquasecurity/trivy-action@master
+        #with:
+          #image-ref: '${{ steps.push-image.outputs.registry-path }}'
+          #format: 'table'
+          #exit-code: '1'
+          #ignore-unfixed: true
+          #vuln-type: 'os,library'
+          #severity: 'CRITICAL,HIGH'
 
       # The path the image was pushed to is now stored in ${{ steps.push-image.outputs.registry-path }}
       - name: Install oc
