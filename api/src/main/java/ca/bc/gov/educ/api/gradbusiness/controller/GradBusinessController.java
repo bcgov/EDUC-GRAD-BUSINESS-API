@@ -31,24 +31,10 @@ public class GradBusinessController {
     private static Logger logger = LoggerFactory.getLogger(GradBusinessController.class);
 
     private final GradBusinessService gradBusinessService;
-    private HttpServletRequest httpServletRequest;
 
     @Autowired
-    public GradBusinessController(GradBusinessService gradBusinessService, HttpServletRequest httpServletRequest) {
+    public GradBusinessController(GradBusinessService gradBusinessService) {
         this.gradBusinessService = gradBusinessService;
-        this.httpServletRequest = httpServletRequest;
-    }
-
-    /**
-     * For testing proxy connection (unsecured)
-     * TODO: Remove
-     * @return
-     */
-    @GetMapping("/logRequest")
-    public ResponseEntity<?> logRequest() {
-        // TODO: remove after testing
-        logger.info(formatRequestDetails(httpServletRequest));
-        return ResponseEntity.ok(formatRequestDetails(httpServletRequest));
     }
 
     /**
@@ -66,7 +52,6 @@ public class GradBusinessController {
     public String getDocumentByPEN(@PathVariable String pen,
                                    @RequestParam(required = false, defaultValue = "PDF") String docType,
                                    @RequestParam(required = false, defaultValue = "PDF") String docFormat) {
-        logger.info(formatRequestDetails(httpServletRequest));
         return "200 OK "
                 .concat("PEN: ").concat(pen)
                 .concat(", Document Type: ").concat(docType)
@@ -131,24 +116,4 @@ public class GradBusinessController {
         return gradBusinessService.prepareReportDataByGraduation(graduationData, "CERT", accessToken.replaceAll("Bearer ", ""));
     }
 
-    /**
-     * Used for testing proxy
-     * @param httpServletRequest
-     * @return
-     */
-    private static String formatRequestDetails(HttpServletRequest httpServletRequest){
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Request: \n");
-        stringBuilder.append("\tHeaders: \n");
-        Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
-        if(headerNames != null){
-            while (headerNames.hasMoreElements()) {
-                try {
-                    String headerName = headerNames.nextElement();
-                    stringBuilder.append("\t\t" + headerName + ": " + httpServletRequest.getHeader(headerName) + "\n");
-                } catch (Exception e) {}
-            }
-        }
-        return stringBuilder.toString();
-    }
 }
