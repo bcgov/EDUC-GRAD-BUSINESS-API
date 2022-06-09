@@ -11,10 +11,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
 import java.util.List;
 
 @RestController
@@ -29,6 +32,7 @@ public class GradBusinessController {
 
     private final GradBusinessService gradBusinessService;
 
+    @Autowired
     public GradBusinessController(GradBusinessService gradBusinessService) {
         this.gradBusinessService = gradBusinessService;
     }
@@ -42,7 +46,7 @@ public class GradBusinessController {
      * @return
      */
     @GetMapping("/document/{pen}")
-    @PreAuthorize("#oauth2.hasScope('GRAD_BUSINESS_R') and #oauth2.hasScope('READ_GRAD_STUDENT_DATA')")
+    @PreAuthorize("hasAuthority('SCOPE_GRAD_BUSINESS_R') and hasAuthority('SCOPE_READ_GRAD_STUDENT_DATA')")
     @Operation(summary = "Get student document by PEN", description = "Get a specific document for a student by PEN", tags = { "Student Demographics" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
     public String getDocumentByPEN(@PathVariable String pen,
@@ -60,7 +64,7 @@ public class GradBusinessController {
      * @return
      */
     @GetMapping("/pen/{pen}")
-    @PreAuthorize("#oauth2.hasAnyScope('GRAD_BUSINESS_R','READ_GRAD_STUDENT_DATA')")
+    @PreAuthorize("hasAuthority('SCOPE_GRAD_BUSINESS_R') and hasAuthority('SCOPE_READ_GRAD_STUDENT_DATA')")
     @Operation(summary = "Search For Students by PEN", description = "Search for Student Demographics by PEN", tags = { "Student Demographics" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
     public List<Student> getGradStudentByPenFromStudentAPI(@PathVariable String pen, @RequestHeader(name="Authorization") String accessToken) {
@@ -111,4 +115,5 @@ public class GradBusinessController {
                                                                       @RequestHeader(name="Authorization") String accessToken) {
         return gradBusinessService.prepareReportDataByGraduation(graduationData, "CERT", accessToken.replaceAll("Bearer ", ""));
     }
+
 }
