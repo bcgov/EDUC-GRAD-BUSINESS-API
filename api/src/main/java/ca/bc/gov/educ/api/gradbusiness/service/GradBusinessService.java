@@ -28,7 +28,7 @@ import java.util.Optional;
 public class GradBusinessService {
 
     private static final Logger logger = LoggerFactory.getLogger(GradBusinessService.class);
-
+    private static final String BEARER = "Bearer ";
     /**
      * The Web client.
      */
@@ -98,7 +98,7 @@ public class GradBusinessService {
         type = Optional.ofNullable(type).orElse("");
         try {
             HttpHeaders headers = new HttpHeaders();
-            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList("Bearer " + accessToken));
+            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
             headers.put(HttpHeaders.ACCEPT, Collections.singletonList("application/json"));
             headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList("application/json"));
             byte[] result = webClient.post().uri(educGraduationApiConstants.getGraduateReportDataByGraduation() + "?type=" + type).headers(h -> h.addAll(headers)).body(BodyInserters.fromValue(graduationData)).retrieve().bodyToMono(byte[].class).block();
@@ -118,7 +118,7 @@ public class GradBusinessService {
     public ResponseEntity<byte[]> prepareXmlTranscriptReportDataByXmlRequest(String xmlRequest, String accessToken) {
         try {
             HttpHeaders headers = new HttpHeaders();
-            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList("Bearer " + accessToken));
+            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
             headers.put(HttpHeaders.ACCEPT, Collections.singletonList("application/json"));
             headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList("application/json"));
             byte[] result = webClient.post().uri(educGraduationApiConstants.getXmlTranscriptReportData()).headers(h -> h.addAll(headers)).body(BodyInserters.fromValue(xmlRequest)).retrieve().bodyToMono(byte[].class).block();
@@ -138,7 +138,7 @@ public class GradBusinessService {
     public ResponseEntity<byte[]> getStudentDemographicsByPen(String pen, String accessToken) {
         try {
             HttpHeaders headers = new HttpHeaders();
-            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList("Bearer " + accessToken));
+            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
             headers.put(HttpHeaders.ACCEPT, Collections.singletonList("application/json"));
             headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList("application/json"));
             byte[] result = webClient.get().uri(String.format(educGradStudentApiConstants.getPenDemographicStudentApiUrl(), pen)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(byte[].class).block();
