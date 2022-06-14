@@ -11,18 +11,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
 import java.util.List;
 
 @RestController
 @CrossOrigin
-@EnableResourceServer
 @RequestMapping("/api/v1")
 @OpenAPIDefinition(info = @Info(title = "API for GRAD external clients.",
         description = "This API is for STS/ISD calling GRAD APIs.", version = "1"),
@@ -33,6 +32,7 @@ public class GradBusinessController {
 
     private final GradBusinessService gradBusinessService;
 
+    @Autowired
     public GradBusinessController(GradBusinessService gradBusinessService) {
         this.gradBusinessService = gradBusinessService;
     }
@@ -46,7 +46,7 @@ public class GradBusinessController {
      * @return
      */
     @GetMapping("/document/{pen}")
-    @PreAuthorize("#oauth2.hasScope('GRAD_BUSINESS_R') and #oauth2.hasScope('READ_GRAD_STUDENT_DATA')")
+    @PreAuthorize("hasAuthority('SCOPE_GRAD_BUSINESS_R') and hasAuthority('SCOPE_READ_GRAD_STUDENT_DATA')")
     @Operation(summary = "Get student document by PEN", description = "Get a specific document for a student by PEN", tags = { "Student Demographics" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
     public String getDocumentByPEN(@PathVariable String pen,
@@ -64,13 +64,11 @@ public class GradBusinessController {
      * @return
      */
     @GetMapping("/pen/{pen}")
-    @PreAuthorize("#oauth2.hasAnyScope('GRAD_BUSINESS_R','READ_GRAD_STUDENT_DATA')")
+    @PreAuthorize("hasAuthority('SCOPE_GRAD_BUSINESS_R') and hasAuthority('SCOPE_READ_GRAD_STUDENT_DATA')")
     @Operation(summary = "Search For Students by PEN", description = "Search for Student Demographics by PEN", tags = { "Student Demographics" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
-    public List<Student> getGradStudentByPenFromStudentAPI(@PathVariable String pen) {
-        OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        String accessToken = auth.getTokenValue();
-        return gradBusinessService.getStudentByPenFromStudentAPI(pen,accessToken);
+    public List<Student> getGradStudentByPenFromStudentAPI(@PathVariable String pen, @RequestHeader(name="Authorization") String accessToken) {
+        return gradBusinessService.getStudentByPenFromStudentAPI(pen,accessToken.replaceAll("Bearer ", ""));
     }
 
     /**
@@ -89,52 +87,48 @@ public class GradBusinessController {
     }
 
     @GetMapping(EducGraduationApiConstants.GRADUATE_TRANSCRIPT_REPORT_DATA_BY_PEN)
-    @PreAuthorize("#oauth2.hasAnyScope('GET_GRADUATION_DATA')")
+    @PreAuthorize("hasAuthority('SCOPE_GET_GRADUATION_DATA')")
     @Operation(summary = "Get Transcript Report data from graduation by student pen", description = "Get Transcript Report data from graduation by student pen", tags = { "Graduation Data" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
-    public ResponseEntity<byte[]> transcriptReportDataByPen(@PathVariable String pen, @RequestParam(required = false) String type) {
-        OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        String accessToken = auth.getTokenValue();
-        return gradBusinessService.prepareReportDataByPen(pen, type, accessToken);
+    public ResponseEntity<byte[]> transcriptReportDataByPen(@PathVariable String pen, @RequestParam(required = false) String type,
+                                                            @RequestHeader(name="Authorization") String accessToken) {
+        return gradBusinessService.prepareReportDataByPen(pen, type, accessToken.replaceAll("Bearer ", ""));
     }
 
     @GetMapping(EducGraduationApiConstants.GRADUATE_CERTIFICATE_REPORT_DATA_BY_PEN)
-    @PreAuthorize("#oauth2.hasAnyScope('GET_GRADUATION_DATA')")
+    @PreAuthorize("hasAuthority('SCOPE_GET_GRADUATION_DATA')")
     @Operation(summary = "Get Certificate Report data from graduation by student pen", description = "Get Certificate Report data from graduation by student pen", tags = { "Graduation Data" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
-    public ResponseEntity<byte[]> certificateReportDataByPen(@PathVariable String pen) {
-        OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        String accessToken = auth.getTokenValue();
-        return gradBusinessService.prepareReportDataByPen(pen, "CERT", accessToken);
+    public ResponseEntity<byte[]> certificateReportDataByPen(@PathVariable String pen, @RequestHeader(name="Authorization") String accessToken) {
+        return gradBusinessService.prepareReportDataByPen(pen, "CERT", accessToken.replaceAll("Bearer ", ""));
     }
 
     @PostMapping(EducGraduationApiConstants.GRADUATE_TRANSCRIPT_REPORT_DATA)
-    @PreAuthorize("#oauth2.hasAnyScope('GET_GRADUATION_DATA')")
+    @PreAuthorize("hasAuthority('SCOPE_GET_GRADUATION_DATA')")
     @Operation(summary = "Adapt graduation data for transcript reporting", description = "Adapt graduation data for transcript reporting", tags = { "Graduation Data" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
-    public ResponseEntity<byte[]> transcriptReportDataFromGraduation(@RequestBody String graduationData, @RequestParam(required = false) String type) {
-        OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        String accessToken = auth.getTokenValue();
-        return gradBusinessService.prepareReportDataByGraduation(graduationData, type, accessToken);
+    public ResponseEntity<byte[]> transcriptReportDataFromGraduation(@RequestBody String graduationData,
+                                                                     @RequestParam(required = false) String type,
+                                                                     @RequestHeader(name="Authorization") String accessToken) {
+        return gradBusinessService.prepareReportDataByGraduation(graduationData, type, accessToken.replaceAll("Bearer ", ""));
     }
 
     @PostMapping(EducGraduationApiConstants.GRADUATE_TRANSCRIPT_XML_REPORT_DATA)
-    @PreAuthorize("#oauth2.hasAnyScope('GET_GRADUATION_DATA')")
+    @PreAuthorize("hasAuthority('SCOPE_GET_GRADUATION_DATA')")
     @Operation(summary = "Get Xml Data for transcript reporting", description = "Get Xml Data for transcript reporting", tags = { "Graduation Data" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
-    public ResponseEntity<byte[]> transcriptXmlReportDataFromXmlRequest(@RequestBody String xmlRequest) {
-        OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        String accessToken = auth.getTokenValue();
-        return gradBusinessService.prepareXmlTranscriptReportDataByXmlRequest(xmlRequest, accessToken);
+    public ResponseEntity<byte[]> transcriptXmlReportDataFromXmlRequest(@RequestBody String xmlRequest,
+                                                                        @RequestHeader(name="Authorization") String accessToken) {
+        return gradBusinessService.prepareXmlTranscriptReportDataByXmlRequest(xmlRequest, accessToken.replaceAll("Bearer ", ""));
     }
 
     @PostMapping(EducGraduationApiConstants.GRADUATE_CERTIFICATE_REPORT_DATA)
-    @PreAuthorize("#oauth2.hasAnyScope('GET_GRADUATION_DATA')")
+    @PreAuthorize("hasAuthority('SCOPE_GET_GRADUATION_DATA')")
     @Operation(summary = "Adapt graduation data for certificate reporting", description = "Adapt graduation data for certificate reporting", tags = { "Graduation Data" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
-    public ResponseEntity<byte[]> certificateReportDataFromGraduation(@RequestBody String graduationData) {
-        OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        String accessToken = auth.getTokenValue();
-        return gradBusinessService.prepareReportDataByGraduation(graduationData, "CERT", accessToken);
+    public ResponseEntity<byte[]> certificateReportDataFromGraduation(@RequestBody String graduationData,
+                                                                      @RequestHeader(name="Authorization") String accessToken) {
+        return gradBusinessService.prepareReportDataByGraduation(graduationData, "CERT", accessToken.replaceAll("Bearer ", ""));
     }
+
 }

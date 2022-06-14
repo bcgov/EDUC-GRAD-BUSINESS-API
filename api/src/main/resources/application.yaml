@@ -14,6 +14,13 @@ spring:
   jackson:
     deserialization:
       fail-on-unknown-properties: false
+  #Keycloak/OAuth properties
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${TOKEN_ISSUER_URL}
+          jwk-set-uri: ${TOKEN_ISSUER_URL}/protocol/openid-connect/certs
 
 #Logging properties
 logging:
@@ -98,8 +105,6 @@ endpoint:
       url: ${PEN_API}api/v1/student?pen=%s
     student:
       url: ${PEN_API}api/v1/student
-    demographic:
-       url: ${GRAD_STUDENT_API}api/v1/student/demog/pen/%s
   grad-graduation-api:
     report-data-by-pen:
       url: ${GRAD_GRADUATION_API}api/v1/graduate/report/data/%s
@@ -107,7 +112,7 @@ endpoint:
       url: ${GRAD_GRADUATION_API}api/v1/graduate/report/data
   grad-report-api:
     report-data-by-xml:
-      url: ${GRAD_REPORT_API}api/v1/reports/xmltranscriptreport
+      url: ${REPORT_API}api/v1/reports/xmltranscriptreport
   grad-student-api:
     demographic:
       url: ${GRAD_STUDENT_API}api/v1/student/demog/pen/%s

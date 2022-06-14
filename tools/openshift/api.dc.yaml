@@ -59,8 +59,6 @@ objects:
                     name: educ-grad-api-config-map
                 - configMapRef:
                     name: educ-grad-business-api-config-map
-                - secretRef:
-                    name: grad-keycloak-pk-secret
               resources: {}
       test: false
   - apiVersion: v1
