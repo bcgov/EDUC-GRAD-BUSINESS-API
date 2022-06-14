@@ -73,6 +73,21 @@ public class GradBusinessController {
         return gradBusinessService.getStudentByPenFromStudentAPI(pen,accessToken);
     }
 
+    /**
+     *
+     * @param pen
+     * @return
+     */
+    @GetMapping("/student/demog/{pen}")
+    @PreAuthorize("#oauth2.hasAnyScope('GRAD_BUSINESS_R','READ_GRAD_STUDENT_DATA')")
+    @Operation(summary = "Search For Students by PEN", description = "Search for Student Demographics by PEN", tags = { "Student Demographics" })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
+    public ResponseEntity<byte[]> getGradStudentDemographicsByPen(@PathVariable String pen) {
+        OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        String accessToken = auth.getTokenValue();
+        return gradBusinessService.getStudentDemographicsByPen(pen,accessToken);
+    }
+
     @GetMapping(EducGraduationApiConstants.GRADUATE_TRANSCRIPT_REPORT_DATA_BY_PEN)
     @PreAuthorize("#oauth2.hasAnyScope('GET_GRADUATION_DATA')")
     @Operation(summary = "Get Transcript Report data from graduation by student pen", description = "Get Transcript Report data from graduation by student pen", tags = { "Graduation Data" })

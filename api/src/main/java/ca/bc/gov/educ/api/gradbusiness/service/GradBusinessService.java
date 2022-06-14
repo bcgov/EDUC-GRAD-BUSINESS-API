@@ -129,6 +129,26 @@ public class GradBusinessService {
     }
 
     /**
+     * Get student demographic data
+     *
+     * @param pen the student pen
+     * @param accessToken    the access token
+     * @return the response entity
+     */
+    public ResponseEntity<byte[]> getStudentDemographicsByPen(String pen, String accessToken) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList("Bearer " + accessToken));
+            headers.put(HttpHeaders.ACCEPT, Collections.singletonList("application/json"));
+            headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList("application/json"));
+            byte[] result = webClient.get().uri(String.format(educGradStudentApiConstants.getPenDemographicStudentApiUrl(), pen)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(byte[].class).block();
+            return handleBinaryResponse(result, "student_demog_data.json", MediaType.APPLICATION_JSON);
+        } catch (Exception e) {
+            return getInternalServerErrorResponse(e);
+        }
+    }
+
+    /**
      * Gets internal server error response.
      *
      * @param t the t
@@ -169,4 +189,5 @@ public class GradBusinessService {
         }
         return response;
     }
+
 }
