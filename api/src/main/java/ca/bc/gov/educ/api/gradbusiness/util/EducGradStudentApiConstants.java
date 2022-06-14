@@ -96,5 +96,8 @@ public class EducGradStudentApiConstants {
 
     @Value("${endpoint.pen-student-api.student.url}")
     private String penStudentApiUrl;
+
+    @Value("${endpoint.grad-student-api.demographic.url}")
+    private String penDemographicStudentApiUrl;
     
 }
