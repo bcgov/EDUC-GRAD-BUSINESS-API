@@ -16,8 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
 import java.util.List;
 
 @RestController
@@ -77,13 +75,11 @@ public class GradBusinessController {
      * @return
      */
     @GetMapping("/student/demog/{pen}")
-    @PreAuthorize("#oauth2.hasAnyScope('GRAD_BUSINESS_R','READ_GRAD_STUDENT_DATA')")
-    @Operation(summary = "Search For Students by PEN", description = "Search for Student Demographics by PEN", tags = { "Student Demographics" })
+    @PreAuthorize("hasAuthority('SCOPE_GRAD_BUSINESS_R') and hasAuthority('SCOPE_READ_GRAD_STUDENT_DATA')")
+    @Operation(summary = "Get Student Demographic by PEN", description = "Get Student Demographic by PEN", tags = { "Student Demographics" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
-    public ResponseEntity<byte[]> getGradStudentDemographicsByPen(@PathVariable String pen) {
-        OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        String accessToken = auth.getTokenValue();
-        return gradBusinessService.getStudentDemographicsByPen(pen,accessToken);
+    public ResponseEntity<byte[]> getGradStudentDemographicsByPen(@PathVariable String pen, @RequestHeader(name="Authorization") String accessToken) {
+        return gradBusinessService.getStudentDemographicsByPen(pen, accessToken.replace("Bearer ", ""));
     }
 
     @GetMapping(EducGraduationApiConstants.GRADUATE_TRANSCRIPT_REPORT_DATA_BY_PEN)
