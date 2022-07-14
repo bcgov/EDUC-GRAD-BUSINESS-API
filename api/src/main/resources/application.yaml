@@ -113,4 +113,7 @@ endpoint:
   grad-report-api:
     report-data-by-xml:
       url: ${REPORT_API}api/v1/reports/xmltranscriptreport
+  grad-student-api:
+    demographic:
+      url: ${GRAD_STUDENT_API}api/v1/student/demog/pen/%s
 
