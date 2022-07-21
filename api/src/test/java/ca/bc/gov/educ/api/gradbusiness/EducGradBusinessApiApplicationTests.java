@@ -225,4 +225,42 @@ class EducGradBusinessApiApplicationTests {
 		assertNotNull(byteData);
 		assertTrue(byteData.getBody().length > 0);
 	}
+
+	@Test
+	void testSchoolReportPDFByMincode_witherror() throws Exception {
+
+		String mincode = "128385861";
+		String type = "NONGRADPRJ";
+		InputStream is = getClass().getClassLoader().getResourceAsStream("json/xmlTranscriptReportRequest.json");
+
+
+		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
+		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getSchoolReportByMincode(),mincode,type))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
+		when(this.responseMock.bodyToMono(InputStreamResource.class)).thenReturn(null);
+
+		ResponseEntity<byte[]> byteData = gradBusinessService.getSchoolReportPDFByMincode(mincode, type, "accessToken");
+		assertNotNull(byteData);
+		assertTrue(byteData.getBody().length > 0);
+	}
+
+	@Test
+	void testSchoolReportPDFByMincode_witherror2() throws Exception {
+
+		String mincode = "128385861";
+		String type = "NONGRADPRJ";
+		InputStream is = getClass().getClassLoader().getResourceAsStream("json/xmlTranscriptReportRequest.json");
+
+
+		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
+		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getSchoolReportByMincode(),mincode,type))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
+		when(this.responseMock.bodyToMono(InputStreamResource.class)).thenThrow();
+
+		ResponseEntity<byte[]> byteData = gradBusinessService.getSchoolReportPDFByMincode(mincode, type, "accessToken");
+		assertNotNull(byteData);
+		assertTrue(byteData.getBody().length > 0);
+	}
 }
