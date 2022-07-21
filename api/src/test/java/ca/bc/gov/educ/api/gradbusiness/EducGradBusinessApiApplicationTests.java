@@ -108,6 +108,7 @@ class EducGradBusinessApiApplicationTests {
 		json = new String(byteData.getBody());
 		assertEquals(json,reportData);
 
+
 	}
 
 	@org.junit.jupiter.api.Test
