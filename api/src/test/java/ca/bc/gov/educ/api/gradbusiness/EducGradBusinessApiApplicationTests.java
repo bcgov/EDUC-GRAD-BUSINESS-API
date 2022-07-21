@@ -3,15 +3,17 @@ package ca.bc.gov.educ.api.gradbusiness;
 import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradStudentApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -60,18 +62,18 @@ class EducGradBusinessApiApplicationTests {
 	@Autowired
 	private GradBusinessService gradBusinessService;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		openMocks(this);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 
 	}
 
 	@org.junit.jupiter.api.Test
-	public void testReportDataByPen() throws Exception {
+	void testReportDataByPen() throws Exception {
 
 		String studentGradData = readFile("json/gradstatus.json");
 		assertNotNull(studentGradData);
@@ -112,7 +114,7 @@ class EducGradBusinessApiApplicationTests {
 	}
 
 	@org.junit.jupiter.api.Test
-	public void testReportDataByGraduationData() throws Exception {
+	void testReportDataByGraduationData() throws Exception {
 
 		String studentGradData = readFile("json/gradstatus.json");
 		assertNotNull(studentGradData);
@@ -168,7 +170,7 @@ class EducGradBusinessApiApplicationTests {
 	}
 
 	@org.junit.jupiter.api.Test
-	public void testXmlTranscriptReportData() throws Exception {
+	void testXmlTranscriptReportData() throws Exception {
 
 		String xmlReportRequest = readFile("json/xmlTranscriptReportRequest.json");
 		assertNotNull(xmlReportRequest);
@@ -203,5 +205,24 @@ class EducGradBusinessApiApplicationTests {
 			sb.append(line);
 		}
 		return sb.toString();
+	}
+
+	@Test
+	void testSchoolReportPDFByMincode() throws Exception {
+
+		String mincode = "128385861";
+		String type = "NONGRADPRJ";
+		InputStream is = getClass().getClassLoader().getResourceAsStream("json/xmlTranscriptReportRequest.json");
+		InputStreamResource pdf = new InputStreamResource(is);
+
+		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
+		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getSchoolReportByMincode(),mincode,type))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
+		when(this.responseMock.bodyToMono(InputStreamResource.class)).thenReturn(Mono.just(pdf));
+
+		ResponseEntity<byte[]> byteData = gradBusinessService.getSchoolReportPDFByMincode(mincode, type, "accessToken");
+		assertNotNull(byteData);
+		assertTrue(byteData.getBody().length > 0);
 	}
 }

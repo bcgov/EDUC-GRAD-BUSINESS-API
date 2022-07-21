@@ -9,8 +9,6 @@ import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,7 +24,6 @@ import java.util.List;
         security = {@SecurityRequirement(name = "OAUTH2", scopes = {"GRAD_BUSINESS_R"})})
 public class GradBusinessController {
 
-    private static Logger logger = LoggerFactory.getLogger(GradBusinessController.class);
     private static final String BEARER = "Bearer ";
     
     private final GradBusinessService gradBusinessService;
@@ -127,5 +124,14 @@ public class GradBusinessController {
                                                                       @RequestHeader(name="Authorization") String accessToken) {
         return gradBusinessService.prepareReportDataByGraduation(graduationData, "CERT", accessToken.replace(BEARER, ""));
     }
+
+    @GetMapping(EducGraduationApiConstants.SCHOOL_REPORT_PDF)
+    @PreAuthorize("hasAuthority('SCOPE_GET_GRADUATION_DATA')")
+    @Operation(summary = "Get School Report pdf from graduation by mincode and report type", description = "Get School Report pdf from graduation by mincode and report type", tags = { "Graduation Data" })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
+    public ResponseEntity<byte[]> schoolReportByMincode(@PathVariable String mincode,@RequestParam(name = "type") String type, @RequestHeader(name="Authorization") String accessToken) {
+        return gradBusinessService.getSchoolReportPDFByMincode(mincode, type, accessToken.replace(BEARER, ""));
+    }
+
 
 }
