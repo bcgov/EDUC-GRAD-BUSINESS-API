@@ -263,4 +263,23 @@ class EducGradBusinessApiApplicationTests {
 		assertNotNull(byteData);
 		assertTrue(byteData.getBody().length > 0);
 	}
+
+	@Test
+	void testGetStudentDemographicsByPen() throws Exception {
+
+		String pen = "128385861";
+		InputStream is = getClass().getClassLoader().getResourceAsStream("json/xmlTranscriptReportRequest.json");
+		byte[] barr = is.readAllBytes();
+
+		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
+		when(this.requestHeadersUriMock.uri(String.format(educGradStudentApiConstants.getPenDemographicStudentApiUrl(),pen))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
+		when(this.responseMock.bodyToMono(byte[].class)).thenReturn(Mono.just(barr));
+
+		ResponseEntity<byte[]> byteData = gradBusinessService.getStudentDemographicsByPen(pen,"accessToken");
+		assertNotNull(byteData);
+		assertTrue(byteData.getBody().length > 0);
+	}
+
 }
