@@ -23,6 +23,8 @@ public class EducGraduationApiConstants {
     public static final String GRADUATE_CERTIFICATE_REPORT_DATA_BY_PEN = "/certificate/report/data/{pen}";
     public static final String GRADUATE_CERTIFICATE_REPORT_DATA = "/certificate/report/data";
 
+    public static final String SCHOOL_REPORT_PDF = "/schoolreport/{mincode}";
+
     //Default Date format constants
     public static final String DEFAULT_CREATED_BY = "API_GRADUATION";
     public static final String DEFAULT_UPDATED_BY = "API_GRADUATION";
@@ -39,5 +41,8 @@ public class EducGraduationApiConstants {
 
     @Value("${endpoint.grad-report-api.report-data-by-xml.url}")
     private String xmlTranscriptReportData;
+
+    @Value("${endpoint.grad-graduation-report-api.school-report-by-mincode.url}")
+    private String schoolReportByMincode;
     
 }
