@@ -1,16 +1,21 @@
 package ca.bc.gov.educ.api.gradbusiness;
 
 import ca.bc.gov.educ.api.gradbusiness.controller.GradBusinessController;
+import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
 import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -18,7 +23,10 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.UUID;
 
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -33,18 +41,9 @@ class EducGradBusinessApiControllerTests {
 	@InjectMocks
 	private GradBusinessController gradBusinessController;
 
-	@Before
-	public void setUp() {
-		openMocks(this);
-	}
 
-	@After
-	public void tearDown() {
-
-	}
-
-	/*@org.junit.jupiter.api.Test
-	public void testReportDataByPen() throws Exception {
+	@Test
+	void testReportDataByPen() throws Exception {
 
 		String pen = "128385861";
 
@@ -59,17 +58,9 @@ class EducGradBusinessApiControllerTests {
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(reportData.getBytes());
 
-		Authentication authentication = Mockito.mock(Authentication.class);
-		OAuth2AuthenticationDetails details = Mockito.mock(OAuth2AuthenticationDetails.class);
-		// Mockito.whens() for your authorization object
-		SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-		Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-		Mockito.when(authentication.getDetails()).thenReturn(details);
-		SecurityContextHolder.setContext(securityContext);
-
-		Mockito.when(gradBusinessService.prepareReportDataByPen(pen, null, details.getTokenValue())).thenReturn(response);
-		gradBusinessController.transcriptReportDataByPen(pen, null, "");
-		Mockito.verify(gradBusinessService).prepareReportDataByPen(pen, null, details.getTokenValue());
+		Mockito.when(gradBusinessService.prepareReportDataByPen(pen, null, "abc")).thenReturn(response);
+		gradBusinessController.transcriptReportDataByPen(pen, null, "abc");
+		Mockito.verify(gradBusinessService).prepareReportDataByPen(pen, null, "abc");
 
 		reportData = readFile("json/studentCertificateReportData.json");
 		assertNotNull(reportData);
@@ -82,14 +73,14 @@ class EducGradBusinessApiControllerTests {
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(reportData.getBytes());
 
-		Mockito.when(gradBusinessService.prepareReportDataByPen(pen, "CERT", details.getTokenValue())).thenReturn(response);
-		gradBusinessController.certificateReportDataByPen(pen, "");
-		Mockito.verify(gradBusinessService).prepareReportDataByPen(pen, "CERT", details.getTokenValue());
+		Mockito.when(gradBusinessService.prepareReportDataByPen(pen, "CERT", "abc")).thenReturn(response);
+		gradBusinessController.certificateReportDataByPen(pen, "abc");
+		Mockito.verify(gradBusinessService).prepareReportDataByPen(pen, "CERT", "abc");
 
-	}*/
+	}
 
-	/*@org.junit.jupiter.api.Test
-	public void testReportDataByGraduationData() throws Exception {
+	@Test
+	void testReportDataByGraduationData() throws Exception {
 
 		String studentGradData = readFile("json/gradstatus.json");
 		assertNotNull(studentGradData);
@@ -105,17 +96,10 @@ class EducGradBusinessApiControllerTests {
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(reportData.getBytes());
 
-		Authentication authentication = Mockito.mock(Authentication.class);
-		OAuth2AuthenticationDetails details = Mockito.mock(OAuth2AuthenticationDetails.class);
-		// Mockito.whens() for your authorization object
-		SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-		Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-		Mockito.when(authentication.getDetails()).thenReturn(details);
-		SecurityContextHolder.setContext(securityContext);
 
-		Mockito.when(gradBusinessService.prepareReportDataByGraduation(studentGradData, null, details.getTokenValue())).thenReturn(response);
-		gradBusinessController.transcriptReportDataFromGraduation(studentGradData, null, "");
-		Mockito.verify(gradBusinessService).prepareReportDataByGraduation(studentGradData, null, details.getTokenValue());
+		Mockito.when(gradBusinessService.prepareReportDataByGraduation(studentGradData, null, "abc")).thenReturn(response);
+		gradBusinessController.transcriptReportDataFromGraduation(studentGradData, null, "abc");
+		Mockito.verify(gradBusinessService).prepareReportDataByGraduation(studentGradData, null, "abc");
 
 		reportData = readFile("json/studentCertificateReportData.json");
 		assertNotNull(reportData);
@@ -128,13 +112,13 @@ class EducGradBusinessApiControllerTests {
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(reportData.getBytes());
 
-		Mockito.when(gradBusinessService.prepareReportDataByGraduation(studentGradData, "CERT", details.getTokenValue())).thenReturn(response);
-		gradBusinessController.certificateReportDataFromGraduation(studentGradData, "");
-		Mockito.verify(gradBusinessService).prepareReportDataByGraduation(studentGradData, "CERT", details.getTokenValue());
-	}*/
+		Mockito.when(gradBusinessService.prepareReportDataByGraduation(studentGradData, "CERT", "abc")).thenReturn(response);
+		gradBusinessController.certificateReportDataFromGraduation(studentGradData, "abc");
+		Mockito.verify(gradBusinessService).prepareReportDataByGraduation(studentGradData, "CERT", "abc");
+	}
 
-	/*@org.junit.jupiter.api.Test
-	public void testXmlTranscriptData() throws Exception {
+	@Test
+	void testXmlTranscriptData() throws Exception {
 
 		String xmlReportRequest = readFile("json/xmlTranscriptReportRequest.json");
 		assertNotNull(xmlReportRequest);
@@ -150,19 +134,85 @@ class EducGradBusinessApiControllerTests {
 				.contentType(MediaType.APPLICATION_XML)
 				.body(xmlTranscriptReportData.getBytes());
 
-		Authentication authentication = Mockito.mock(Authentication.class);
-		OAuth2AuthenticationDetails details = Mockito.mock(OAuth2AuthenticationDetails.class);
-		// Mockito.whens() for your authorization object
-		SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-		Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-		Mockito.when(authentication.getDetails()).thenReturn(details);
-		SecurityContextHolder.setContext(securityContext);
+		Mockito.when(gradBusinessService.prepareXmlTranscriptReportDataByXmlRequest(xmlReportRequest, "abc")).thenReturn(response);
+		gradBusinessController.transcriptXmlReportDataFromXmlRequest(xmlReportRequest, "abc");
+		Mockito.verify(gradBusinessService).prepareXmlTranscriptReportDataByXmlRequest(xmlReportRequest, "abc");
 
-		Mockito.when(gradBusinessService.prepareXmlTranscriptReportDataByXmlRequest(xmlReportRequest, details.getTokenValue())).thenReturn(response);
-		gradBusinessController.transcriptXmlReportDataFromXmlRequest(xmlReportRequest, "");
-		Mockito.verify(gradBusinessService).prepareXmlTranscriptReportDataByXmlRequest(xmlReportRequest, details.getTokenValue());
+	}
 
-	}*/
+	@Test
+	void testGetGradStudentByPenFromStudentAPI() throws Exception {
+
+		Student obj = new Student();
+		obj.setPen("12312321");
+		obj.setStudentID(UUID.randomUUID().toString());
+
+		Mockito.when(gradBusinessService.getStudentByPenFromStudentAPI("12312321", "abc")).thenReturn(List.of(obj));
+		gradBusinessController.getGradStudentByPenFromStudentAPI("12312321", "abc");
+		Mockito.verify(gradBusinessService).getStudentByPenFromStudentAPI("12312321", "abc");
+
+	}
+
+	@Test
+	void testGetGradStudentDemographicsByPen() throws Exception {
+		byte[] greBPack = "Any String you want".getBytes();
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Disposition", "inline; filename=xmlTranscriptData.json");
+		ResponseEntity response = ResponseEntity
+				.ok()
+				.headers(headers)
+				.contentType(MediaType.APPLICATION_XML)
+				.body(greBPack);
+
+		Mockito.when(gradBusinessService.getStudentDemographicsByPen("12312321", "abc")).thenReturn(response);
+		gradBusinessController.getGradStudentDemographicsByPen("12312321", "abc");
+		Mockito.verify(gradBusinessService).getStudentDemographicsByPen("12312321", "abc");
+
+	}
+
+	@Test
+	void testSchoolReportByMincode() throws Exception {
+		byte[] greBPack = "Any String you want".getBytes();
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Disposition", "inline; filename=xmlTranscriptData.json");
+		ResponseEntity response = ResponseEntity
+				.ok()
+				.headers(headers)
+				.contentType(MediaType.APPLICATION_XML)
+				.body(greBPack);
+
+		Mockito.when(gradBusinessService.getSchoolReportPDFByMincode("12312321", "GRAD","abc")).thenReturn(response);
+		gradBusinessController.schoolReportByMincode("12312321","GRAD", "abc");
+		Mockito.verify(gradBusinessService).getSchoolReportPDFByMincode("12312321","GRAD", "abc");
+
+	}
+
+	@Test
+	void testStudentCredentialByType() throws Exception {
+		byte[] greBPack = "Any String you want".getBytes();
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Disposition", "inline; filename=xmlTranscriptData.json");
+		ResponseEntity response = ResponseEntity
+				.ok()
+				.headers(headers)
+				.contentType(MediaType.APPLICATION_XML)
+				.body(greBPack);
+
+		Mockito.when(gradBusinessService.getStudentCredentialPDFByType("12312321","TRAN", "abc")).thenReturn(response);
+		gradBusinessController.studentCredentialByType("12312321", "TRAN","abc");
+		Mockito.verify(gradBusinessService).getStudentCredentialPDFByType("12312321","TRAN", "abc");
+
+	}
+
+
+	@Test
+	void testGetDocumentByPEN() {
+		String res = gradBusinessController.getDocumentByPEN("12312311","XML","xml");
+		assertNotNull(res);
+	}
 
 	private String readFile(String jsonPath) throws Exception {
 		ClassLoader classLoader = getClass().getClassLoader();
