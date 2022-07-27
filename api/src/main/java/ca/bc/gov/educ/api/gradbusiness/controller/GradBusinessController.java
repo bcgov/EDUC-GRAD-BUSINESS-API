@@ -133,5 +133,13 @@ public class GradBusinessController {
         return gradBusinessService.getSchoolReportPDFByMincode(mincode, type, accessToken.replace(BEARER, ""));
     }
 
+    @GetMapping(EducGraduationApiConstants.STUDENT_CREDENTIAL_PDF)
+    @PreAuthorize("hasAuthority('SCOPE_GET_GRADUATION_DATA')")
+    @Operation(summary = "Get School Report pdf from graduation by mincode and report type", description = "Get School Report pdf from graduation by mincode and report type", tags = { "Graduation Data" })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
+    public ResponseEntity<byte[]> studentCredentialByType(@PathVariable String pen, @PathVariable String type, @RequestHeader(name="Authorization") String accessToken) {
+        return gradBusinessService.getStudentCredentialPDFByType(pen, type, accessToken.replace(BEARER, ""));
+    }
+
 
 }
