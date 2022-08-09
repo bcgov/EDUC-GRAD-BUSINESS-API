@@ -1,5 +1,6 @@
 package ca.bc.gov.educ.api.gradbusiness;
 
+import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
 import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradStudentApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
@@ -13,6 +14,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -25,6 +27,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 import static org.junit.Assert.*;
@@ -278,6 +282,96 @@ class EducGradBusinessApiApplicationTests {
 		when(this.responseMock.bodyToMono(byte[].class)).thenReturn(Mono.just(barr));
 
 		ResponseEntity<byte[]> byteData = gradBusinessService.getStudentDemographicsByPen(pen,"accessToken");
+		assertNotNull(byteData);
+		assertTrue(byteData.getBody().length > 0);
+	}
+
+	@Test
+	void testStudentCredentialPDFByType() throws Exception {
+
+		String pen = "128385861";
+		String type = "TRAN";
+		InputStream is = getClass().getClassLoader().getResourceAsStream("json/xmlTranscriptReportRequest.json");
+		InputStreamResource pdf = new InputStreamResource(is);
+
+		Student sObj = new Student();
+		sObj.setStudentID(UUID.randomUUID().toString());
+		sObj.setMincode("123123112");
+
+		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
+		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getStudentCredentialByType(),sObj.getStudentID(),type))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
+		when(this.responseMock.bodyToMono(InputStreamResource.class)).thenReturn(Mono.just(pdf));
+
+		final ParameterizedTypeReference<List<Student>> responseType = new ParameterizedTypeReference<>() {
+		};
+
+		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
+		when(this.requestHeadersUriMock.uri(String.format(educGradStudentApiConstants.getPenStudentApiByPenUrl(),pen))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
+		when(this.responseMock.bodyToMono(responseType)).thenReturn(Mono.just(List.of(sObj)));
+
+		ResponseEntity<byte[]> byteData = gradBusinessService.getStudentCredentialPDFByType(pen, type, "accessToken");
+		assertNotNull(byteData);
+		assertTrue(byteData.getBody().length > 0);
+	}
+
+	@Test
+	void testStudentCredentialPDFByType_witherror() throws Exception {
+
+		String pen = "128385861";
+		String type = "TRAN";
+		InputStream is = getClass().getClassLoader().getResourceAsStream("json/xmlTranscriptReportRequest.json");
+		InputStreamResource pdf = new InputStreamResource(is);
+
+		Student sObj = new Student();
+		sObj.setStudentID(UUID.randomUUID().toString());
+		sObj.setMincode("123123112");
+
+		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
+		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getStudentCredentialByType(),sObj.getStudentID(),type))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
+		when(this.responseMock.bodyToMono(InputStreamResource.class)).thenReturn(null);
+
+		final ParameterizedTypeReference<List<Student>> responseType = new ParameterizedTypeReference<>() {
+		};
+
+		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
+		when(this.requestHeadersUriMock.uri(String.format(educGradStudentApiConstants.getPenStudentApiByPenUrl(),pen))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
+		when(this.responseMock.bodyToMono(responseType)).thenReturn(Mono.just(List.of(sObj)));
+
+		ResponseEntity<byte[]> byteData = gradBusinessService.getStudentCredentialPDFByType(pen, type, "accessToken");
+		assertNotNull(byteData);
+		assertTrue(byteData.getBody().length > 0);
+	}
+
+	@Test
+	void testStudentCredentialPDFByType_witherror2() {
+
+		String pen = "128385861";
+		String type = "TRAN";
+		String studentID = UUID.randomUUID().toString();
+		InputStream is = getClass().getClassLoader().getResourceAsStream("json/xml_report_sample.xml");
+
+		Student sObj = new Student();
+		sObj.setStudentID(studentID);
+		sObj.setMincode("123123112");
+
+		final ParameterizedTypeReference<List<Student>> responseType = new ParameterizedTypeReference<>() {
+		};
+
+		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
+		when(this.requestHeadersUriMock.uri(String.format(educGradStudentApiConstants.getPenStudentApiByPenUrl(),pen))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
+		when(this.responseMock.bodyToMono(responseType)).thenReturn(Mono.just(List.of(sObj)));
+
+		ResponseEntity<byte[]> byteData = gradBusinessService.getStudentCredentialPDFByType(pen, type, "accessToken");
 		assertNotNull(byteData);
 		assertTrue(byteData.getBody().length > 0);
 	}

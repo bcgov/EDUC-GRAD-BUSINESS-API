@@ -28,6 +28,7 @@ public class GradBusinessService {
 
     private static final String BEARER = "Bearer ";
     private static final String APPLICATION_JSON = "application/json";
+    private static final String APPLICATION_PDF = "application/pdf";
     /**
      * The Web client.
      */
@@ -199,8 +200,8 @@ public class GradBusinessService {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
-            headers.put(HttpHeaders.ACCEPT, Collections.singletonList("application/pdf"));
-            headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList("application/pdf"));
+            headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
+            headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_PDF));
             InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getSchoolReportByMincode(), mincode,type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(InputStreamResource.class).block();
             assert result != null;
             byte[] res = IOUtils.toByteArray(result.getInputStream());
@@ -211,7 +212,33 @@ public class GradBusinessService {
         }
     }
 
+    @Transactional
+    public ResponseEntity<byte[]> getStudentCredentialPDFByType(String pen, String type, String accessToken) {
+        List<Student> stud = getStudentByPenFromStudentAPI(pen,accessToken);
+        Student studObj = stud.get(0);
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
+            headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
+            headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_PDF));
+            InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getStudentCredentialByType(), studObj.getStudentID(),type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(InputStreamResource.class).block();
+            assert result != null;
+            byte[] res = IOUtils.toByteArray(result.getInputStream());
+            byte[] encoded = Base64.encodeBase64(res);
+            return handleBinaryResponse(encoded, getFileNameStudentCredentials(studObj.getMincode(),pen,type), MediaType.APPLICATION_PDF);
+        } catch (Exception e) {
+            return getInternalServerErrorResponse(e);
+        }
+    }
+
+
     public static String getFileNameSchoolReports(String mincode, int year, String month, String type) {
         return mincode + "_" + year + month + "_" + type;
     }
+
+    public static String getFileNameStudentCredentials(String mincode, String pen, String type) {
+        return mincode + "_" + pen +"_" + type;
+    }
+
+
 }
