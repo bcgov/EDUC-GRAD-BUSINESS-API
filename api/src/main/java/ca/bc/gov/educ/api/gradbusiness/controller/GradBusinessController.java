@@ -67,11 +67,6 @@ public class GradBusinessController {
         return gradBusinessService.getStudentByPenFromStudentAPI(pen,accessToken.replace(BEARER, ""));
     }
 
-    /**
-     *
-     * @param pen
-     * @return
-     */
     @GetMapping("/student/demog/{pen}")
     @PreAuthorize("hasAuthority('SCOPE_GRAD_BUSINESS_R') and hasAuthority('SCOPE_READ_GRAD_STUDENT_DATA')")
     @Operation(summary = "Get Student Demographic by PEN", description = "Get Student Demographic by PEN", tags = { "Student Demographics" })
