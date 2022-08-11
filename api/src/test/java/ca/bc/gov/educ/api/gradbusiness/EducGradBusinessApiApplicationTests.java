@@ -231,6 +231,32 @@ class EducGradBusinessApiApplicationTests {
 	}
 
 	@Test
+	void testgetAmalgamatedSchoolReportPDFByMincode() throws Exception {
+
+		String mincode = "128385861";
+		String type = "TVRNONGRAD";
+		InputStream is = getClass().getClassLoader().getResourceAsStream("json/xmlTranscriptReportRequest.json");
+		InputStreamResource pdf = new InputStreamResource(is);
+
+		UUID studentID = UUID.randomUUID();
+		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
+		when(this.requestHeadersUriMock.uri(String.format(educGradStudentApiConstants.getStudentsForAmalgamatedReport(),mincode,type))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
+		when(this.responseMock.bodyToMono(new ParameterizedTypeReference<List<UUID>>() {})).thenReturn(Mono.just(List.of(studentID)));
+
+		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
+		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getStudentCredentialByType(),studentID,"ACHV"))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
+		when(this.responseMock.bodyToMono(InputStreamResource.class)).thenReturn(Mono.just(pdf));
+
+		ResponseEntity<byte[]> byteData = gradBusinessService.getAmalgamatedSchoolReportPDFByMincode(mincode, type, "accessToken");
+		assertNotNull(byteData);
+		assertNull(byteData.getBody());
+	}
+
+	@Test
 	void testSchoolReportPDFByMincode_witherror() throws Exception {
 
 		String mincode = "128385861";

@@ -116,9 +116,11 @@ endpoint:
   grad-student-api:
     demographic:
       url: ${GRAD_STUDENT_API}api/v1/student/demog/pen/%s
+    amalgamated-students:
+      url: ${GRAD_STUDENT_API}api/v1/student/amalgamated/schoolreport/%s/type/%s
   grad-graduation-report-api:
     school-report-by-mincode:
       url: ${GRAD_GRADUATION_REPORT_API}api/v1/graduationreports/schoolreport?mincode=%s&reportType=%s
     student-credential-by-type:
-      url: ${GRAD_GRADUATION_REPORT_API}api/v1/graduationreports/studentcredential/%s/%s
+      url: ${GRAD_GRADUATION_REPORT_API}api/v1/graduationreports/business/studentcredential/%s/%s
 

@@ -190,6 +190,24 @@ class EducGradBusinessApiControllerTests {
 	}
 
 	@Test
+	void testAmalgamatedSchoolReportByMincode() throws Exception {
+		byte[] greBPack = "Any String you want".getBytes();
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Disposition", "inline; filename=xmlTranscriptData.json");
+		ResponseEntity response = ResponseEntity
+				.ok()
+				.headers(headers)
+				.contentType(MediaType.APPLICATION_XML)
+				.body(greBPack);
+
+		Mockito.when(gradBusinessService.getAmalgamatedSchoolReportPDFByMincode("12312321", "TVRNONGRAD","abc")).thenReturn(response);
+		gradBusinessController.amalgamatedSchoolReportByMincode("12312321","TVRNONGRAD", "abc");
+		Mockito.verify(gradBusinessService).getAmalgamatedSchoolReportPDFByMincode("12312321","TVRNONGRAD", "abc");
+
+	}
+
+	@Test
 	void testStudentCredentialByType() throws Exception {
 		byte[] greBPack = "Any String you want".getBytes();
 

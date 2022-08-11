@@ -99,5 +99,8 @@ public class EducGradStudentApiConstants {
 
     @Value("${endpoint.grad-student-api.demographic.url}")
     private String penDemographicStudentApiUrl;
+
+    @Value("${endpoint.grad-student-api.amalgamated-students.url}")
+    private String studentsForAmalgamatedReport;
     
 }
