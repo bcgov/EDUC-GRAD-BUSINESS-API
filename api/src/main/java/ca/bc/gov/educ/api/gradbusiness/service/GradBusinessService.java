@@ -21,7 +21,6 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.transaction.Transactional;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -232,7 +231,7 @@ public class GradBusinessService {
                     try {
                         locations.add(result.getInputStream());
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.debug("Error {}",e.getLocalizedMessage());
                     }
                 }
             }
@@ -241,11 +240,10 @@ public class GradBusinessService {
             int year = cal.get(Calendar.YEAR);
             String month = "00";
             String fileName = EducGradBusinessUtil.getFileNameSchoolReports(mincode, year, month, type);
-            EducGradBusinessUtil.mergeDocuments(mincode, fileName, locations);
+            String filePath = EducGradBusinessUtil.mergeDocuments(mincode, fileName, locations);
             logger.info("******** Merged Documents ******");
             try {
-                File path = new File(EducGradBusinessUtil.getFilePath(mincode, fileName));
-                byte[] res = EducGradBusinessUtil.readFile(path);
+                byte[] res = EducGradBusinessUtil.readFile(filePath);
                 HttpHeaders headers = new HttpHeaders();
                 headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
                 headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
