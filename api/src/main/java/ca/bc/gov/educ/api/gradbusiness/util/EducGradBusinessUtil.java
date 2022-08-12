@@ -4,6 +4,7 @@ import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,10 +47,12 @@ public class EducGradBusinessUtil {
     }
 
     public static byte[] readFile(String fileName) {
-        String fName = LOC.concat(fileName).concat(".pdf");
-        Path path = Paths.get(fName);
+        String fName = fileName.concat(".pdf");
+        Path path = Paths.get(LOC.concat(fName));
         try {
-            return Files.readAllBytes(path);
+            if(FileUtils.directoryContains(LOC, fname) {
+                return Files.readAllBytes(path);
+            }
         } catch (IOException e) {
             logger.debug("Error Message {}",e.getLocalizedMessage());
         }
