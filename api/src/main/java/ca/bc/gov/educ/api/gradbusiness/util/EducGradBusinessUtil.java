@@ -17,28 +17,24 @@ public class EducGradBusinessUtil {
     private EducGradBusinessUtil() {}
 
     private static final String LOC = "/tmp/";
-    private static final String DEL = "/";
-    private static final String AMAL = "amalgamated";
 
     private static Logger logger = LoggerFactory.getLogger(EducGradBusinessUtil.class);
 
-    public static String mergeDocuments(String mincode, String fileName, List<InputStream> locations) {
+    public static void mergeDocuments(String fileName, List<InputStream> locations) {
         try {
             PDFMergerUtility objs = new PDFMergerUtility();
             StringBuilder pBuilder = new StringBuilder();
-            pBuilder.append(LOC).append(AMAL).append(DEL).append(mincode).append(DEL);
+            pBuilder.append(LOC);
             Path path = Paths.get(pBuilder.toString());
             Files.createDirectories(path);
             pBuilder = new StringBuilder();
-            pBuilder.append(LOC).append(AMAL).append(DEL).append(mincode).append(DEL).append(fileName).append(".pdf");
+            pBuilder.append(LOC).append(fileName).append(".pdf");
             objs.setDestinationFileName(pBuilder.toString());
             objs.addSources(locations);
             objs.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly());
-            return pBuilder.toString();
         }catch (Exception e) {
             logger.debug("Error {}",e.getLocalizedMessage());
         }
-        return mincode;
     }
 
     public static String getFileNameSchoolReports(String mincode, int year, String month, String type) {
@@ -49,8 +45,8 @@ public class EducGradBusinessUtil {
         return mincode + "_" + pen +"_" + type;
     }
 
-    public static byte[] readFile(String localFile) {
-        Path path = Paths.get(localFile);
+    public static byte[] readFile(String fileName) {
+        Path path = Paths.get(LOC+fileName+".pdf");
         try {
             return Files.readAllBytes(path);
         } catch (IOException e) {

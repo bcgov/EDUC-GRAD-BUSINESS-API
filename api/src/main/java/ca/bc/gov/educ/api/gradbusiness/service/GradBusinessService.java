@@ -240,10 +240,10 @@ public class GradBusinessService {
             int year = cal.get(Calendar.YEAR);
             String month = "00";
             String fileName = EducGradBusinessUtil.getFileNameSchoolReports(mincode, year, month, type);
-            String filePath = EducGradBusinessUtil.mergeDocuments(mincode, fileName, locations);
+            EducGradBusinessUtil.mergeDocuments(fileName, locations);
             logger.info("******** Merged Documents ******");
             try {
-                byte[] res = EducGradBusinessUtil.readFile(filePath);
+                byte[] res = EducGradBusinessUtil.readFile(fileName);
                 HttpHeaders headers = new HttpHeaders();
                 headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
                 headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
