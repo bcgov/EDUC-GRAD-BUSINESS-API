@@ -51,7 +51,7 @@ public class EducGradBusinessUtil {
         String fName = fileName.concat(".pdf");
         Path path = Paths.get(LOC.concat(fName));
         try {
-            if(FileUtils.directoryContains(new File(LOC), new File(LOC, fName))) {
+            if(FileUtils.directoryContains(new File(LOC), new File(fName))) {
                 return Files.readAllBytes(path);
             }
         } catch (IOException e) {
