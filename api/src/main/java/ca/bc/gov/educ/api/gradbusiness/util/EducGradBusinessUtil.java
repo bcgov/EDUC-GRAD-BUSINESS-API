@@ -48,15 +48,20 @@ public class EducGradBusinessUtil {
     }
 
     public static byte[] readFile(String fileName) {
-        String fName = fileName.concat(".pdf");
-        Path path = Paths.get(LOC.concat(fName));
+
+        File file = new File(fileName.concat(".pdf"));
+        File directory = new File(LOC);
+
         try {
-            if(FileUtils.directoryContains(new File(LOC), new File(fName))) {
+            if(FileUtils.directoryContains(directory, file)) {
+                Path path = Paths.get(LOC.concat(fileName).concat(".pdf"));
                 return Files.readAllBytes(path);
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             logger.debug("Error Message {}",e.getLocalizedMessage());
         }
         return new byte[0];
+
     }
 }
