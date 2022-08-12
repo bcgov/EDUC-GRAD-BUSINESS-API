@@ -242,7 +242,7 @@ public class GradBusinessService {
             EducGradBusinessUtil.mergeDocuments(locations);
             logger.info("******** Merged Documents ******");
             try {
-                byte[] res = EducGradBusinessUtil.readFile();
+                byte[] res = EducGradBusinessUtil.readFile(EducGradBusinessUtil.getFileNameSchoolReports(mincode, year, month, type));
                 HttpHeaders headers = new HttpHeaders();
                 headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
                 headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
