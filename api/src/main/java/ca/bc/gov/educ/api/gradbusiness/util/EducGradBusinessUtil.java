@@ -1,10 +1,12 @@
 package ca.bc.gov.educ.api.gradbusiness.util;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -16,7 +18,7 @@ public class EducGradBusinessUtil {
 
     private EducGradBusinessUtil() {}
 
-    private static final String LOC = "/tmp/file";
+    private static final String LOC = "/tmp/";
 
     private static Logger logger = LoggerFactory.getLogger(EducGradBusinessUtil.class);
 
@@ -45,12 +47,17 @@ public class EducGradBusinessUtil {
         return mincode + "_" + pen +"_" + type;
     }
 
-    public static byte[] readFile() {
-        String fName = LOC.concat(".pdf");
-        Path path = Paths.get(fName);
+    public static byte[] readFile(String fileName) {
+        File file = new File(fileName.concat(".pdf"));
+        File directory = new File(LOC);
+
         try {
-            return Files.readAllBytes(path);
-        } catch (IOException e) {
+            if(FileUtils.directoryContains(directory, file)) {
+                Path path = Paths.get(LOC.concat(file.getName()));
+                return Files.readAllBytes(path);
+            }
+        }
+        catch (IOException e) {
             logger.debug("Error Message {}",e.getLocalizedMessage());
         }
         return new byte[0];
