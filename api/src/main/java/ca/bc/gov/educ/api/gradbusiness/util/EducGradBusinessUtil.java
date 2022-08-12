@@ -46,7 +46,8 @@ public class EducGradBusinessUtil {
     }
 
     public static byte[] readFile(String fileName) {
-        Path path = Paths.get(LOC+fileName+".pdf");
+        String fName = LOC.concat(fileName).concat(".pdf");
+        Path path = Paths.get(fName);
         try {
             return Files.readAllBytes(path);
         } catch (IOException e) {
