@@ -22,7 +22,7 @@ public class EducGradBusinessUtil {
 
     private static Logger logger = LoggerFactory.getLogger(EducGradBusinessUtil.class);
 
-    public static void mergeDocuments(List<InputStream> locations) {
+    public static void mergeDocuments(String fileName,List<InputStream> locations) {
         try {
             PDFMergerUtility objs = new PDFMergerUtility();
             StringBuilder pBuilder = new StringBuilder();
@@ -30,7 +30,7 @@ public class EducGradBusinessUtil {
             Path path = Paths.get(pBuilder.toString());
             Files.createDirectories(path);
             pBuilder = new StringBuilder();
-            pBuilder.append(LOC).append(".pdf");
+            pBuilder.append(LOC).append(fileName).append(".pdf");
             objs.setDestinationFileName(pBuilder.toString());
             objs.addSources(locations);
             objs.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly());
