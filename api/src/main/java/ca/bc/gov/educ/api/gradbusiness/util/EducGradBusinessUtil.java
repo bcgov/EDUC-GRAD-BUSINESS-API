@@ -16,11 +16,11 @@ public class EducGradBusinessUtil {
 
     private EducGradBusinessUtil() {}
 
-    private static final String LOC = "/tmp/";
+    private static final String LOC = "/tmp/file";
 
     private static Logger logger = LoggerFactory.getLogger(EducGradBusinessUtil.class);
 
-    public static void mergeDocuments(String fileName, List<InputStream> locations) {
+    public static void mergeDocuments(List<InputStream> locations) {
         try {
             PDFMergerUtility objs = new PDFMergerUtility();
             StringBuilder pBuilder = new StringBuilder();
@@ -28,7 +28,7 @@ public class EducGradBusinessUtil {
             Path path = Paths.get(pBuilder.toString());
             Files.createDirectories(path);
             pBuilder = new StringBuilder();
-            pBuilder.append(LOC).append(fileName).append(".pdf");
+            pBuilder.append(LOC).append(".pdf");
             objs.setDestinationFileName(pBuilder.toString());
             objs.addSources(locations);
             objs.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly());
@@ -45,8 +45,8 @@ public class EducGradBusinessUtil {
         return mincode + "_" + pen +"_" + type;
     }
 
-    public static byte[] readFile(String fileName) {
-        String fName = LOC.concat(fileName).concat(".pdf");
+    public static byte[] readFile() {
+        String fName = LOC.concat(".pdf");
         Path path = Paths.get(fName);
         try {
             return Files.readAllBytes(path);

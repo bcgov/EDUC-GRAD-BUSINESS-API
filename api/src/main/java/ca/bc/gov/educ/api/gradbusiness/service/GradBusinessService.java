@@ -239,11 +239,10 @@ public class GradBusinessService {
             Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
             int year = cal.get(Calendar.YEAR);
             String month = "00";
-            String fileName = EducGradBusinessUtil.getFileNameSchoolReports(mincode, year, month, type);
-            EducGradBusinessUtil.mergeDocuments(fileName, locations);
+            EducGradBusinessUtil.mergeDocuments(locations);
             logger.info("******** Merged Documents ******");
             try {
-                byte[] res = EducGradBusinessUtil.readFile(fileName);
+                byte[] res = EducGradBusinessUtil.readFile();
                 HttpHeaders headers = new HttpHeaders();
                 headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
                 headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
