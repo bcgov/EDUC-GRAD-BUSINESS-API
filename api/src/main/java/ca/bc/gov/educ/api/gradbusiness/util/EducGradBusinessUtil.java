@@ -50,7 +50,7 @@ public class EducGradBusinessUtil {
         String fName = fileName.concat(".pdf");
         Path path = Paths.get(LOC.concat(fName));
         try {
-            if(FileUtils.directoryContains(LOC, fname)) {
+            if(FileUtils.directoryContains(LOC, fName)) {
                 return Files.readAllBytes(path);
             }
         } catch (IOException e) {
