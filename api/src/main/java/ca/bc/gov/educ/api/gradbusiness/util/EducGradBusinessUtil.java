@@ -54,7 +54,7 @@ public class EducGradBusinessUtil {
 
         try {
             if(FileUtils.directoryContains(directory, file)) {
-                Path path = Paths.get(LOC.concat(fileName).concat(".pdf"));
+                Path path = Paths.get(LOC.concat(file.getName()));
                 return Files.readAllBytes(path);
             }
         }
