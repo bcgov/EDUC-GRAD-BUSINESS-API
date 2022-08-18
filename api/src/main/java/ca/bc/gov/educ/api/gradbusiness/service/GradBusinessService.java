@@ -212,8 +212,7 @@ public class GradBusinessService {
             InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getSchoolReportByMincode(), mincode,type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(InputStreamResource.class).block();
             assert result != null;
             byte[] res = IOUtils.toByteArray(result.getInputStream());
-            byte[] encoded = Base64.encodeBase64(res);
-            return handleBinaryResponse(encoded, EducGradBusinessUtil.getFileNameSchoolReports(mincode,year,month,type), MediaType.APPLICATION_PDF);
+            return handleBinaryResponse(res, EducGradBusinessUtil.getFileNameSchoolReports(mincode,year,month,type), MediaType.APPLICATION_PDF);
         } catch (Exception e) {
             return getInternalServerErrorResponse(e);
         }
@@ -248,8 +247,7 @@ public class GradBusinessService {
                 headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
                 headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
                 headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_PDF));
-                byte[] encoded = Base64.encodeBase64(res);
-                return handleBinaryResponse(encoded, EducGradBusinessUtil.getFileNameSchoolReports(mincode, year, month, type), MediaType.APPLICATION_PDF);
+                return handleBinaryResponse(res, EducGradBusinessUtil.getFileNameSchoolReports(mincode, year, month, type), MediaType.APPLICATION_PDF);
             } catch (Exception e) {
                 return getInternalServerErrorResponse(e);
             }
@@ -270,8 +268,7 @@ public class GradBusinessService {
             InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getStudentCredentialByType(), studObj.getStudentID(),type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(InputStreamResource.class).block();
             assert result != null;
             byte[] res = IOUtils.toByteArray(result.getInputStream());
-            byte[] encoded = Base64.encodeBase64(res);
-            return handleBinaryResponse(encoded, EducGradBusinessUtil.getFileNameStudentCredentials(studObj.getMincode(),pen,type), MediaType.APPLICATION_PDF);
+            return handleBinaryResponse(res, EducGradBusinessUtil.getFileNameStudentCredentials(studObj.getMincode(),pen,type), MediaType.APPLICATION_PDF);
         } catch (Exception e) {
             return getInternalServerErrorResponse(e);
         }
