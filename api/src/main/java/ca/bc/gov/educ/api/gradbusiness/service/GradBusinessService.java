@@ -1,11 +1,14 @@
 package ca.bc.gov.educ.api.gradbusiness.service;
 
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
+import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessUtil;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradStudentApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.InputStreamResource;
@@ -18,6 +21,8 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -25,6 +30,8 @@ import java.util.*;
  */
 @Service
 public class GradBusinessService {
+
+    private static Logger logger = LoggerFactory.getLogger(GradBusinessService.class);
 
     private static final String BEARER = "Bearer ";
     private static final String APPLICATION_JSON = "application/json";
@@ -205,12 +212,49 @@ public class GradBusinessService {
             InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getSchoolReportByMincode(), mincode,type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(InputStreamResource.class).block();
             assert result != null;
             byte[] res = IOUtils.toByteArray(result.getInputStream());
-            byte[] encoded = Base64.encodeBase64(res);
-            return handleBinaryResponse(encoded, getFileNameSchoolReports(mincode,year,month,type), MediaType.APPLICATION_PDF);
+            return handleBinaryResponse(res, EducGradBusinessUtil.getFileNameSchoolReports(mincode,year,month,type), MediaType.APPLICATION_PDF);
         } catch (Exception e) {
             return getInternalServerErrorResponse(e);
         }
     }
+
+    public ResponseEntity<byte[]> getAmalgamatedSchoolReportPDFByMincode(String mincode, String type, String accessToken) {
+        List<UUID> studentList = webClient.get().uri(String.format(educGradStudentApiConstants.getStudentsForAmalgamatedReport(), mincode, type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(new ParameterizedTypeReference<List<UUID>>() {
+        }).block();
+        logger.info("******** Fetched Student List ******");
+        List<InputStream> locations = new ArrayList<>();
+        if (studentList != null && !studentList.isEmpty()) {
+            for (UUID studentID : studentList) {
+                InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getStudentCredentialByType(), studentID, "ACHV")).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(InputStreamResource.class).block();
+                if (result != null) {
+                    try {
+                        locations.add(result.getInputStream());
+                    } catch (IOException e) {
+                        logger.debug("Error {}",e.getLocalizedMessage());
+                    }
+                }
+            }
+            logger.info("******** Fetched Achievement Reports ******");
+            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
+            int year = cal.get(Calendar.YEAR);
+            String month = "00";
+            String fileName = EducGradBusinessUtil.getFileNameSchoolReports(mincode, year, month, type);
+            EducGradBusinessUtil.mergeDocuments(fileName,locations);
+            logger.info("******** Merged Documents ******");
+            try {
+                byte[] res = EducGradBusinessUtil.readFile(fileName);
+                HttpHeaders headers = new HttpHeaders();
+                headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
+                headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
+                headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_PDF));
+                return handleBinaryResponse(res, EducGradBusinessUtil.getFileNameSchoolReports(mincode, year, month, type), MediaType.APPLICATION_PDF);
+            } catch (Exception e) {
+                return getInternalServerErrorResponse(e);
+            }
+        }
+        return null;
+    }
+
 
     @Transactional
     public ResponseEntity<byte[]> getStudentCredentialPDFByType(String pen, String type, String accessToken) {
@@ -224,21 +268,14 @@ public class GradBusinessService {
             InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getStudentCredentialByType(), studObj.getStudentID(),type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(InputStreamResource.class).block();
             assert result != null;
             byte[] res = IOUtils.toByteArray(result.getInputStream());
-            byte[] encoded = Base64.encodeBase64(res);
-            return handleBinaryResponse(encoded, getFileNameStudentCredentials(studObj.getMincode(),pen,type), MediaType.APPLICATION_PDF);
+            return handleBinaryResponse(res, EducGradBusinessUtil.getFileNameStudentCredentials(studObj.getMincode(),pen,type), MediaType.APPLICATION_PDF);
         } catch (Exception e) {
             return getInternalServerErrorResponse(e);
         }
     }
 
 
-    public static String getFileNameSchoolReports(String mincode, int year, String month, String type) {
-        return mincode + "_" + year + month + "_" + type;
-    }
 
-    public static String getFileNameStudentCredentials(String mincode, String pen, String type) {
-        return mincode + "_" + pen +"_" + type;
-    }
 
 
 }

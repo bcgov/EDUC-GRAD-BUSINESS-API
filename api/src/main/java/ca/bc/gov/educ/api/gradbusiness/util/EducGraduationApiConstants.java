@@ -24,6 +24,7 @@ public class EducGraduationApiConstants {
     public static final String GRADUATE_CERTIFICATE_REPORT_DATA = "/certificate/report/data";
 
     public static final String SCHOOL_REPORT_PDF = "/schoolreport/{mincode}";
+    public static final String AMALGAMATED_SCHOOL_REPORT_PDF = "/amalgamated/schoolreport/{mincode}";
     public static final String STUDENT_CREDENTIAL_PDF = "/studentcredential/{pen}/type/{type}";
 
     //Default Date format constants
