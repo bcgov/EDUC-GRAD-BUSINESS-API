@@ -11,7 +11,7 @@
     </parent>
     <groupId>ca.bc.gov</groupId>
     <artifactId>educ-grad-business-api</artifactId>
-    <version>1.6.0</version>
+    <version>1.7.0</version>
     <name>educ-grad-business-api</name>
     <description>GRAD Business API for external clients</description>
 
