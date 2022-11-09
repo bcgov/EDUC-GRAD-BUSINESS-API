@@ -5,7 +5,6 @@ import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessUtil;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradStudentApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import io.github.resilience4j.retry.annotation.Retry;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -239,15 +238,14 @@ public class GradBusinessService {
             int year = cal.get(Calendar.YEAR);
             String month = "00";
             String fileName = EducGradBusinessUtil.getFileNameSchoolReports(mincode, year, month, type);
-            EducGradBusinessUtil.mergeDocuments(fileName,locations);
-            logger.info("******** Merged Documents ******");
             try {
-                byte[] res = EducGradBusinessUtil.readFile(fileName);
+                logger.info("******** Merged Documents ******");
+                byte[] res = EducGradBusinessUtil.mergeDocuments(locations);
                 HttpHeaders headers = new HttpHeaders();
                 headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
                 headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
                 headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_PDF));
-                return handleBinaryResponse(res, EducGradBusinessUtil.getFileNameSchoolReports(mincode, year, month, type), MediaType.APPLICATION_PDF);
+                return handleBinaryResponse(res, fileName, MediaType.APPLICATION_PDF);
             } catch (Exception e) {
                 return getInternalServerErrorResponse(e);
             }
