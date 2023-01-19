@@ -2,7 +2,7 @@ package ca.bc.gov.educ.api.gradbusiness;
 
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
 import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
-import ca.bc.gov.educ.api.gradbusiness.util.EducGradStudentApiConstants;
+import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterEach;
@@ -58,7 +58,7 @@ class EducGradBusinessApiApplicationTests {
 	private WebClient.ResponseSpec responseMock;
 
 	@Autowired
-	private EducGradStudentApiConstants educGradStudentApiConstants;
+	private EducGradBusinessApiConstants educGradStudentApiConstants;
 
 	@Autowired
 	private EducGraduationApiConstants educGraduationApiConstants;

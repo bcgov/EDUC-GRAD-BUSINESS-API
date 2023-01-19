@@ -1,6 +1,6 @@
 package ca.bc.gov.educ.api.gradbusiness.model.entity;
 
-import ca.bc.gov.educ.api.gradbusiness.util.EducGradStudentApiConstants;
+import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -30,10 +30,10 @@ public class BaseEntity {
 	@PrePersist
 	protected void onCreate() {
 		if (StringUtils.isBlank(createUser)) {
-			this.createUser = EducGradStudentApiConstants.DEFAULT_CREATED_BY;
+			this.createUser = EducGradBusinessApiConstants.DEFAULT_CREATED_BY;
 		}		
 		if (StringUtils.isBlank(updateUser)) {
-			this.updateUser = EducGradStudentApiConstants.DEFAULT_UPDATED_BY;
+			this.updateUser = EducGradBusinessApiConstants.DEFAULT_UPDATED_BY;
 		}		
 		this.createDate = new Date(System.currentTimeMillis());
 		this.updateDate = new Date(System.currentTimeMillis());
@@ -43,10 +43,10 @@ public class BaseEntity {
 	protected void onPersist() {
 		this.updateDate = new Date();
 		if (StringUtils.isBlank(updateUser)) {
-			this.updateUser = EducGradStudentApiConstants.DEFAULT_UPDATED_BY;
+			this.updateUser = EducGradBusinessApiConstants.DEFAULT_UPDATED_BY;
 		}
 		if (StringUtils.isBlank(createUser)) {
-			this.createUser = EducGradStudentApiConstants.DEFAULT_CREATED_BY;
+			this.createUser = EducGradBusinessApiConstants.DEFAULT_CREATED_BY;
 		}
 		if (this.createDate == null) {
 			this.createDate = new Date();

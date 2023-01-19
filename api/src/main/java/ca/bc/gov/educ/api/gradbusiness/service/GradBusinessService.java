@@ -2,7 +2,7 @@ package ca.bc.gov.educ.api.gradbusiness.service;
 
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessUtil;
-import ca.bc.gov.educ.api.gradbusiness.util.EducGradStudentApiConstants;
+import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.apache.commons.io.IOUtils;
@@ -44,7 +44,7 @@ public class GradBusinessService {
      * The Educ grad student api constants.
      */
     @Autowired
-    EducGradStudentApiConstants educGradStudentApiConstants;
+    EducGradBusinessApiConstants educGradStudentApiConstants;
 
     /**
      * The Educ graduation api constants.
