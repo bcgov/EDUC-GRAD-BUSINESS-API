@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 @Setter
-public class EducGradStudentApiConstants {
+public class EducGradBusinessApiConstants {
     /**
      * The constant GRAD_STATUS_API.
      */
@@ -102,5 +102,8 @@ public class EducGradStudentApiConstants {
 
     @Value("${endpoint.grad-student-api.amalgamated-students.url}")
     private String studentsForAmalgamatedReport;
-    
+
+    // Splunk LogHelper Enabled
+    @Value("${splunk.log-helper.enabled}")
+    private boolean splunkLogHelperEnabled;
 }
