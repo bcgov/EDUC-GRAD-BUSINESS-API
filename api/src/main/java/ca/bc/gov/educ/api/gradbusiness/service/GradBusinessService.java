@@ -220,7 +220,7 @@ public class GradBusinessService {
     public ResponseEntity<byte[]> getAmalgamatedSchoolReportPDFByMincode(String mincode, String type, String accessToken) {
         List<UUID> studentList = webClient.get().uri(String.format(educGradStudentApiConstants.getStudentsForAmalgamatedReport(), mincode, type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(new ParameterizedTypeReference<List<UUID>>() {
         }).block();
-        logger.info("******** Fetched Student List ******");
+        logger.debug("******** Fetched Student List ******");
         List<InputStream> locations = new ArrayList<>();
         if (studentList != null && !studentList.isEmpty()) {
             for (UUID studentID : studentList) {
@@ -233,13 +233,13 @@ public class GradBusinessService {
                     }
                 }
             }
-            logger.info("******** Fetched Achievement Reports ******");
+            logger.debug("******** Fetched Achievement Reports ******");
             Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
             int year = cal.get(Calendar.YEAR);
             String month = "00";
             String fileName = EducGradBusinessUtil.getFileNameSchoolReports(mincode, year, month, type);
             try {
-                logger.info("******** Merged Documents ******");
+                logger.debug("******** Merged Documents ******");
                 byte[] res = EducGradBusinessUtil.mergeDocuments(locations);
                 HttpHeaders headers = new HttpHeaders();
                 headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
