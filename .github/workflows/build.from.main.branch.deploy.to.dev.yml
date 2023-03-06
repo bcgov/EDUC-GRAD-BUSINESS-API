@@ -21,12 +21,13 @@ env:
   REPO_NAME: "educ-grad-business-api"
   APP_DOMAIN: ${{ secrets.APP_DOMAIN }}
   TAG: "latest"
+  #GRAD2-1947 Resource optimization
   MIN_CPU: "20m"
-  MAX_CPU: "250m"
+  MAX_CPU: "100m"
   MIN_MEM: "256Mi"
   MAX_MEM: "700Mi"
-  MIN_REPLICAS: "1"
-  MAX_REPLICAS: "3"
+  MIN_REPLICAS: "3"
+  MAX_REPLICAS: "5"
 
 on:
   # https://docs.github.com/en/actions/reference/events-that-trigger-workflows
