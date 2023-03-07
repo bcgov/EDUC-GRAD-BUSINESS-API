@@ -45,9 +45,9 @@ public class RequestResponseInterceptor implements AsyncHandlerInterceptor {
     @Override
     public void afterCompletion(@NonNull final HttpServletRequest request, final HttpServletResponse response, @NonNull final Object handler, final Exception ex) {
         LogHelper.logServerHttpReqResponseDetails(request, response, constants.isSplunkLogHelperEnabled());
-        val correlationID = request.getHeader(constants.CORRELATION_ID);
+        val correlationID = request.getHeader(EducGradBusinessApiConstants.CORRELATION_ID);
         if (correlationID != null) {
-            response.setHeader(constants.CORRELATION_ID, request.getHeader(constants.CORRELATION_ID));
+            response.setHeader(EducGradBusinessApiConstants.CORRELATION_ID, request.getHeader(EducGradBusinessApiConstants.CORRELATION_ID));
         }
     }
 
