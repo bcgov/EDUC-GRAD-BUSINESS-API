@@ -5,9 +5,6 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfSmartCopy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -20,15 +17,13 @@ public class EducGradBusinessUtil {
 
     private EducGradBusinessUtil() {}
 
-    private static final String LOC = getTempDirPath();
-    private static final int BUFFER_SIZE = 250000;
 
-    private static Logger logger = LoggerFactory.getLogger(EducGradBusinessUtil.class);
+    private static final int BUFFER_SIZE = 250000;
 
     public static byte[] mergeDocuments(List<InputStream> locations) throws IOException {
         final byte[] result;
 
-        List<byte[]> pdfs = new ArrayList();
+        List<byte[]> pdfs = new ArrayList<>();
         for(InputStream is: locations) {
             pdfs.add(is.readAllBytes());
         }
