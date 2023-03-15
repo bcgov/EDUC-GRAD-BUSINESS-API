@@ -11,7 +11,7 @@
     </parent>
     <groupId>ca.bc.gov</groupId>
     <artifactId>educ-grad-business-api</artifactId>
-    <version>1.8.20</version>
+    <version>1.8.22</version>
     <name>educ-grad-business-api</name>
     <description>GRAD Business API for external clients</description>
 
@@ -54,6 +54,16 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-undertow</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
