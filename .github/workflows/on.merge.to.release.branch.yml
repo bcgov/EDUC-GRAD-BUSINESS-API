@@ -15,7 +15,7 @@ jobs:
   build-and-deploy:
     name: Build, package and deploy to Dev
     environment: dev
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - name: Git pull
       uses: actions/checkout@v3
