@@ -26,6 +26,7 @@ public class EducGraduationApiConstants {
     public static final String SCHOOL_REPORT_PDF = "/schoolreport/{mincode}";
     public static final String AMALGAMATED_SCHOOL_REPORT_PDF = "/amalgamated/schoolreport/{mincode}";
     public static final String STUDENT_CREDENTIAL_PDF = "/studentcredential/{pen}/type/{type}";
+    public static final String STUDENT_TRANSCRIPT_PDF = "/studenttranscript/{pen}";
 
     //Default Date format constants
     public static final String DEFAULT_CREATED_BY = "API_GRADUATION";
@@ -49,6 +50,9 @@ public class EducGraduationApiConstants {
 
     @Value("${endpoint.grad-graduation-report-api.student-credential-by-type.url}")
     private String studentCredentialByType;
+
+    @Value("${endpoint.grad-report-api.transcript-by-request.url}")
+    private String studentTranscriptReportByRequest;
 
     
 }
