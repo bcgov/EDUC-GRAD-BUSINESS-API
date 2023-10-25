@@ -35,6 +35,7 @@ public class GradBusinessService {
     private static final String BEARER = "Bearer ";
     private static final String APPLICATION_JSON = "application/json";
     private static final String APPLICATION_PDF = "application/pdf";
+    private static final String ACCEPT = "*/*";
     /**
      * The Web client.
      */
@@ -275,7 +276,7 @@ public class GradBusinessService {
     public ResponseEntity<byte[]> getStudentTranscriptPDFByType(String pen, String type, String accessToken) {
         try {
             byte[] reportData = prepareReportDataByPen(pen, type, accessToken).getBody();
-            StringBuffer reportRequest = new StringBuffer();
+            StringBuilder reportRequest = new StringBuilder();
             String reportOptions = "\"options\": {\n" +
                     "        \"cacheReport\": false,\n" +
                     "        \"convertTo\": \"pdf\",\n" +
@@ -290,7 +291,7 @@ public class GradBusinessService {
             reportRequest.append("}\n");
             HttpHeaders headers = new HttpHeaders();
             headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
-            headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_JSON));
+            headers.put(HttpHeaders.ACCEPT, Collections.singletonList(ACCEPT));
             headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_JSON));
             byte[] result = webClient.post().uri(educGraduationApiConstants.getStudentTranscriptReportByRequest()).headers(h -> h.addAll(headers)).body(BodyInserters.fromValue(reportRequest.toString())).retrieve().bodyToMono(byte[].class).block();
             assert result != null;
