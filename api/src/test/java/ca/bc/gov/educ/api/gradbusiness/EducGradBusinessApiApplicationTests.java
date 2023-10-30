@@ -24,6 +24,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -216,8 +217,9 @@ class EducGradBusinessApiApplicationTests {
 
 		String mincode = "128385861";
 		String type = "NONGRADPRJ";
-		InputStream is = getClass().getClassLoader().getResourceAsStream("json/xmlTranscriptReportRequest.json");
-		InputStreamResource pdf = new InputStreamResource(is);
+
+		byte[] samplePdf = readBinaryFile("data/sample.pdf");
+		InputStreamResource pdf = new InputStreamResource(new ByteArrayInputStream(samplePdf));
 
 		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
 		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getSchoolReportByMincode(),mincode,type))).thenReturn(this.requestHeadersMock);
@@ -235,8 +237,9 @@ class EducGradBusinessApiApplicationTests {
 
 		String mincode = "128385861";
 		String type = "TVRNONGRAD";
-		InputStream is = getClass().getClassLoader().getResourceAsStream("json/xmlTranscriptReportRequest.json");
-		InputStreamResource pdf = new InputStreamResource(is);
+
+		byte[] samplePdf = readBinaryFile("data/sample.pdf");
+		InputStreamResource pdf = new InputStreamResource(new ByteArrayInputStream(samplePdf));
 
 		UUID studentID = UUID.randomUUID();
 		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
@@ -257,26 +260,28 @@ class EducGradBusinessApiApplicationTests {
 	}
 
 	@Test
-	void testSchoolReportPDFByMincode_witherror() throws Exception {
+	void testSchoolReportPDFByMincode_NotFound() throws Exception {
 
 		String mincode = "128385861";
 		String type = "NONGRADPRJ";
-		InputStream is = getClass().getClassLoader().getResourceAsStream("json/xmlTranscriptReportRequest.json");
+
+		byte[] samplePdf = new byte[0];
+		InputStreamResource pdf = new InputStreamResource(new ByteArrayInputStream(samplePdf));
 
 
 		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
 		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getSchoolReportByMincode(),mincode,type))).thenReturn(this.requestHeadersMock);
 		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
 		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
-		when(this.responseMock.bodyToMono(InputStreamResource.class)).thenReturn(null);
+		when(this.responseMock.bodyToMono(InputStreamResource.class)).thenReturn(Mono.just(pdf));
 
 		ResponseEntity<byte[]> byteData = gradBusinessService.getSchoolReportPDFByMincode(mincode, type, "accessToken");
 		assertNotNull(byteData);
-		assertTrue(byteData.getBody().length > 0);
+		assertNull(byteData.getBody());
 	}
 
 	@Test
-	void testSchoolReportPDFByMincode_witherror2() throws Exception {
+	void testSchoolReportPDFByMincode_Error500() throws Exception {
 
 		String mincode = "128385861";
 		String type = "NONGRADPRJ";
@@ -292,6 +297,7 @@ class EducGradBusinessApiApplicationTests {
 		ResponseEntity<byte[]> byteData = gradBusinessService.getSchoolReportPDFByMincode(mincode, type, "accessToken");
 		assertNotNull(byteData);
 		assertTrue(byteData.getBody().length > 0);
+		assertTrue(byteData.getStatusCode().is5xxServerError());
 	}
 
 	@Test
@@ -316,12 +322,14 @@ class EducGradBusinessApiApplicationTests {
 	void testStudentCredentialPDFByType() throws Exception {
 
 		String pen = "128385861";
-		String type = "TRAN";
-		InputStream is = getClass().getClassLoader().getResourceAsStream("json/xmlTranscriptReportRequest.json");
-		InputStreamResource pdf = new InputStreamResource(is);
+		String type = "GRADREG";
+
+		byte[] samplePdf = readBinaryFile("data/sample.pdf");
+		InputStreamResource pdf = new InputStreamResource(new ByteArrayInputStream(samplePdf));
 
 		Student sObj = new Student();
 		sObj.setStudentID(UUID.randomUUID().toString());
+		sObj.setPen(pen);
 		sObj.setMincode("123123112");
 
 		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
@@ -345,22 +353,24 @@ class EducGradBusinessApiApplicationTests {
 	}
 
 	@Test
-	void testStudentCredentialPDFByType_witherror() throws Exception {
+	void testStudentCredentialPDFByType_NotFound() throws Exception {
 
 		String pen = "128385861";
-		String type = "TRAN";
-		InputStream is = getClass().getClassLoader().getResourceAsStream("json/xmlTranscriptReportRequest.json");
-		InputStreamResource pdf = new InputStreamResource(is);
+		String type = "NONGRADREG";
+
+		byte[] samplePdf = new byte[0];
+		InputStreamResource pdf = new InputStreamResource(new ByteArrayInputStream(samplePdf));
 
 		Student sObj = new Student();
 		sObj.setStudentID(UUID.randomUUID().toString());
+		sObj.setPen(pen);
 		sObj.setMincode("123123112");
 
 		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
 		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getStudentCredentialByType(),sObj.getStudentID(),type))).thenReturn(this.requestHeadersMock);
 		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
 		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
-		when(this.responseMock.bodyToMono(InputStreamResource.class)).thenReturn(null);
+		when(this.responseMock.bodyToMono(InputStreamResource.class)).thenReturn(Mono.just(pdf));
 
 		final ParameterizedTypeReference<List<Student>> responseType = new ParameterizedTypeReference<>() {
 		};
@@ -373,19 +383,23 @@ class EducGradBusinessApiApplicationTests {
 
 		ResponseEntity<byte[]> byteData = gradBusinessService.getStudentCredentialPDFByType(pen, type, "accessToken");
 		assertNotNull(byteData);
-		assertTrue(byteData.getBody().length > 0);
+		assertNull(byteData.getBody());
+
 	}
 
 	@Test
-	void testStudentCredentialPDFByType_witherror2() {
+	void testStudentCredentialPDFByType_Error500() throws Exception {
 
 		String pen = "128385861";
 		String type = "TRAN";
 		String studentID = UUID.randomUUID().toString();
-		InputStream is = getClass().getClassLoader().getResourceAsStream("json/xml_report_sample.xml");
+
+		byte[] samplePdf = readBinaryFile("data/sample.pdf");
+		InputStreamResource pdf = new InputStreamResource(new ByteArrayInputStream(samplePdf));
 
 		Student sObj = new Student();
 		sObj.setStudentID(studentID);
+		sObj.setPen(pen);
 		sObj.setMincode("123123112");
 
 		final ParameterizedTypeReference<List<Student>> responseType = new ParameterizedTypeReference<>() {
@@ -400,6 +414,13 @@ class EducGradBusinessApiApplicationTests {
 		ResponseEntity<byte[]> byteData = gradBusinessService.getStudentCredentialPDFByType(pen, type, "accessToken");
 		assertNotNull(byteData);
 		assertTrue(byteData.getBody().length > 0);
+		assertTrue(byteData.getStatusCode().is5xxServerError());
+	}
+
+	private byte[] readBinaryFile(String path) throws Exception {
+		ClassLoader classLoader = getClass().getClassLoader();
+		InputStream inputStream = classLoader.getResourceAsStream(path);
+		return inputStream.readAllBytes();
 	}
 
 }
