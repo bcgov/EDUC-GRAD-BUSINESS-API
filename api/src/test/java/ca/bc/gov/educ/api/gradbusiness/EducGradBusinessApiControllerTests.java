@@ -3,8 +3,6 @@ package ca.bc.gov.educ.api.gradbusiness;
 import ca.bc.gov.educ.api.gradbusiness.controller.GradBusinessController;
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
 import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +25,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.MockitoAnnotations.openMocks;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(SpringRunner.class)
@@ -58,9 +55,9 @@ class EducGradBusinessApiControllerTests {
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(reportData.getBytes());
 
-		Mockito.when(gradBusinessService.prepareReportDataByPen(pen, null, "abc")).thenReturn(response);
-		gradBusinessController.transcriptReportDataByPen(pen, null, "abc");
-		Mockito.verify(gradBusinessService).prepareReportDataByPen(pen, null, "abc");
+		Mockito.when(gradBusinessService.prepareReportDataByPen(pen, null, "accessToken")).thenReturn(response);
+		gradBusinessController.transcriptReportDataByPen(pen, null, "accessToken");
+		Mockito.verify(gradBusinessService).prepareReportDataByPen(pen, null, "accessToken");
 
 		reportData = readFile("json/studentCertificateReportData.json");
 		assertNotNull(reportData);
@@ -73,9 +70,9 @@ class EducGradBusinessApiControllerTests {
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(reportData.getBytes());
 
-		Mockito.when(gradBusinessService.prepareReportDataByPen(pen, "CERT", "abc")).thenReturn(response);
-		gradBusinessController.certificateReportDataByPen(pen, "abc");
-		Mockito.verify(gradBusinessService).prepareReportDataByPen(pen, "CERT", "abc");
+		Mockito.when(gradBusinessService.prepareReportDataByPen(pen, "CERT", "accessToken")).thenReturn(response);
+		gradBusinessController.certificateReportDataByPen(pen, "accessToken");
+		Mockito.verify(gradBusinessService).prepareReportDataByPen(pen, "CERT", "accessToken");
 
 	}
 
@@ -97,9 +94,9 @@ class EducGradBusinessApiControllerTests {
 				.body(reportData.getBytes());
 
 
-		Mockito.when(gradBusinessService.prepareReportDataByGraduation(studentGradData, null, "abc")).thenReturn(response);
-		gradBusinessController.transcriptReportDataFromGraduation(studentGradData, null, "abc");
-		Mockito.verify(gradBusinessService).prepareReportDataByGraduation(studentGradData, null, "abc");
+		Mockito.when(gradBusinessService.prepareReportDataByGraduation(studentGradData, null, "accessToken")).thenReturn(response);
+		gradBusinessController.transcriptReportDataFromGraduation(studentGradData, null, "accessToken");
+		Mockito.verify(gradBusinessService).prepareReportDataByGraduation(studentGradData, null, "accessToken");
 
 		reportData = readFile("json/studentCertificateReportData.json");
 		assertNotNull(reportData);
@@ -112,9 +109,9 @@ class EducGradBusinessApiControllerTests {
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(reportData.getBytes());
 
-		Mockito.when(gradBusinessService.prepareReportDataByGraduation(studentGradData, "CERT", "abc")).thenReturn(response);
-		gradBusinessController.certificateReportDataFromGraduation(studentGradData, "abc");
-		Mockito.verify(gradBusinessService).prepareReportDataByGraduation(studentGradData, "CERT", "abc");
+		Mockito.when(gradBusinessService.prepareReportDataByGraduation(studentGradData, "CERT", "accessToken")).thenReturn(response);
+		gradBusinessController.certificateReportDataFromGraduation(studentGradData, "accessToken");
+		Mockito.verify(gradBusinessService).prepareReportDataByGraduation(studentGradData, "CERT", "accessToken");
 	}
 
 	@Test
@@ -134,9 +131,9 @@ class EducGradBusinessApiControllerTests {
 				.contentType(MediaType.APPLICATION_XML)
 				.body(xmlTranscriptReportData.getBytes());
 
-		Mockito.when(gradBusinessService.prepareXmlTranscriptReportDataByXmlRequest(xmlReportRequest, "abc")).thenReturn(response);
-		gradBusinessController.transcriptXmlReportDataFromXmlRequest(xmlReportRequest, "abc");
-		Mockito.verify(gradBusinessService).prepareXmlTranscriptReportDataByXmlRequest(xmlReportRequest, "abc");
+		Mockito.when(gradBusinessService.prepareXmlTranscriptReportDataByXmlRequest(xmlReportRequest, "accessToken")).thenReturn(response);
+		gradBusinessController.transcriptXmlReportDataFromXmlRequest(xmlReportRequest, "accessToken");
+		Mockito.verify(gradBusinessService).prepareXmlTranscriptReportDataByXmlRequest(xmlReportRequest, "accessToken");
 
 	}
 
@@ -147,9 +144,9 @@ class EducGradBusinessApiControllerTests {
 		obj.setPen("12312321");
 		obj.setStudentID(UUID.randomUUID().toString());
 
-		Mockito.when(gradBusinessService.getStudentByPenFromStudentAPI("12312321", "abc")).thenReturn(List.of(obj));
-		gradBusinessController.getGradStudentByPenFromStudentAPI("12312321", "abc");
-		Mockito.verify(gradBusinessService).getStudentByPenFromStudentAPI("12312321", "abc");
+		Mockito.when(gradBusinessService.getStudentByPenFromStudentAPI("12312321", "accessToken")).thenReturn(List.of(obj));
+		gradBusinessController.getGradStudentByPenFromStudentAPI("12312321", "accessToken");
+		Mockito.verify(gradBusinessService).getStudentByPenFromStudentAPI("12312321", "accessToken");
 
 	}
 
@@ -165,9 +162,9 @@ class EducGradBusinessApiControllerTests {
 				.contentType(MediaType.APPLICATION_XML)
 				.body(greBPack);
 
-		Mockito.when(gradBusinessService.getStudentDemographicsByPen("12312321", "abc")).thenReturn(response);
-		gradBusinessController.getGradStudentDemographicsByPen("12312321", "abc");
-		Mockito.verify(gradBusinessService).getStudentDemographicsByPen("12312321", "abc");
+		Mockito.when(gradBusinessService.getStudentDemographicsByPen("12312321", "accessToken")).thenReturn(response);
+		gradBusinessController.getGradStudentDemographicsByPen("12312321", "accessToken");
+		Mockito.verify(gradBusinessService).getStudentDemographicsByPen("12312321", "accessToken");
 
 	}
 
@@ -183,9 +180,9 @@ class EducGradBusinessApiControllerTests {
 				.contentType(MediaType.APPLICATION_XML)
 				.body(greBPack);
 
-		Mockito.when(gradBusinessService.getSchoolReportPDFByMincode("12312321", "GRAD","abc")).thenReturn(response);
-		gradBusinessController.schoolReportByMincode("12312321","GRAD", "abc");
-		Mockito.verify(gradBusinessService).getSchoolReportPDFByMincode("12312321","GRAD", "abc");
+		Mockito.when(gradBusinessService.getSchoolReportPDFByMincode("12312321", "GRAD","accessToken")).thenReturn(response);
+		gradBusinessController.schoolReportByMincode("12312321","GRAD", "accessToken");
+		Mockito.verify(gradBusinessService).getSchoolReportPDFByMincode("12312321","GRAD", "accessToken");
 
 	}
 
@@ -201,9 +198,9 @@ class EducGradBusinessApiControllerTests {
 				.contentType(MediaType.APPLICATION_XML)
 				.body(greBPack);
 
-		Mockito.when(gradBusinessService.getAmalgamatedSchoolReportPDFByMincode("12312321", "TVRNONGRAD","abc")).thenReturn(response);
-		gradBusinessController.amalgamatedSchoolReportByMincode("12312321","TVRNONGRAD", "abc");
-		Mockito.verify(gradBusinessService).getAmalgamatedSchoolReportPDFByMincode("12312321","TVRNONGRAD", "abc");
+		Mockito.when(gradBusinessService.getAmalgamatedSchoolReportPDFByMincode("12312321", "TVRNONGRAD","accessToken")).thenReturn(response);
+		gradBusinessController.amalgamatedSchoolReportByMincode("12312321","TVRNONGRAD", "accessToken");
+		Mockito.verify(gradBusinessService).getAmalgamatedSchoolReportPDFByMincode("12312321","TVRNONGRAD", "accessToken");
 
 	}
 
@@ -219,9 +216,27 @@ class EducGradBusinessApiControllerTests {
 				.contentType(MediaType.APPLICATION_XML)
 				.body(greBPack);
 
-		Mockito.when(gradBusinessService.getStudentCredentialPDFByType("12312321","TRAN", "abc")).thenReturn(response);
-		gradBusinessController.studentCredentialByType("12312321", "TRAN","abc");
-		Mockito.verify(gradBusinessService).getStudentCredentialPDFByType("12312321","TRAN", "abc");
+		Mockito.when(gradBusinessService.getStudentCredentialPDFByType("12312321","TRAN", "accessToken")).thenReturn(response);
+		gradBusinessController.studentCredentialByType("12312321", "TRAN","accessToken");
+		Mockito.verify(gradBusinessService).getStudentCredentialPDFByType("12312321","TRAN", "accessToken");
+
+	}
+
+	@Test
+	void testStudentTranscriptPDFByType() throws Exception {
+		byte[] greBPack = "Any String you want".getBytes();
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Disposition", "inline; filename=StudentTranscript.pdf");
+		ResponseEntity response = ResponseEntity
+				.ok()
+				.headers(headers)
+				.contentType(MediaType.APPLICATION_XML)
+				.body(greBPack);
+
+		Mockito.when(gradBusinessService.getStudentTranscriptPDFByType("12312321","xml", "accessToken")).thenReturn(response);
+		gradBusinessController.studentTranscriptByType("12312321", "xml","accessToken");
+		Mockito.verify(gradBusinessService).getStudentTranscriptPDFByType("12312321","xml", "accessToken");
 
 	}
 

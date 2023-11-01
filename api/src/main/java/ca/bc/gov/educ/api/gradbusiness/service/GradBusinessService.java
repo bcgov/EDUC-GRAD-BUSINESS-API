@@ -1,10 +1,11 @@
 package ca.bc.gov.educ.api.gradbusiness.service;
 
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
-import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessUtil;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
+import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessUtil;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import io.github.resilience4j.retry.annotation.Retry;
+import jakarta.transaction.Transactional;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -35,6 +35,7 @@ public class GradBusinessService {
     private static final String BEARER = "Bearer ";
     private static final String APPLICATION_JSON = "application/json";
     private static final String APPLICATION_PDF = "application/pdf";
+    private static final String ACCEPT = "*/*";
     /**
      * The Web client.
      */
@@ -253,7 +254,6 @@ public class GradBusinessService {
         return null;
     }
 
-
     @Transactional
     public ResponseEntity<byte[]> getStudentCredentialPDFByType(String pen, String type, String accessToken) {
         List<Student> stud = getStudentByPenFromStudentAPI(pen,accessToken);
@@ -272,8 +272,32 @@ public class GradBusinessService {
         }
     }
 
-
-
-
-
+    @Transactional
+    public ResponseEntity<byte[]> getStudentTranscriptPDFByType(String pen, String type, String accessToken) {
+        try {
+            byte[] reportData = prepareReportDataByPen(pen, type, accessToken).getBody();
+            StringBuilder reportRequest = new StringBuilder();
+            String reportOptions = "\"options\": {\n" +
+                    "        \"cacheReport\": false,\n" +
+                    "        \"convertTo\": \"pdf\",\n" +
+                    "        \"overwrite\": false,\n" +
+                    "        \"reportName\": \"transcript\",\n" +
+                    "        \"reportFile\": \""+pen+" Transcript Report.pdf\"\n" +
+                    "    },\n";
+            reportRequest.append("{\n");
+            reportRequest.append(reportOptions);
+            reportRequest.append("\"data\":\n");
+            reportRequest.append(new String(reportData)).append("\n");
+            reportRequest.append("}\n");
+            HttpHeaders headers = new HttpHeaders();
+            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
+            headers.put(HttpHeaders.ACCEPT, Collections.singletonList(ACCEPT));
+            headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_JSON));
+            byte[] result = webClient.post().uri(educGraduationApiConstants.getStudentTranscriptReportByRequest()).headers(h -> h.addAll(headers)).body(BodyInserters.fromValue(reportRequest.toString())).retrieve().bodyToMono(byte[].class).block();
+            assert result != null;
+            return handleBinaryResponse(result, pen + " Transcript Report.pdf", MediaType.APPLICATION_PDF);
+        } catch (Exception e) {
+            return getInternalServerErrorResponse(e);
+        }
+    }
 }
