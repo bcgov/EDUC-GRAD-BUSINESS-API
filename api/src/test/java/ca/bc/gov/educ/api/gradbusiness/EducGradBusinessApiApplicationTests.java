@@ -255,12 +255,6 @@ class EducGradBusinessApiApplicationTests {
 		return sb.toString();
 	}
 
-	private byte[] readBinaryFile(String path) throws Exception {
-		ClassLoader classLoader = getClass().getClassLoader();
-		InputStream inputStream = classLoader.getResourceAsStream(path);
-		return inputStream.readAllBytes();
-	}
-
 	@Test
 	void testSchoolReportPDFByMincode() throws Exception {
 
