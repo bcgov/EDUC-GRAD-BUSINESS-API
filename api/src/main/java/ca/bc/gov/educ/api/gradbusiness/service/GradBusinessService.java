@@ -87,7 +87,9 @@ public class GradBusinessService {
         type = Optional.ofNullable(type).orElse("");
         try {
             byte[] result = webClient.get().uri(String.format(educGraduationApiConstants.getGraduateReportDataByPenUrl(), pen) + "?type=" + type).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(byte[].class).block();
-            assert result != null;
+            if(result == null) {
+                result = new byte[0];
+            }
             return handleBinaryResponse(result, "graduation_report_data.json", MediaType.APPLICATION_JSON);
         } catch (Exception e) {
             return getInternalServerErrorResponse(e);
@@ -109,7 +111,9 @@ public class GradBusinessService {
             headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_JSON));
             headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_JSON));
             byte[] result = webClient.post().uri(educGraduationApiConstants.getGraduateReportDataByGraduation() + "?type=" + type).headers(h -> h.addAll(headers)).body(BodyInserters.fromValue(graduationData)).retrieve().bodyToMono(byte[].class).block();
-            assert result != null;
+            if(result == null) {
+                result = new byte[0];
+            }
             return handleBinaryResponse(result, "graduation_report_data.json", MediaType.APPLICATION_JSON);
         } catch (Exception e) {
             return getInternalServerErrorResponse(e);
@@ -130,7 +134,9 @@ public class GradBusinessService {
             headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_JSON));
             headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_JSON));
             byte[] result = webClient.post().uri(educGraduationApiConstants.getXmlTranscriptReportData()).headers(h -> h.addAll(headers)).body(BodyInserters.fromValue(xmlRequest)).retrieve().bodyToMono(byte[].class).block();
-            assert result != null;
+            if(result == null) {
+                result = new byte[0];
+            }
             return handleBinaryResponse(result, "xml_transcript_report_data.json", MediaType.APPLICATION_JSON);
         } catch (Exception e) {
             return getInternalServerErrorResponse(e);
@@ -151,7 +157,9 @@ public class GradBusinessService {
             headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_JSON));
             headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_JSON));
             byte[] result = webClient.get().uri(String.format(educGradStudentApiConstants.getPenDemographicStudentApiUrl(), pen)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(byte[].class).block();
-            assert result != null;
+            if(result == null) {
+                result = new byte[0];
+            }
             return handleBinaryResponse(result, "student_demog_data.json", MediaType.APPLICATION_JSON);
         } catch (Exception e) {
             return getInternalServerErrorResponse(e);
@@ -210,8 +218,10 @@ public class GradBusinessService {
             headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
             headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_PDF));
             InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getSchoolReportByMincode(), mincode,type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(InputStreamResource.class).block();
-            assert result != null;
-            byte[] res = IOUtils.toByteArray(result.getInputStream());
+            byte[] res = new byte[0];
+            if(result != null) {
+                res = result.getInputStream().readAllBytes();
+            }
             return handleBinaryResponse(res, EducGradBusinessUtil.getFileNameSchoolReports(mincode,year,month,type), MediaType.APPLICATION_PDF);
         } catch (Exception e) {
             return getInternalServerErrorResponse(e);
@@ -264,13 +274,16 @@ public class GradBusinessService {
             headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
             headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_PDF));
             InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getStudentCredentialByType(), studObj.getStudentID(),type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(InputStreamResource.class).block();
-            assert result != null;
-            byte[] res = IOUtils.toByteArray(result.getInputStream());
+            byte[] res = new byte[0];
+            if(result != null) {
+                res = result.getInputStream().readAllBytes();
+            }
             return handleBinaryResponse(res, EducGradBusinessUtil.getFileNameStudentCredentials(studObj.getMincode(),pen,type), MediaType.APPLICATION_PDF);
         } catch (Exception e) {
             return getInternalServerErrorResponse(e);
         }
     }
+
 
     @Transactional
     public ResponseEntity<byte[]> getStudentTranscriptPDFByType(String pen, String type, String accessToken) {
