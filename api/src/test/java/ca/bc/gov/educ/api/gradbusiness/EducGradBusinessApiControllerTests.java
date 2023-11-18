@@ -234,9 +234,9 @@ class EducGradBusinessApiControllerTests {
 				.contentType(MediaType.APPLICATION_XML)
 				.body(greBPack);
 
-		Mockito.when(gradBusinessService.getStudentTranscriptPDFByType("12312321","xml", "accessToken")).thenReturn(response);
-		gradBusinessController.studentTranscriptByType("12312321", "xml","accessToken");
-		Mockito.verify(gradBusinessService).getStudentTranscriptPDFByType("12312321","xml", "accessToken");
+		Mockito.when(gradBusinessService.getStudentTranscriptPDFByType("12312321","xml", null,"accessToken")).thenReturn(response);
+		gradBusinessController.studentTranscriptByType("12312321", "xml", null, "accessToken");
+		Mockito.verify(gradBusinessService).getStudentTranscriptPDFByType("12312321","xml",  null,"accessToken");
 
 	}
 
