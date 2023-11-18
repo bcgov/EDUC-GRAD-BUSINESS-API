@@ -286,10 +286,11 @@ public class GradBusinessService {
 
 
     @Transactional
-    public ResponseEntity<byte[]> getStudentTranscriptPDFByType(String pen, String type, String accessToken) {
+    public ResponseEntity<byte[]> getStudentTranscriptPDFByType(String pen, String type, String interim, String accessToken) {
         try {
             byte[] reportData = prepareReportDataByPen(pen, type, accessToken).getBody();
-            boolean isPreview = (StringUtils.isNotBlank(type) && StringUtils.equalsAnyIgnoreCase(type, "xml", "interim"));
+            boolean isPreview = (StringUtils.isNotBlank(type) && StringUtils.equalsAnyIgnoreCase(type, "xml", "interim") ||
+                    StringUtils.isNotBlank(interim) && StringUtils.equalsAnyIgnoreCase(interim, "xml", "interim"));
             StringBuilder reportRequest = new StringBuilder();
             String reportOptions = "\"options\": {\n" +
                     "        \"cacheReport\": false,\n" +
