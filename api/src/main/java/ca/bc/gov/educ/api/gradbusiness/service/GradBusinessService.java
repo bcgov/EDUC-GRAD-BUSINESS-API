@@ -7,6 +7,7 @@ import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -280,6 +281,7 @@ public class GradBusinessService {
             String reportOptions = "\"options\": {\n" +
                     "        \"cacheReport\": false,\n" +
                     "        \"convertTo\": \"pdf\",\n" +
+                    "        \"preview\": \""+ ((StringUtils.isNotBlank(type) && StringUtils.equalsAnyIgnoreCase(type, "xml")) ? "true" : "false") +"\",\n" +
                     "        \"overwrite\": false,\n" +
                     "        \"reportName\": \"transcript\",\n" +
                     "        \"reportFile\": \""+pen+" Transcript Report.pdf\"\n" +
