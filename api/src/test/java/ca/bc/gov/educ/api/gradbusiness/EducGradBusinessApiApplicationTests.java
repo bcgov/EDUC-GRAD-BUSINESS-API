@@ -460,7 +460,7 @@ class EducGradBusinessApiApplicationTests {
 		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
 		when(this.responseMock.bodyToMono(byte[].class)).thenReturn(Mono.just(transcriptPdfSample));
 
-		ResponseEntity<byte[]> transcriptPdf = gradBusinessService.getStudentTranscriptPDFByType(pen, "xml", "accessToken");
+		ResponseEntity<byte[]> transcriptPdf = gradBusinessService.getStudentTranscriptPDFByType(pen, "xml", null,"accessToken");
 		assertNotNull(transcriptPdf.getBody());
 		assertEquals(transcriptPdfSample,transcriptPdf.getBody());
 	}

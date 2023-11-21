@@ -6,7 +6,7 @@ import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessUtil;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -286,13 +286,16 @@ public class GradBusinessService {
 
 
     @Transactional
-    public ResponseEntity<byte[]> getStudentTranscriptPDFByType(String pen, String type, String accessToken) {
+    public ResponseEntity<byte[]> getStudentTranscriptPDFByType(String pen, String type, String interim, String accessToken) {
         try {
             byte[] reportData = prepareReportDataByPen(pen, type, accessToken).getBody();
+            boolean isPreview = (StringUtils.isNotBlank(type) && StringUtils.equalsAnyIgnoreCase(type, "xml", "interim") ||
+                    StringUtils.isNotBlank(interim) && StringUtils.equalsAnyIgnoreCase(interim, "xml", "interim"));
             StringBuilder reportRequest = new StringBuilder();
             String reportOptions = "\"options\": {\n" +
                     "        \"cacheReport\": false,\n" +
                     "        \"convertTo\": \"pdf\",\n" +
+                    "        \"preview\": \""+ (isPreview ? "true" : "false") +"\",\n" +
                     "        \"overwrite\": false,\n" +
                     "        \"reportName\": \"transcript\",\n" +
                     "        \"reportFile\": \""+pen+" Transcript Report.pdf\"\n" +

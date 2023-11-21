@@ -140,8 +140,8 @@ public class GradBusinessController {
     @PreAuthorize("hasAuthority('SCOPE_GET_GRADUATION_DATA')")
     @Operation(summary = "Get Transcript Report pdf by PEN and optional xml type parameter", description = "Get Transcript Report pdf by PEN and optional xml type parameter", tags = { "Graduation Data" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
-    public ResponseEntity<byte[]> studentTranscriptByType(@PathVariable String pen, @RequestParam(required = false) String type, @RequestHeader(name="Authorization") String accessToken) {
-        return gradBusinessService.getStudentTranscriptPDFByType(pen, type, accessToken.replace(BEARER, ""));
+    public ResponseEntity<byte[]> studentTranscriptByType(@PathVariable String pen, @RequestParam(required = false) String type, @RequestParam(required = false) String interim, @RequestHeader(name="Authorization") String accessToken) {
+        return gradBusinessService.getStudentTranscriptPDFByType(pen, type, interim, accessToken.replace(BEARER, ""));
     }
 
     @GetMapping(EducGraduationApiConstants.AMALGAMATED_SCHOOL_REPORT_PDF)
