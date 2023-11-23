@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 /**
  * The type Grad business service.
@@ -47,20 +46,17 @@ public class GradBusinessService {
     /**
      * Utility service to obtain access token
      * */
-    @Autowired
-    TokenUtils tokenUtils;
+    final TokenUtils tokenUtils;
 
     /**
      * The Educ grad student api constants.
      */
-    @Autowired
-    EducGradBusinessApiConstants educGradStudentApiConstants;
+    final EducGradBusinessApiConstants educGradStudentApiConstants;
 
     /**
      * The Educ graduation api constants.
      */
-    @Autowired
-    EducGraduationApiConstants educGraduationApiConstants;
+    final EducGraduationApiConstants educGraduationApiConstants;
 
     /**
      * Instantiates a new Grad business service.
@@ -68,8 +64,11 @@ public class GradBusinessService {
      * @param webClient the web client
      */
     @Autowired
-    public GradBusinessService(WebClient webClient) {
+    public GradBusinessService(WebClient webClient, TokenUtils tokenUtils, EducGradBusinessApiConstants educGradStudentApiConstants, EducGraduationApiConstants educGraduationApiConstants) {
         this.webClient = webClient;
+        this.tokenUtils = tokenUtils;
+        this.educGradStudentApiConstants = educGradStudentApiConstants;
+        this.educGraduationApiConstants = educGraduationApiConstants;
     }
 
     /**
@@ -199,9 +198,9 @@ public class GradBusinessService {
         logger.debug("******** Retrieve List of Students for Amalgamated School Report ******");
         List<UUID> studentList = webClient.get().uri(String.format(educGradStudentApiConstants.getStudentsForAmalgamatedReport(), mincode, type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(new ParameterizedTypeReference<List<UUID>>() {
         }).block();
-        logger.debug("******** Fetched {} students ******", studentList.size());
         List<InputStream> locations = new ArrayList<>();
         if (studentList != null && !studentList.isEmpty()) {
+            logger.debug("******** Fetched {} students ******", studentList.size());
             getStudentAchievementReports(studentList, locations);
             Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
             int year = cal.get(Calendar.YEAR);
@@ -279,11 +278,11 @@ public class GradBusinessService {
         logger.debug("******** Getting Student Achievement Reports ******");
         List<CompletableFuture<InputStream>> futures = studentList.stream()
                 .map(studentGuid -> CompletableFuture.supplyAsync(() -> getStudentAchievementReport(studentGuid)))
-                .collect(Collectors.toList());
+                .toList();
         CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
         CompletableFuture<List<InputStream>> result = allFutures.thenApply(v -> futures.stream()
                 .map(CompletableFuture::join)
-                .collect(Collectors.toList()));
+                .toList());
         locations.addAll(result.join());
         logger.debug("******** Fetched All Student Achievement Reports ******");
     }
