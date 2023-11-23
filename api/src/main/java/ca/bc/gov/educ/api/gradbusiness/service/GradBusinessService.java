@@ -175,48 +175,6 @@ public class GradBusinessService {
         }
     }
 
-    /**
-     * Gets internal server error response.
-     *
-     * @param t the t
-     * @return the internal server error response
-     */
-    protected ResponseEntity<byte[]> getInternalServerErrorResponse(Throwable t) {
-        ResponseEntity<byte[]> result;
-
-        Throwable tmp = t;
-        String message;
-        if (tmp.getCause() != null) {
-            tmp = tmp.getCause();
-            message = tmp.getMessage();
-        } else {
-            message = tmp.getMessage();
-        }
-        if(message == null) {
-            message = tmp.getClass().getName();
-        }
-
-        result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message.getBytes());
-        return result;
-    }
-
-    private ResponseEntity<byte[]> handleBinaryResponse(byte[] resultBinary, String reportFile, MediaType contentType) {
-        ResponseEntity<byte[]> response;
-
-        if(resultBinary.length > 0) {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Disposition", "inline; filename=" + reportFile);
-            response = ResponseEntity
-                    .ok()
-                    .headers(headers)
-                    .contentType(contentType)
-                    .body(resultBinary);
-        } else {
-            response = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }
-        return response;
-    }
-
     public ResponseEntity<byte[]> getSchoolReportPDFByMincode(String mincode, String type, String accessToken) {
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
         int year = cal.get(Calendar.YEAR);
@@ -238,9 +196,10 @@ public class GradBusinessService {
     }
 
     public ResponseEntity<byte[]> getAmalgamatedSchoolReportPDFByMincode(String mincode, String type, String accessToken) {
+        logger.debug("******** Retrieve List of Students for Amalgamated School Report ******");
         List<UUID> studentList = webClient.get().uri(String.format(educGradStudentApiConstants.getStudentsForAmalgamatedReport(), mincode, type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(new ParameterizedTypeReference<List<UUID>>() {
         }).block();
-        logger.debug("******** Fetched Student List ******");
+        logger.debug("******** Fetched {} students ******", studentList.size());
         List<InputStream> locations = new ArrayList<>();
         if (studentList != null && !studentList.isEmpty()) {
             getStudentAchievementReports(studentList, locations);
@@ -249,8 +208,9 @@ public class GradBusinessService {
             String month = "00";
             String fileName = EducGradBusinessUtil.getFileNameSchoolReports(mincode, year, month, type);
             try {
-                logger.debug("******** Merged Documents ******");
+                logger.debug("******** Merging Documents Started ******");
                 byte[] res = EducGradBusinessUtil.mergeDocuments(locations);
+                logger.debug("******** Merged {} Documents ******", locations.size());
                 HttpHeaders headers = new HttpHeaders();
                 headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
                 headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
@@ -316,7 +276,7 @@ public class GradBusinessService {
     }
 
     private void getStudentAchievementReports(List<UUID> studentList, List<InputStream> locations) {
-        logger.debug("******** Getting Achievement Reports ******");
+        logger.debug("******** Getting Student Achievement Reports ******");
         List<CompletableFuture<InputStream>> futures = studentList.stream()
                 .map(studentGuid -> CompletableFuture.supplyAsync(() -> getStudentAchievementReport(studentGuid)))
                 .collect(Collectors.toList());
@@ -325,13 +285,7 @@ public class GradBusinessService {
                 .map(CompletableFuture::join)
                 .collect(Collectors.toList()));
         locations.addAll(result.join());
-//        for (UUID studentID : studentList) {
-//            InputStream result = getStudentAchievementReport(studentID);
-//            if (result != null) {
-//                locations.add(result);
-//            }
-//        }
-        logger.debug("******** Fetched Achievement Reports ******");
+        logger.debug("******** Fetched All Student Achievement Reports ******");
     }
 
     private InputStream getStudentAchievementReport(UUID studentGuid) {
@@ -342,9 +296,51 @@ public class GradBusinessService {
                 logger.debug("******** Fetched Achievement Report for {} ******", studentGuid);
                 return result.getInputStream();
             } catch (IOException e) {
-                logger.debug("Error extracting bytes from binary stream: {}", e.getLocalizedMessage());
+                logger.debug("Error extracting report binary from stream: {}", e.getLocalizedMessage());
             }
         }
         return null;
+    }
+
+    /**
+     * Gets internal server error response.
+     *
+     * @param t the t
+     * @return the internal server error response
+     */
+    protected ResponseEntity<byte[]> getInternalServerErrorResponse(Throwable t) {
+        ResponseEntity<byte[]> result;
+
+        Throwable tmp = t;
+        String message;
+        if (tmp.getCause() != null) {
+            tmp = tmp.getCause();
+            message = tmp.getMessage();
+        } else {
+            message = tmp.getMessage();
+        }
+        if(message == null) {
+            message = tmp.getClass().getName();
+        }
+
+        result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message.getBytes());
+        return result;
+    }
+
+    private ResponseEntity<byte[]> handleBinaryResponse(byte[] resultBinary, String reportFile, MediaType contentType) {
+        ResponseEntity<byte[]> response;
+
+        if(resultBinary.length > 0) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Disposition", "inline; filename=" + reportFile);
+            response = ResponseEntity
+                    .ok()
+                    .headers(headers)
+                    .contentType(contentType)
+                    .body(resultBinary);
+        } else {
+            response = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return response;
     }
 }

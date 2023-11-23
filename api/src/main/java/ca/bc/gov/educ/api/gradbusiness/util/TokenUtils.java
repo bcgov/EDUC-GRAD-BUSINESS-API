@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -42,7 +43,7 @@ public class TokenUtils {
         }
         return responseObjCache.getResponseObj();
     }
-    
+
     private ResponseObj getResponseObj() {
         HttpHeaders httpHeaders = getHeaders(
                 constants.getUserName(), constants.getPassword());
@@ -61,5 +62,10 @@ public class TokenUtils {
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         httpHeaders.setBasicAuth(username, password);
         return httpHeaders;
+    }
+
+    public ResponseObj getTokenFallback(HttpServerErrorException exception){
+        logger.error("{} NOT REACHABLE after many attempts.", constants.getTokenUrl(), exception);
+        return null;
     }
 }
