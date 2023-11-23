@@ -49,6 +49,11 @@ logging:
           autoconfigure:
             logging: ${SPRING_BOOT_AUTOCONFIG_LOG_LEVEL}
 
+authorization:
+  user: ${STS_CLIENT_NAME}
+  password: ${STS_CLIENT_SECRET}
+  token-expiry-offset: '30'
+
 #API Documentation
 springdoc:
   api-docs:
@@ -98,6 +103,8 @@ resilience4j.retry:
 
 #Endpoint properties
 endpoint:
+  keycloak:
+    getToken: ${KEYCLOAK_TOKEN_URL}auth/realms/master/protocol/openid-connect/token
   pen-student-api:
     by-studentid:
       url: ${PEN_API}api/v1/student/%s

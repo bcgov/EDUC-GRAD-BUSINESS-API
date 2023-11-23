@@ -4,6 +4,7 @@ import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessUtil;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
+import ca.bc.gov.educ.api.gradbusiness.util.TokenUtils;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
@@ -23,6 +24,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /**
  * The type Grad business service.
@@ -40,6 +43,12 @@ public class GradBusinessService {
      * The Web client.
      */
     final WebClient webClient;
+
+    /**
+     * Utility service to obtain access token
+     * */
+    @Autowired
+    TokenUtils tokenUtils;
 
     /**
      * The Educ grad student api constants.
@@ -234,17 +243,7 @@ public class GradBusinessService {
         logger.debug("******** Fetched Student List ******");
         List<InputStream> locations = new ArrayList<>();
         if (studentList != null && !studentList.isEmpty()) {
-            for (UUID studentID : studentList) {
-                InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getStudentCredentialByType(), studentID, "ACHV")).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(InputStreamResource.class).block();
-                if (result != null) {
-                    try {
-                        locations.add(result.getInputStream());
-                    } catch (IOException e) {
-                        logger.debug("Error {}",e.getLocalizedMessage());
-                    }
-                }
-            }
-            logger.debug("******** Fetched Achievement Reports ******");
+            getStudentAchievementReports(studentList, locations);
             Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
             int year = cal.get(Calendar.YEAR);
             String month = "00";
@@ -284,7 +283,6 @@ public class GradBusinessService {
         }
     }
 
-
     @Transactional
     public ResponseEntity<byte[]> getStudentTranscriptPDFByType(String pen, String type, String interim, String accessToken) {
         try {
@@ -315,5 +313,38 @@ public class GradBusinessService {
         } catch (Exception e) {
             return getInternalServerErrorResponse(e);
         }
+    }
+
+    private void getStudentAchievementReports(List<UUID> studentList, List<InputStream> locations) {
+        logger.debug("******** Getting Achievement Reports ******");
+        List<CompletableFuture<InputStream>> futures = studentList.stream()
+                .map(studentGuid -> CompletableFuture.supplyAsync(() -> getStudentAchievementReport(studentGuid)))
+                .collect(Collectors.toList());
+        CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
+        CompletableFuture<List<InputStream>> result = allFutures.thenApply(v -> futures.stream()
+                .map(CompletableFuture::join)
+                .collect(Collectors.toList()));
+        locations.addAll(result.join());
+//        for (UUID studentID : studentList) {
+//            InputStream result = getStudentAchievementReport(studentID);
+//            if (result != null) {
+//                locations.add(result);
+//            }
+//        }
+        logger.debug("******** Fetched Achievement Reports ******");
+    }
+
+    private InputStream getStudentAchievementReport(UUID studentGuid) {
+        String accessTokenNext = tokenUtils.getAccessToken();
+        InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getStudentCredentialByType(), studentGuid, "ACHV")).headers(h -> h.setBearerAuth(accessTokenNext)).retrieve().bodyToMono(InputStreamResource.class).block();
+        if (result != null) {
+            try {
+                logger.debug("******** Fetched Achievement Report for {} ******", studentGuid);
+                return result.getInputStream();
+            } catch (IOException e) {
+                logger.debug("Error extracting bytes from binary stream: {}", e.getLocalizedMessage());
+            }
+        }
+        return null;
     }
 }

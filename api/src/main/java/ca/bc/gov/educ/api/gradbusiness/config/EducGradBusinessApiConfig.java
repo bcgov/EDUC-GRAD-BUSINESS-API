@@ -40,7 +40,7 @@ public class EducGradBusinessApiConfig implements WebMvcConfigurer {
         return WebClient.builder().exchangeStrategies(ExchangeStrategies.builder()
                 .codecs(configurer -> configurer
                         .defaultCodecs()
-                        .maxInMemorySize(20 * 1024 * 1024))
+                        .maxInMemorySize(100 * 1024 * 1024))
                 .build()).build();
     }
 
