@@ -11,7 +11,7 @@
     </parent>
     <groupId>ca.bc.gov</groupId>
     <artifactId>educ-grad-business-api</artifactId>
-    <version>1.8.25</version>
+    <version>1.8.26</version>
     <name>educ-grad-business-api</name>
     <description>GRAD Business API for external clients</description>
 
@@ -169,6 +169,11 @@
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
             <version>2.0.26</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20220320</version>
         </dependency>
     </dependencies>
 

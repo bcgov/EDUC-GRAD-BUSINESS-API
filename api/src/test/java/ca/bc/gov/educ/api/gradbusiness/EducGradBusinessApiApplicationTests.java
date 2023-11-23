@@ -4,6 +4,7 @@ import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
 import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
+import ca.bc.gov.educ.api.gradbusiness.util.TokenUtils;
 import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,6 +47,8 @@ class EducGradBusinessApiApplicationTests {
 	@MockBean
 	WebClient webClient;
 
+	@MockBean
+	private TokenUtils tokenUtils;
 	@Mock
 	private WebClient.RequestHeadersSpec requestHeadersMock;
 
@@ -87,6 +90,8 @@ class EducGradBusinessApiApplicationTests {
 
 		String reportData = readFile("json/studentTranscriptReportData.json");
 		assertNotNull(reportData);
+
+		when(this.tokenUtils.getAccessToken()).thenReturn("accessToken");
 
 		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
 		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getGraduateReportDataByPenUrl(),"128385861") + "?type=")).thenReturn(this.requestHeadersMock);
@@ -145,6 +150,8 @@ class EducGradBusinessApiApplicationTests {
 
 		String reportData = readFile("json/studentTranscriptReportData.json");
 		assertNotNull(reportData);
+
+		when(this.tokenUtils.getAccessToken()).thenReturn("accessToken");
 
 		when(this.webClient.post()).thenReturn(this.requestBodyUriMock);
 		when(this.requestBodyUriMock.uri(educGraduationApiConstants.getGraduateReportDataByGraduation() + "?type=")).thenReturn(this.requestBodyUriMock);
@@ -226,6 +233,8 @@ class EducGradBusinessApiApplicationTests {
 		String xmlTranscriptReportData = readFile("json/xml_report_sample.xml");
 		assertNotNull(xmlTranscriptReportData);
 
+		when(this.tokenUtils.getAccessToken()).thenReturn("accessToken");
+
 		when(this.webClient.post()).thenReturn(this.requestBodyUriMock);
 		when(this.requestBodyUriMock.uri(educGraduationApiConstants.getXmlTranscriptReportData())).thenReturn(this.requestBodyUriMock);
 		when(this.requestBodyUriMock.headers(any(Consumer.class))).thenReturn(this.requestBodyMock);
@@ -264,6 +273,8 @@ class EducGradBusinessApiApplicationTests {
 		byte[] samplePdf = readBinaryFile("data/sample.pdf");
 		InputStreamResource pdf = new InputStreamResource(new ByteArrayInputStream(samplePdf));
 
+		when(this.tokenUtils.getAccessToken()).thenReturn("accessToken");
+
 		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
 		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getSchoolReportByMincode(),mincode,type))).thenReturn(this.requestHeadersMock);
 		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
@@ -283,6 +294,8 @@ class EducGradBusinessApiApplicationTests {
 
 		byte[] samplePdf = readBinaryFile("data/sample.pdf");
 		InputStreamResource pdf = new InputStreamResource(new ByteArrayInputStream(samplePdf));
+
+		when(this.tokenUtils.getAccessToken()).thenReturn("accessToken");
 
 		UUID studentID = UUID.randomUUID();
 		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
@@ -325,6 +338,7 @@ class EducGradBusinessApiApplicationTests {
 		byte[] samplePdf = new byte[0];
 		InputStreamResource pdf = new InputStreamResource(new ByteArrayInputStream(samplePdf));
 
+		when(this.tokenUtils.getAccessToken()).thenReturn("accessToken");
 
 		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
 		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getSchoolReportByMincode(),mincode,type))).thenReturn(this.requestHeadersMock);
@@ -344,6 +358,7 @@ class EducGradBusinessApiApplicationTests {
 		String type = "NONGRADPRJ";
 		InputStream is = getClass().getClassLoader().getResourceAsStream("json/xmlTranscriptReportRequest.json");
 
+		when(this.tokenUtils.getAccessToken()).thenReturn("accessToken");
 
 		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
 		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getSchoolReportByMincode(),mincode,type))).thenReturn(this.requestHeadersMock);
@@ -363,6 +378,8 @@ class EducGradBusinessApiApplicationTests {
 		String pen = "128385861";
 		InputStream is = getClass().getClassLoader().getResourceAsStream("json/xmlTranscriptReportRequest.json");
 		byte[] barr = is.readAllBytes();
+
+		when(this.tokenUtils.getAccessToken()).thenReturn("accessToken");
 
 		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
 		when(this.requestHeadersUriMock.uri(String.format(educGradStudentApiConstants.getPenDemographicStudentApiUrl(),pen))).thenReturn(this.requestHeadersMock);
@@ -410,6 +427,8 @@ class EducGradBusinessApiApplicationTests {
 		sObj.setPen(pen);
 		sObj.setMincode("123123112");
 
+		when(this.tokenUtils.getAccessToken()).thenReturn("accessToken");
+
 		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
 		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getStudentCredentialByType(),sObj.getStudentID(),type))).thenReturn(this.requestHeadersMock);
 		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
@@ -438,6 +457,8 @@ class EducGradBusinessApiApplicationTests {
 		String reportData = readFile("json/studentTranscriptReportData.json");
 		assertNotNull(reportData);
 
+		when(this.tokenUtils.getAccessToken()).thenReturn("accessToken");
+
 		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
 		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getGraduateReportDataByPenUrl(),"128385861") + "?type=")).thenReturn(this.requestHeadersMock);
 		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
@@ -460,6 +481,8 @@ class EducGradBusinessApiApplicationTests {
 		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
 		when(this.responseMock.bodyToMono(byte[].class)).thenReturn(Mono.just(transcriptPdfSample));
 
+		when(this.tokenUtils.getAccessToken()).thenReturn("accessToken");
+
 		ResponseEntity<byte[]> transcriptPdf = gradBusinessService.getStudentTranscriptPDFByType(pen, "xml", null,"accessToken");
 		assertNotNull(transcriptPdf.getBody());
 		assertEquals(transcriptPdfSample,transcriptPdf.getBody());
@@ -478,6 +501,8 @@ class EducGradBusinessApiApplicationTests {
 		sObj.setStudentID(UUID.randomUUID().toString());
 		sObj.setPen(pen);
 		sObj.setMincode("123123112");
+
+		when(this.tokenUtils.getAccessToken()).thenReturn("accessToken");
 
 		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
 		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getStudentCredentialByType(),sObj.getStudentID(),type))).thenReturn(this.requestHeadersMock);
@@ -517,6 +542,8 @@ class EducGradBusinessApiApplicationTests {
 
 		final ParameterizedTypeReference<List<Student>> responseType = new ParameterizedTypeReference<>() {
 		};
+
+		when(this.tokenUtils.getAccessToken()).thenReturn("accessToken");
 
 		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
 		when(this.requestHeadersUriMock.uri(String.format(educGradStudentApiConstants.getPenStudentApiByPenUrl(),pen))).thenReturn(this.requestHeadersMock);
