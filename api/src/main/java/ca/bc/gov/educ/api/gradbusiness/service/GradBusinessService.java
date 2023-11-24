@@ -202,7 +202,7 @@ public class GradBusinessService {
         List<InputStream> locations = new ArrayList<>();
         if (studentList != null && !studentList.isEmpty()) {
             logger.debug("******** Fetched {} students ******", studentList.size());
-            List<List<UUID>> partitions = ListUtils.partition(studentList, 50);
+            List<List<UUID>> partitions = ListUtils.partition(studentList, 100);
             getStudentAchievementReports(partitions, locations);
             Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
             int year = cal.get(Calendar.YEAR);
