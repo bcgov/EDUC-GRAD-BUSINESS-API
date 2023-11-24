@@ -7,6 +7,7 @@ import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.TokenUtils;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -201,7 +202,8 @@ public class GradBusinessService {
         List<InputStream> locations = new ArrayList<>();
         if (studentList != null && !studentList.isEmpty()) {
             logger.debug("******** Fetched {} students ******", studentList.size());
-            getStudentAchievementReports(studentList, locations);
+            List<List<UUID>> partitions = ListUtils.partition(studentList, 50);
+            getStudentAchievementReports(partitions, locations);
             Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
             int year = cal.get(Calendar.YEAR);
             String month = "00";
@@ -274,16 +276,18 @@ public class GradBusinessService {
         }
     }
 
-    private void getStudentAchievementReports(List<UUID> studentList, List<InputStream> locations) {
+    private void getStudentAchievementReports(List<List<UUID>> partitions, List<InputStream> locations) {
         logger.debug("******** Getting Student Achievement Reports ******");
-        List<CompletableFuture<InputStream>> futures = studentList.stream()
-                .map(studentGuid -> CompletableFuture.supplyAsync(() -> getStudentAchievementReport(studentGuid)))
-                .toList();
-        CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
-        CompletableFuture<List<InputStream>> result = allFutures.thenApply(v -> futures.stream()
-                .map(CompletableFuture::join)
-                .toList());
-        locations.addAll(result.join());
+        for(List<UUID> studentList: partitions) {
+            List<CompletableFuture<InputStream>> futures = studentList.stream()
+                    .map(studentGuid -> CompletableFuture.supplyAsync(() -> getStudentAchievementReport(studentGuid)))
+                    .toList();
+            CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
+            CompletableFuture<List<InputStream>> result = allFutures.thenApply(v -> futures.stream()
+                    .map(CompletableFuture::join)
+                    .toList());
+            locations.addAll(result.join());
+        }
         logger.debug("******** Fetched All Student Achievement Reports ******");
     }
 
