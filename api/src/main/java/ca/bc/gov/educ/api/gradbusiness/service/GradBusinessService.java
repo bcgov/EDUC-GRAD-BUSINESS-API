@@ -7,6 +7,7 @@ import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.TokenUtils;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -201,14 +201,15 @@ public class GradBusinessService {
         List<InputStream> locations = new ArrayList<>();
         if (studentList != null && !studentList.isEmpty()) {
             logger.debug("******** Fetched {} students ******", studentList.size());
-            getStudentAchievementReports(studentList, locations);
+            List<List<UUID>> partitions = ListUtils.partition(studentList, 200);
+            getStudentAchievementReports(partitions, locations);
             Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
             int year = cal.get(Calendar.YEAR);
             String month = "00";
             String fileName = EducGradBusinessUtil.getFileNameSchoolReports(mincode, year, month, type);
             try {
                 logger.debug("******** Merging Documents Started ******");
-                byte[] res = EducGradBusinessUtil.mergeDocuments(locations);
+                byte[] res = EducGradBusinessUtil.mergeDocumentsPDFs(locations);
                 logger.debug("******** Merged {} Documents ******", locations.size());
                 HttpHeaders headers = new HttpHeaders();
                 headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
@@ -274,29 +275,32 @@ public class GradBusinessService {
         }
     }
 
-    private void getStudentAchievementReports(List<UUID> studentList, List<InputStream> locations) {
+    private void getStudentAchievementReports(List<List<UUID>> partitions, List<InputStream> locations) {
         logger.debug("******** Getting Student Achievement Reports ******");
-        List<CompletableFuture<InputStream>> futures = studentList.stream()
-                .map(studentGuid -> CompletableFuture.supplyAsync(() -> getStudentAchievementReport(studentGuid)))
-                .toList();
-        CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
-        CompletableFuture<List<InputStream>> result = allFutures.thenApply(v -> futures.stream()
-                .map(CompletableFuture::join)
-                .toList());
-        locations.addAll(result.join());
-        logger.debug("******** Fetched All Student Achievement Reports ******");
+        for(List<UUID> studentList: partitions) {
+            logger.debug("******** Run partition with {} students ******", studentList.size());
+            List<CompletableFuture<InputStream>> futures = studentList.stream()
+                    .map(studentGuid -> CompletableFuture.supplyAsync(() -> getStudentAchievementReport(studentGuid)))
+                    .toList();
+            CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
+            CompletableFuture<List<InputStream>> result = allFutures.thenApply(v -> futures.stream()
+                    .map(CompletableFuture::join)
+                    .toList());
+            locations.addAll(result.join());
+        }
+        logger.debug("******** Fetched All {} Student Achievement Reports ******", locations.size());
     }
 
     private InputStream getStudentAchievementReport(UUID studentGuid) {
         String accessTokenNext = tokenUtils.getAccessToken();
-        InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getStudentCredentialByType(), studentGuid, "ACHV")).headers(h -> h.setBearerAuth(accessTokenNext)).retrieve().bodyToMono(InputStreamResource.class).block();
-        if (result != null) {
-            try {
+        try {
+            InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getStudentCredentialByType(), studentGuid, "ACHV")).headers(h -> h.setBearerAuth(accessTokenNext)).retrieve().bodyToMono(InputStreamResource.class).block();
+            if (result != null) {
                 logger.debug("******** Fetched Achievement Report for {} ******", studentGuid);
                 return result.getInputStream();
-            } catch (IOException e) {
-                logger.debug("Error extracting report binary from stream: {}", e.getLocalizedMessage());
             }
+        } catch (Exception e) {
+            logger.debug("Error extracting report binary from stream: {}", e.getLocalizedMessage());
         }
         return null;
     }

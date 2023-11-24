@@ -49,6 +49,7 @@ public class TokenUtils {
                 constants.getUserName(), constants.getPassword());
         MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
         map.add("grant_type", "client_credentials");
+        logger.debug("******** Fetch Access Token ********");
         return this.webClient.post().uri(constants.getTokenUrl())
                 .headers(h -> h.addAll(httpHeaders))
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
