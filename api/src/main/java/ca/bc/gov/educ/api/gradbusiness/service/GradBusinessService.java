@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -210,7 +209,7 @@ public class GradBusinessService {
             String fileName = EducGradBusinessUtil.getFileNameSchoolReports(mincode, year, month, type);
             try {
                 logger.debug("******** Merging Documents Started ******");
-                byte[] res = EducGradBusinessUtil.mergeDocuments(locations);
+                byte[] res = EducGradBusinessUtil.mergeDocumentsPDFs(locations);
                 logger.debug("******** Merged {} Documents ******", locations.size());
                 HttpHeaders headers = new HttpHeaders();
                 headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
@@ -294,14 +293,14 @@ public class GradBusinessService {
 
     private InputStream getStudentAchievementReport(UUID studentGuid) {
         String accessTokenNext = tokenUtils.getAccessToken();
-        InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getStudentCredentialByType(), studentGuid, "ACHV")).headers(h -> h.setBearerAuth(accessTokenNext)).retrieve().bodyToMono(InputStreamResource.class).block();
-        if (result != null) {
-            try {
+        try {
+            InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getStudentCredentialByType(), studentGuid, "ACHV")).headers(h -> h.setBearerAuth(accessTokenNext)).retrieve().bodyToMono(InputStreamResource.class).block();
+            if (result != null) {
                 logger.debug("******** Fetched Achievement Report for {} ******", studentGuid);
                 return result.getInputStream();
-            } catch (IOException e) {
-                logger.debug("Error extracting report binary from stream: {}", e.getLocalizedMessage());
             }
+        } catch (Exception e) {
+            logger.debug("Error extracting report binary from stream: {}", e.getLocalizedMessage());
         }
         return null;
     }

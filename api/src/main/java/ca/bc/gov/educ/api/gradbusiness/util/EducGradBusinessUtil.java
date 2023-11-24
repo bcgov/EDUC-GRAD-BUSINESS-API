@@ -5,6 +5,11 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfSmartCopy;
+import org.apache.pdfbox.io.MemoryUsageSetting;
+import org.apache.pdfbox.multipdf.PDFMergerUtility;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -15,10 +20,35 @@ import java.util.Optional;
 
 public class EducGradBusinessUtil {
 
+    private static final Logger logger = LoggerFactory.getLogger(EducGradBusinessUtil.class);
+
+    public static final String TMP_DIR = "/tmp";
+
     private EducGradBusinessUtil() {}
 
 
     private static final int BUFFER_SIZE = 250000;
+
+    public static byte[] mergeDocumentsPDFs(List<InputStream> locations) throws IOException {
+        File bufferDirectory = null;
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        try {
+            bufferDirectory = IOUtils.createTempDirectory(TMP_DIR, "buffer");
+            PDFMergerUtility pdfMergerUtility = new PDFMergerUtility();
+            pdfMergerUtility.setDestinationStream(result);
+            pdfMergerUtility.addSources(locations);
+            MemoryUsageSetting memoryUsageSetting = MemoryUsageSetting.setupMixed(50000000)
+                    .setTempDir(bufferDirectory);
+            pdfMergerUtility.mergeDocuments(memoryUsageSetting);
+        } catch (Exception e) {
+            logger.error("Error {}", e.getLocalizedMessage());
+        } finally {
+            if (bufferDirectory != null) {
+                IOUtils.removeFileOrDirectory(bufferDirectory);
+            }
+        }
+        return result.toByteArray();
+    }
 
     public static byte[] mergeDocuments(List<InputStream> locations) throws IOException {
         final byte[] result;
