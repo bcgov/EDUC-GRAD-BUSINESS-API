@@ -202,7 +202,7 @@ public class GradBusinessService {
         List<InputStream> locations = new ArrayList<>();
         if (studentList != null && !studentList.isEmpty()) {
             logger.debug("******** Fetched {} students ******", studentList.size());
-            List<List<UUID>> partitions = ListUtils.partition(studentList, 100);
+            List<List<UUID>> partitions = ListUtils.partition(studentList, 200);
             getStudentAchievementReports(partitions, locations);
             Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
             int year = cal.get(Calendar.YEAR);
@@ -279,6 +279,7 @@ public class GradBusinessService {
     private void getStudentAchievementReports(List<List<UUID>> partitions, List<InputStream> locations) {
         logger.debug("******** Getting Student Achievement Reports ******");
         for(List<UUID> studentList: partitions) {
+            logger.debug("******** Run partition with {} students ******", studentList.size());
             List<CompletableFuture<InputStream>> futures = studentList.stream()
                     .map(studentGuid -> CompletableFuture.supplyAsync(() -> getStudentAchievementReport(studentGuid)))
                     .toList();
@@ -288,7 +289,7 @@ public class GradBusinessService {
                     .toList());
             locations.addAll(result.join());
         }
-        logger.debug("******** Fetched All Student Achievement Reports ******");
+        logger.debug("******** Fetched All {} Student Achievement Reports ******", locations.size());
     }
 
     private InputStream getStudentAchievementReport(UUID studentGuid) {
