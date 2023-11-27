@@ -1,7 +1,6 @@
-name: Build & Deploy to DEV from main branch
+name: Build & Deploy to DEV from Developer Branch
 
 env:
-
   # 🖊️ EDIT your repository secrets to log into your OpenShift cluster and set up the context.
   # See https://github.com/redhat-actions/oc-login#readme for how to retrieve these values.
   # To get a permanent token, refer to https://github.com/redhat-actions/oc-login/wiki/Using-a-Service-Account-for-GitHub-Actions
@@ -32,10 +31,19 @@ env:
 on:
   # https://docs.github.com/en/actions/reference/events-that-trigger-workflows
   workflow_dispatch:
+    inputs:
+      choice:
+        type: choice
+        description: Choose branch to build from
+        options:
+          - develop/alex
+          - develop/chris
+          - develop/jinil
+          - develop/km
 
 jobs:
   openshift-ci-cd:
-    name: Build and deploy to OpenShift DEV
+    name: Build and deploy to OpenShift DEV from Developer branch
     # ubuntu-20.04 can also be used.
     runs-on: ubuntu-20.04
     environment: dev
@@ -47,6 +55,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.choice }}
 
       - name: Determine image tags
         if: env.TAG == ''

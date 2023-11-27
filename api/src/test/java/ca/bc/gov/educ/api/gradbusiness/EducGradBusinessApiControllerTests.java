@@ -3,6 +3,7 @@ package ca.bc.gov.educ.api.gradbusiness;
 import ca.bc.gov.educ.api.gradbusiness.controller.GradBusinessController;
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
 import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
+import ca.bc.gov.educ.api.gradbusiness.util.TokenUtils;
 import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.when;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(SpringRunner.class)
@@ -32,12 +35,14 @@ import static org.junit.Assert.assertNotNull;
 @ActiveProfiles("test")
 class EducGradBusinessApiControllerTests {
 
+	@MockBean
+	private TokenUtils tokenUtils;
+
 	@Mock
 	private GradBusinessService gradBusinessService;
 
 	@InjectMocks
 	private GradBusinessController gradBusinessController;
-
 
 	@Test
 	void testReportDataByPen() throws Exception {
@@ -233,6 +238,8 @@ class EducGradBusinessApiControllerTests {
 				.headers(headers)
 				.contentType(MediaType.APPLICATION_XML)
 				.body(greBPack);
+
+		when(this.tokenUtils.getAccessToken()).thenReturn("accessToken");
 
 		Mockito.when(gradBusinessService.getStudentTranscriptPDFByType("12312321","xml", null,"accessToken")).thenReturn(response);
 		gradBusinessController.studentTranscriptByType("12312321", "xml", null, "accessToken");

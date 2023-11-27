@@ -54,5 +54,15 @@ public class EducGraduationApiConstants {
     @Value("${endpoint.grad-report-api.transcript-by-request.url}")
     private String studentTranscriptReportByRequest;
 
-    
+    @Value("${authorization.user}")
+    private String userName;
+
+    @Value("${authorization.password}")
+    private String password;
+
+    @Value("${endpoint.keycloak.getToken}")
+    private String tokenUrl;
+
+    @Value("${authorization.token-expiry-offset}")
+    private int tokenExpiryOffset;
 }

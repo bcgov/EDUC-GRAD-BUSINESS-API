@@ -1,11 +1,14 @@
 package ca.bc.gov.educ.api.gradbusiness.service;
 
+import ca.bc.gov.educ.api.gradbusiness.exception.ServiceException;
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessUtil;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
+import ca.bc.gov.educ.api.gradbusiness.util.TokenUtils;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +23,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * The type Grad business service.
@@ -36,22 +42,26 @@ public class GradBusinessService {
     private static final String APPLICATION_JSON = "application/json";
     private static final String APPLICATION_PDF = "application/pdf";
     private static final String ACCEPT = "*/*";
+    private static final String TMP = "/tmp";
     /**
      * The Web client.
      */
     final WebClient webClient;
 
     /**
+     * Utility service to obtain access token
+     * */
+    final TokenUtils tokenUtils;
+
+    /**
      * The Educ grad student api constants.
      */
-    @Autowired
-    EducGradBusinessApiConstants educGradStudentApiConstants;
+    final EducGradBusinessApiConstants educGradStudentApiConstants;
 
     /**
      * The Educ graduation api constants.
      */
-    @Autowired
-    EducGraduationApiConstants educGraduationApiConstants;
+    final EducGraduationApiConstants educGraduationApiConstants;
 
     /**
      * Instantiates a new Grad business service.
@@ -59,8 +69,11 @@ public class GradBusinessService {
      * @param webClient the web client
      */
     @Autowired
-    public GradBusinessService(WebClient webClient) {
+    public GradBusinessService(WebClient webClient, TokenUtils tokenUtils, EducGradBusinessApiConstants educGradStudentApiConstants, EducGraduationApiConstants educGraduationApiConstants) {
         this.webClient = webClient;
+        this.tokenUtils = tokenUtils;
+        this.educGradStudentApiConstants = educGradStudentApiConstants;
+        this.educGraduationApiConstants = educGraduationApiConstants;
     }
 
     /**
@@ -166,6 +179,146 @@ public class GradBusinessService {
         }
     }
 
+    public ResponseEntity<byte[]> getSchoolReportPDFByMincode(String mincode, String type, String accessToken) {
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
+        int year = cal.get(Calendar.YEAR);
+        String month = String.format("%02d", cal.get(Calendar.MONTH) + 1);
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
+            headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
+            headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_PDF));
+            InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getSchoolReportByMincode(), mincode,type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(InputStreamResource.class).block();
+            byte[] res = new byte[0];
+            if(result != null) {
+                res = result.getInputStream().readAllBytes();
+            }
+            return handleBinaryResponse(res, EducGradBusinessUtil.getFileNameSchoolReports(mincode,year,month,type,MediaType.APPLICATION_PDF), MediaType.APPLICATION_PDF);
+        } catch (Exception e) {
+            return getInternalServerErrorResponse(e);
+        }
+    }
+
+    public ResponseEntity<byte[]> getAmalgamatedSchoolReportPDFByMincode(String mincode, String type, String accessToken) {
+        logger.debug("******** Retrieve List of Students for Amalgamated School Report ******");
+        List<UUID> studentList = webClient.get().uri(String.format(educGradStudentApiConstants.getStudentsForAmalgamatedReport(), mincode, type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(new ParameterizedTypeReference<List<UUID>>() {
+        }).block();
+        List<InputStream> locations = new ArrayList<>();
+        if (studentList != null && !studentList.isEmpty()) {
+            logger.debug("******** Fetched {} students ******", studentList.size());
+            List<List<UUID>> partitions = ListUtils.partition(studentList, 200);
+            getStudentAchievementReports(partitions, locations);
+            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
+            int year = cal.get(Calendar.YEAR);
+            String month = "00";
+            String fileName = EducGradBusinessUtil.getFileNameSchoolReports(mincode, year, month, type, MediaType.APPLICATION_PDF);
+            try {
+                logger.debug("******** Merging Documents Started ******");
+                byte[] res = EducGradBusinessUtil.mergeDocumentsPDFs(locations);
+                logger.debug("******** Merged {} Documents ******", locations.size());
+                HttpHeaders headers = new HttpHeaders();
+                headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
+                headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
+                headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_PDF));
+                saveBinaryResponseToFile(res, fileName);
+                return handleBinaryResponse(res, fileName, MediaType.APPLICATION_PDF);
+            } catch (Exception e) {
+                return getInternalServerErrorResponse(e);
+            }
+        }
+        return null;
+    }
+
+    @Transactional
+    public ResponseEntity<byte[]> getStudentCredentialPDFByType(String pen, String type, String accessToken) {
+        List<Student> stud = getStudentByPenFromStudentAPI(pen,accessToken);
+        Student studObj = stud.get(0);
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
+            headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
+            headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_PDF));
+            InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getStudentCredentialByType(), studObj.getStudentID(),type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(InputStreamResource.class).block();
+            byte[] res = new byte[0];
+            if(result != null) {
+                res = result.getInputStream().readAllBytes();
+            }
+            return handleBinaryResponse(res, EducGradBusinessUtil.getFileNameStudentCredentials(studObj.getMincode(),pen,type), MediaType.APPLICATION_PDF);
+        } catch (Exception e) {
+            return getInternalServerErrorResponse(e);
+        }
+    }
+
+    @Transactional
+    public ResponseEntity<byte[]> getStudentTranscriptPDFByType(String pen, String type, String interim, String accessToken) {
+        try {
+            byte[] reportData = prepareReportDataByPen(pen, type, accessToken).getBody();
+            boolean isPreview = (StringUtils.isNotBlank(type) && StringUtils.equalsAnyIgnoreCase(type, "xml", "interim") ||
+                    StringUtils.isNotBlank(interim) && StringUtils.equalsAnyIgnoreCase(interim, "xml", "interim"));
+            StringBuilder reportRequest = new StringBuilder();
+            String reportOptions = "\"options\": {\n" +
+                    "        \"cacheReport\": false,\n" +
+                    "        \"convertTo\": \"pdf\",\n" +
+                    "        \"preview\": \""+ (isPreview ? "true" : "false") +"\",\n" +
+                    "        \"overwrite\": false,\n" +
+                    "        \"reportName\": \"transcript\",\n" +
+                    "        \"reportFile\": \""+pen+" Transcript Report.pdf\"\n" +
+                    "    },\n";
+            reportRequest.append("{\n");
+            reportRequest.append(reportOptions);
+            reportRequest.append("\"data\":\n");
+            reportRequest.append(new String(reportData)).append("\n");
+            reportRequest.append("}\n");
+            HttpHeaders headers = new HttpHeaders();
+            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
+            headers.put(HttpHeaders.ACCEPT, Collections.singletonList(ACCEPT));
+            headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_JSON));
+            byte[] result = webClient.post().uri(educGraduationApiConstants.getStudentTranscriptReportByRequest())
+                    .headers(h -> h.addAll(headers)).body(BodyInserters.fromValue(reportRequest.toString())).retrieve()
+                    .onStatus(
+                            HttpStatus.NO_CONTENT::equals,
+                            response -> response.bodyToMono(String.class).thenReturn(new ServiceException("NO_CONTENT", response.statusCode().value()))
+                    )
+                    .bodyToMono(byte[].class).block();
+            assert result != null;
+            return handleBinaryResponse(result, pen + " Transcript Report.pdf", MediaType.APPLICATION_PDF);
+        } catch (ServiceException e) {
+            return handleBinaryResponse(new byte[0], pen + " Transcript Report.pdf", MediaType.APPLICATION_PDF);
+        } catch (Exception e) {
+            return getInternalServerErrorResponse(e);
+        }
+    }
+
+    private void getStudentAchievementReports(List<List<UUID>> partitions, List<InputStream> locations) {
+        logger.debug("******** Getting Student Achievement Reports ******");
+        for(List<UUID> studentList: partitions) {
+            logger.debug("******** Run partition with {} students ******", studentList.size());
+            List<CompletableFuture<InputStream>> futures = studentList.stream()
+                    .map(studentGuid -> CompletableFuture.supplyAsync(() -> getStudentAchievementReport(studentGuid)))
+                    .toList();
+            CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
+            CompletableFuture<List<InputStream>> result = allFutures.thenApply(v -> futures.stream()
+                    .map(CompletableFuture::join)
+                    .toList());
+            locations.addAll(result.join());
+        }
+        logger.debug("******** Fetched All {} Student Achievement Reports ******", locations.size());
+    }
+
+    private InputStream getStudentAchievementReport(UUID studentGuid) {
+        String accessTokenNext = tokenUtils.getAccessToken();
+        try {
+            InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getStudentCredentialByType(), studentGuid, "ACHV")).headers(h -> h.setBearerAuth(accessTokenNext)).retrieve().bodyToMono(InputStreamResource.class).block();
+            if (result != null) {
+                logger.debug("******** Fetched Achievement Report for {} ******", studentGuid);
+                return result.getInputStream();
+            }
+        } catch (Exception e) {
+            logger.debug("Error extracting report binary from stream: {}", e.getLocalizedMessage());
+        }
+        return null;
+    }
+
     /**
      * Gets internal server error response.
      *
@@ -208,112 +361,11 @@ public class GradBusinessService {
         return response;
     }
 
-    public ResponseEntity<byte[]> getSchoolReportPDFByMincode(String mincode, String type, String accessToken) {
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
-        int year = cal.get(Calendar.YEAR);
-        String month = String.format("%02d", cal.get(Calendar.MONTH) + 1);
-        try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
-            headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
-            headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_PDF));
-            InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getSchoolReportByMincode(), mincode,type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(InputStreamResource.class).block();
-            byte[] res = new byte[0];
-            if(result != null) {
-                res = result.getInputStream().readAllBytes();
+    private void saveBinaryResponseToFile(byte[] resultBinary, String reportFile) throws IOException {
+        if(resultBinary.length > 0) {
+            try (OutputStream out = new FileOutputStream(TMP + "/" + reportFile)) {
+                out.write(resultBinary);
             }
-            return handleBinaryResponse(res, EducGradBusinessUtil.getFileNameSchoolReports(mincode,year,month,type), MediaType.APPLICATION_PDF);
-        } catch (Exception e) {
-            return getInternalServerErrorResponse(e);
-        }
-    }
-
-    public ResponseEntity<byte[]> getAmalgamatedSchoolReportPDFByMincode(String mincode, String type, String accessToken) {
-        List<UUID> studentList = webClient.get().uri(String.format(educGradStudentApiConstants.getStudentsForAmalgamatedReport(), mincode, type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(new ParameterizedTypeReference<List<UUID>>() {
-        }).block();
-        logger.debug("******** Fetched Student List ******");
-        List<InputStream> locations = new ArrayList<>();
-        if (studentList != null && !studentList.isEmpty()) {
-            for (UUID studentID : studentList) {
-                InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getStudentCredentialByType(), studentID, "ACHV")).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(InputStreamResource.class).block();
-                if (result != null) {
-                    try {
-                        locations.add(result.getInputStream());
-                    } catch (IOException e) {
-                        logger.debug("Error {}",e.getLocalizedMessage());
-                    }
-                }
-            }
-            logger.debug("******** Fetched Achievement Reports ******");
-            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
-            int year = cal.get(Calendar.YEAR);
-            String month = "00";
-            String fileName = EducGradBusinessUtil.getFileNameSchoolReports(mincode, year, month, type);
-            try {
-                logger.debug("******** Merged Documents ******");
-                byte[] res = EducGradBusinessUtil.mergeDocuments(locations);
-                HttpHeaders headers = new HttpHeaders();
-                headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
-                headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
-                headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_PDF));
-                return handleBinaryResponse(res, fileName, MediaType.APPLICATION_PDF);
-            } catch (Exception e) {
-                return getInternalServerErrorResponse(e);
-            }
-        }
-        return null;
-    }
-
-    @Transactional
-    public ResponseEntity<byte[]> getStudentCredentialPDFByType(String pen, String type, String accessToken) {
-        List<Student> stud = getStudentByPenFromStudentAPI(pen,accessToken);
-        Student studObj = stud.get(0);
-        try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
-            headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
-            headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_PDF));
-            InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getStudentCredentialByType(), studObj.getStudentID(),type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(InputStreamResource.class).block();
-            byte[] res = new byte[0];
-            if(result != null) {
-                res = result.getInputStream().readAllBytes();
-            }
-            return handleBinaryResponse(res, EducGradBusinessUtil.getFileNameStudentCredentials(studObj.getMincode(),pen,type), MediaType.APPLICATION_PDF);
-        } catch (Exception e) {
-            return getInternalServerErrorResponse(e);
-        }
-    }
-
-
-    @Transactional
-    public ResponseEntity<byte[]> getStudentTranscriptPDFByType(String pen, String type, String interim, String accessToken) {
-        try {
-            byte[] reportData = prepareReportDataByPen(pen, type, accessToken).getBody();
-            boolean isPreview = (StringUtils.isNotBlank(type) && StringUtils.equalsAnyIgnoreCase(type, "xml", "interim") ||
-                    StringUtils.isNotBlank(interim) && StringUtils.equalsAnyIgnoreCase(interim, "xml", "interim"));
-            StringBuilder reportRequest = new StringBuilder();
-            String reportOptions = "\"options\": {\n" +
-                    "        \"cacheReport\": false,\n" +
-                    "        \"convertTo\": \"pdf\",\n" +
-                    "        \"preview\": \""+ (isPreview ? "true" : "false") +"\",\n" +
-                    "        \"overwrite\": false,\n" +
-                    "        \"reportName\": \"transcript\",\n" +
-                    "        \"reportFile\": \""+pen+" Transcript Report.pdf\"\n" +
-                    "    },\n";
-            reportRequest.append("{\n");
-            reportRequest.append(reportOptions);
-            reportRequest.append("\"data\":\n");
-            reportRequest.append(new String(reportData)).append("\n");
-            reportRequest.append("}\n");
-            HttpHeaders headers = new HttpHeaders();
-            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
-            headers.put(HttpHeaders.ACCEPT, Collections.singletonList(ACCEPT));
-            headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_JSON));
-            byte[] result = webClient.post().uri(educGraduationApiConstants.getStudentTranscriptReportByRequest()).headers(h -> h.addAll(headers)).body(BodyInserters.fromValue(reportRequest.toString())).retrieve().bodyToMono(byte[].class).block();
-            assert result != null;
-            return handleBinaryResponse(result, pen + " Transcript Report.pdf", MediaType.APPLICATION_PDF);
-        } catch (Exception e) {
-            return getInternalServerErrorResponse(e);
         }
     }
 }

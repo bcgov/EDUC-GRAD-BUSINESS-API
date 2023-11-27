@@ -62,6 +62,8 @@ objects:
                     name: educ-grad-api-config-map
                 - configMapRef:
                     name: educ-grad-business-api-config-map
+                - secretRef:
+                    name: grad-sts-client-secret
               resources:
                 requests:
                   cpu: "${MIN_CPU}"
@@ -146,7 +148,7 @@ objects:
           resource:
             name: cpu
             target:
-              averageUtilization: 400
+              averageUtilization: 350
               type: Utilization
         - type: Resource
           resource:
