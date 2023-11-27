@@ -23,6 +23,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
@@ -351,7 +352,7 @@ public class GradBusinessService {
         return response;
     }
 
-    private void saveBinaryResponseToFile(byte[] resultBinary, String reportFile) throws Exception {
+    private void saveBinaryResponseToFile(byte[] resultBinary, String reportFile) throws IOException {
         if(resultBinary.length > 0) {
             try (OutputStream out = new FileOutputStream(TMP + "/" + reportFile)) {
                 out.write(resultBinary);
