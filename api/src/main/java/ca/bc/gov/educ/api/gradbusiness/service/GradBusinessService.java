@@ -22,7 +22,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -38,6 +40,7 @@ public class GradBusinessService {
     private static final String APPLICATION_JSON = "application/json";
     private static final String APPLICATION_PDF = "application/pdf";
     private static final String ACCEPT = "*/*";
+    private static final String TMP = "/tmp";
     /**
      * The Web client.
      */
@@ -188,7 +191,7 @@ public class GradBusinessService {
             if(result != null) {
                 res = result.getInputStream().readAllBytes();
             }
-            return handleBinaryResponse(res, EducGradBusinessUtil.getFileNameSchoolReports(mincode,year,month,type), MediaType.APPLICATION_PDF);
+            return handleBinaryResponse(res, EducGradBusinessUtil.getFileNameSchoolReports(mincode,year,month,type,MediaType.APPLICATION_PDF), MediaType.APPLICATION_PDF);
         } catch (Exception e) {
             return getInternalServerErrorResponse(e);
         }
@@ -206,7 +209,7 @@ public class GradBusinessService {
             Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
             int year = cal.get(Calendar.YEAR);
             String month = "00";
-            String fileName = EducGradBusinessUtil.getFileNameSchoolReports(mincode, year, month, type);
+            String fileName = EducGradBusinessUtil.getFileNameSchoolReports(mincode, year, month, type, MediaType.APPLICATION_PDF);
             try {
                 logger.debug("******** Merging Documents Started ******");
                 byte[] res = EducGradBusinessUtil.mergeDocumentsPDFs(locations);
@@ -215,6 +218,7 @@ public class GradBusinessService {
                 headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
                 headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
                 headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_PDF));
+                saveBinaryResponseToFile(res, fileName);
                 return handleBinaryResponse(res, fileName, MediaType.APPLICATION_PDF);
             } catch (Exception e) {
                 return getInternalServerErrorResponse(e);
@@ -345,5 +349,13 @@ public class GradBusinessService {
             response = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
         return response;
+    }
+
+    private void saveBinaryResponseToFile(byte[] resultBinary, String reportFile) throws Exception {
+        if(resultBinary.length > 0) {
+            try (OutputStream out = new FileOutputStream(TMP + "/" + reportFile)) {
+                out.write(resultBinary);
+            }
+        }
     }
 }
