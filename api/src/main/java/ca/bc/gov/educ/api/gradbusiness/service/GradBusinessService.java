@@ -1,5 +1,6 @@
 package ca.bc.gov.educ.api.gradbusiness.service;
 
+import ca.bc.gov.educ.api.gradbusiness.exception.ServiceException;
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessUtil;
@@ -272,9 +273,17 @@ public class GradBusinessService {
             headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
             headers.put(HttpHeaders.ACCEPT, Collections.singletonList(ACCEPT));
             headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_JSON));
-            byte[] result = webClient.post().uri(educGraduationApiConstants.getStudentTranscriptReportByRequest()).headers(h -> h.addAll(headers)).body(BodyInserters.fromValue(reportRequest.toString())).retrieve().bodyToMono(byte[].class).block();
+            byte[] result = webClient.post().uri(educGraduationApiConstants.getStudentTranscriptReportByRequest())
+                    .headers(h -> h.addAll(headers)).body(BodyInserters.fromValue(reportRequest.toString())).retrieve()
+                    .onStatus(
+                            HttpStatus.NO_CONTENT::equals,
+                            response -> response.bodyToMono(String.class).thenReturn(new ServiceException("NO_CONTENT", response.statusCode().value()))
+                    )
+                    .bodyToMono(byte[].class).block();
             assert result != null;
             return handleBinaryResponse(result, pen + " Transcript Report.pdf", MediaType.APPLICATION_PDF);
+        } catch (ServiceException e) {
+            return handleBinaryResponse(new byte[0], pen + " Transcript Report.pdf", MediaType.APPLICATION_PDF);
         } catch (Exception e) {
             return getInternalServerErrorResponse(e);
         }
