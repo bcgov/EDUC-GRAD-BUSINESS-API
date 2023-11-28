@@ -54,8 +54,6 @@ objects:
               volumeMounts:
                 - name: log-storage
                   mountPath: /logs
-                - name: business-data
-                  mountPath: /tmp
               ports:
                 - containerPort: ${{CONTAINER_PORT}}
                   protocol: TCP
