@@ -9,6 +9,7 @@ import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -98,8 +99,8 @@ public class EducGradBusinessUtil {
         return Optional.ofNullable(System.getProperty("java.io.tmpdir")).orElse("/tmp").concat(File.pathSeparator);
     }
 
-    public static String getFileNameSchoolReports(String mincode, int year, String month, String type) {
-        return mincode + "_" + year + month + "_" + type + ".pdf";
+    public static String getFileNameSchoolReports(String mincode, int year, String month, String type, MediaType mediaType) {
+        return mincode + "_" + year + month + "_" + type + "." + mediaType.getSubtype();
     }
 
     public static String getFileNameStudentCredentials(String mincode, String pen, String type) {
