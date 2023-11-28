@@ -9,6 +9,7 @@ import ca.bc.gov.educ.api.gradbusiness.util.TokenUtils;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -347,7 +347,8 @@ public class GradBusinessService {
     private ResponseEntity<byte[]> handleBinaryResponse(byte[] resultBinary, String reportFile, MediaType contentType) {
         ResponseEntity<byte[]> response;
         if(resultBinary.length > 0) {
-            logger.debug("Sending {} response {} KB", contentType.getSubtype().toUpperCase(), resultBinary.length/(1024));
+            String fileType = contentType.getSubtype().toUpperCase();
+            logger.debug("Sending {} response {} KB", fileType, resultBinary.length/(1024));
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Disposition", "inline; filename=" + reportFile);
             response = ResponseEntity
@@ -365,10 +366,7 @@ public class GradBusinessService {
         if(resultBinary.length > 0) {
             String pathToFile = TMP + "/" + reportFile;
             logger.debug("Save generated PDF {} on the file system", reportFile);
-//            try (OutputStream out = new FileOutputStream(pathToFile)) {
-//                out.write(resultBinary);
-//            }
-            Files.write(Path.of(pathToFile), resultBinary);
+            FileUtils.writeByteArrayToFile(new File(pathToFile), resultBinary);
             logger.debug("PDF {} saved successfully", pathToFile);
         }
     }
