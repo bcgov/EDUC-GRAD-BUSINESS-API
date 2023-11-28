@@ -9,7 +9,6 @@ import ca.bc.gov.educ.api.gradbusiness.util.TokenUtils;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
 import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +26,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -371,7 +371,7 @@ public class GradBusinessService {
                 boolean isDeleted = fileToSave.delete();
                 logger.debug("{} to delete existing PDF {}", isDeleted, reportFile);
             }
-            FileUtils.writeByteArrayToFile(fileToSave, resultBinary);
+            Files.write(fileToSave.toPath(), resultBinary);
             logger.debug("PDF {} saved successfully", pathToFile);
         }
     }
