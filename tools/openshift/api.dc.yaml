@@ -157,7 +157,7 @@ objects:
           resource:
             name: memory
             target:
-              averageUtilization: 200
+              averageUtilization: 250
               type: Utilization
   - apiVersion: v1
     kind: PersistentVolumeClaim
