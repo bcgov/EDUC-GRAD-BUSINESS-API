@@ -366,7 +366,12 @@ public class GradBusinessService {
         if(resultBinary.length > 0) {
             String pathToFile = TMP + File.pathSeparator + reportFile;
             logger.debug("Save generated PDF {} on the file system", reportFile);
-            FileUtils.writeByteArrayToFile(new File(pathToFile), resultBinary);
+            File fileToSave = new File(pathToFile);
+            if(fileToSave.exists()) {
+                boolean isDeleted = fileToSave.delete();
+                logger.debug("{} to delete existing PDF {}", isDeleted, reportFile);
+            }
+            FileUtils.writeByteArrayToFile(fileToSave, resultBinary);
             logger.debug("PDF {} saved successfully", pathToFile);
         }
     }
