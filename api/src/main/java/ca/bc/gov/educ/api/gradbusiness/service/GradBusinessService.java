@@ -42,7 +42,7 @@ public class GradBusinessService {
     private static final String APPLICATION_JSON = "application/json";
     private static final String APPLICATION_PDF = "application/pdf";
     private static final String ACCEPT = "*/*";
-    private static final String TMP = File.pathSeparator + "tmp";
+    private static final String TMP = File.separator + "tmp";
     /**
      * The Web client.
      */
@@ -364,7 +364,7 @@ public class GradBusinessService {
 
     private void saveBinaryResponseToFile(byte[] resultBinary, String reportFile) throws IOException {
         if(resultBinary.length > 0) {
-            String pathToFile = TMP + File.pathSeparator + reportFile;
+            String pathToFile = TMP + File.separator + reportFile;
             logger.debug("Save generated PDF {} on the file system", reportFile);
             File fileToSave = new File(pathToFile);
             if(fileToSave.exists()) {
