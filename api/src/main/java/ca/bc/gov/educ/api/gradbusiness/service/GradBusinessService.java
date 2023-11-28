@@ -367,9 +367,9 @@ public class GradBusinessService {
             String pathToFile = TMP + File.separator + reportFile;
             logger.debug("Save generated PDF {} on the file system", reportFile);
             File fileToSave = new File(pathToFile);
-            if(fileToSave.exists()) {
-                boolean isDeleted = fileToSave.delete();
-                logger.debug("{} to delete existing PDF {}", isDeleted, reportFile);
+            boolean isDeleted = Files.deleteIfExists(fileToSave.toPath());
+            if(isDeleted) {
+                logger.debug("Delete existing PDF {}", reportFile);
             }
             Files.write(fileToSave.toPath(), resultBinary);
             logger.debug("PDF {} saved successfully", pathToFile);
