@@ -115,6 +115,9 @@ objects:
             - name: flb-sc-config-volume
               configMap:
                 name: "${REPO_NAME}-flb-sc-config-map"
+            - name: business-data
+              persistentVolumeClaim:
+                claimName: business-data
       test: false
   - apiVersion: v1
     kind: Service
@@ -154,8 +157,18 @@ objects:
           resource:
             name: memory
             target:
-              averageUtilization: 200
+              averageUtilization: 250
               type: Utilization
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: business-data
+    spec:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: ${{STORAGE_LIMIT}}
 parameters:
   - name: REPO_NAME
     description: Application repository name
@@ -195,4 +208,7 @@ parameters:
     required: true
   - name: MAX_MEM
     description: The maximum amount of memory
+    required: true
+  - name: STORAGE_LIMIT
+    description: Max storage
     required: true
