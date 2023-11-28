@@ -347,7 +347,7 @@ public class GradBusinessService {
     private ResponseEntity<byte[]> handleBinaryResponse(byte[] resultBinary, String reportFile, MediaType contentType) {
         ResponseEntity<byte[]> response;
         if(resultBinary.length > 0) {
-            logger.debug("Sending {} response {}M", contentType.getSubtype().toUpperCase(), resultBinary.length/(1024 * 1024));
+            logger.debug("Sending {} response {} KB", contentType.getSubtype().toUpperCase(), resultBinary.length/(1024));
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Disposition", "inline; filename=" + reportFile);
             response = ResponseEntity
