@@ -23,10 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -365,9 +365,10 @@ public class GradBusinessService {
         if(resultBinary.length > 0) {
             String pathToFile = TMP + "/" + reportFile;
             logger.debug("Save generated PDF {} on the file system", reportFile);
-            try (OutputStream out = new FileOutputStream(pathToFile)) {
-                out.write(resultBinary);
-            }
+//            try (OutputStream out = new FileOutputStream(pathToFile)) {
+//                out.write(resultBinary);
+//            }
+            Files.write(Path.of(pathToFile), resultBinary);
             logger.debug("PDF {} saved successfully", pathToFile);
         }
     }
