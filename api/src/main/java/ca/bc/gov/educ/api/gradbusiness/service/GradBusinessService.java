@@ -1,5 +1,6 @@
 package ca.bc.gov.educ.api.gradbusiness.service;
 
+import ca.bc.gov.educ.api.gradbusiness.exception.ServiceException;
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessUtil;
@@ -22,10 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.io.FileOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -41,7 +42,7 @@ public class GradBusinessService {
     private static final String APPLICATION_JSON = "application/json";
     private static final String APPLICATION_PDF = "application/pdf";
     private static final String ACCEPT = "*/*";
-    private static final String TMP = "/tmp";
+    private static final String TMP = File.separator + "tmp";
     /**
      * The Web client.
      */
@@ -272,9 +273,17 @@ public class GradBusinessService {
             headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
             headers.put(HttpHeaders.ACCEPT, Collections.singletonList(ACCEPT));
             headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_JSON));
-            byte[] result = webClient.post().uri(educGraduationApiConstants.getStudentTranscriptReportByRequest()).headers(h -> h.addAll(headers)).body(BodyInserters.fromValue(reportRequest.toString())).retrieve().bodyToMono(byte[].class).block();
+            byte[] result = webClient.post().uri(educGraduationApiConstants.getStudentTranscriptReportByRequest())
+                    .headers(h -> h.addAll(headers)).body(BodyInserters.fromValue(reportRequest.toString())).retrieve()
+                    .onStatus(
+                            HttpStatus.NO_CONTENT::equals,
+                            response -> response.bodyToMono(String.class).thenReturn(new ServiceException("NO_CONTENT", response.statusCode().value()))
+                    )
+                    .bodyToMono(byte[].class).block();
             assert result != null;
             return handleBinaryResponse(result, pen + " Transcript Report.pdf", MediaType.APPLICATION_PDF);
+        } catch (ServiceException e) {
+            return handleBinaryResponse(new byte[0], pen + " Transcript Report.pdf", MediaType.APPLICATION_PDF);
         } catch (Exception e) {
             return getInternalServerErrorResponse(e);
         }
@@ -337,8 +346,9 @@ public class GradBusinessService {
 
     private ResponseEntity<byte[]> handleBinaryResponse(byte[] resultBinary, String reportFile, MediaType contentType) {
         ResponseEntity<byte[]> response;
-
         if(resultBinary.length > 0) {
+            String fileType = contentType.getSubtype().toUpperCase();
+            logger.debug("Sending {} response {} KB", fileType, resultBinary.length/(1024));
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Disposition", "inline; filename=" + reportFile);
             response = ResponseEntity
@@ -354,9 +364,15 @@ public class GradBusinessService {
 
     private void saveBinaryResponseToFile(byte[] resultBinary, String reportFile) throws IOException {
         if(resultBinary.length > 0) {
-            try (OutputStream out = new FileOutputStream(TMP + "/" + reportFile)) {
-                out.write(resultBinary);
+            String pathToFile = TMP + File.separator + reportFile;
+            logger.debug("Save generated PDF {} on the file system", reportFile);
+            File fileToSave = new File(pathToFile);
+            if(fileToSave.exists()) {
+                boolean isDeleted = fileToSave.delete();
+                logger.debug("{} to delete existing PDF {}", isDeleted, reportFile);
             }
+            Files.write(fileToSave.toPath(), resultBinary);
+            logger.debug("PDF {} saved successfully", pathToFile);
         }
     }
 }

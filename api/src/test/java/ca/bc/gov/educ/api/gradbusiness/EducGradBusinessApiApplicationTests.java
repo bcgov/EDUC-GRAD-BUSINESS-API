@@ -1,5 +1,6 @@
 package ca.bc.gov.educ.api.gradbusiness;
 
+import ca.bc.gov.educ.api.gradbusiness.exception.ServiceException;
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
 import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
@@ -478,6 +479,7 @@ class EducGradBusinessApiApplicationTests {
 		when(this.requestBodyMock.contentType(any())).thenReturn(this.requestBodyMock);
 		when(this.requestBodyMock.body(any(BodyInserter.class))).thenReturn(this.requestHeadersMock);
 		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
+		when(this.responseMock.onStatus(any(), any())).thenReturn(this.responseMock);
 		when(this.responseMock.bodyToMono(byte[].class)).thenReturn(Mono.just(transcriptPdfSample));
 
 		when(this.tokenUtils.getAccessToken()).thenReturn("accessToken");
@@ -485,6 +487,21 @@ class EducGradBusinessApiApplicationTests {
 		ResponseEntity<byte[]> transcriptPdf = gradBusinessService.getStudentTranscriptPDFByType(pen, "xml", null,"accessToken");
 		assertNotNull(transcriptPdf.getBody());
 		assertEquals(transcriptPdfSample,transcriptPdf.getBody());
+
+		when(this.webClient.post()).thenReturn(this.requestBodyUriMock);
+		when(this.requestBodyUriMock.uri(educGraduationApiConstants.getStudentTranscriptReportByRequest())).thenReturn(this.requestBodyUriMock);
+		when(this.requestBodyUriMock.headers(any(Consumer.class))).thenReturn(this.requestBodyMock);
+		when(this.requestBodyMock.contentType(any())).thenReturn(this.requestBodyMock);
+		when(this.requestBodyMock.body(any(BodyInserter.class))).thenReturn(this.requestHeadersMock);
+		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
+		when(this.responseMock.onStatus(any(), any())).thenReturn(this.responseMock);
+		when(this.responseMock.bodyToMono(byte[].class)).thenThrow(new ServiceException("NO_CONTENT", 204));
+
+		when(this.tokenUtils.getAccessToken()).thenReturn("accessToken");
+
+		transcriptPdf = gradBusinessService.getStudentTranscriptPDFByType(pen, "xml", null,"accessToken");
+		assertNotNull(transcriptPdf);
+		assertNull(transcriptPdf.getBody());
 	}
 
 	@Test
