@@ -292,9 +292,10 @@ public class GradBusinessService {
     private void getStudentAchievementReports(List<List<UUID>> partitions, List<InputStream> locations) {
         logger.debug("******** Getting Student Achievement Reports ******");
         for(List<UUID> studentList: partitions) {
+            String accessToken = tokenUtils.getAccessToken();
             logger.debug("******** Run partition with {} students ******", studentList.size());
             List<CompletableFuture<InputStream>> futures = studentList.stream()
-                    .map(studentGuid -> CompletableFuture.supplyAsync(() -> getStudentAchievementReport(studentGuid)))
+                    .map(studentGuid -> CompletableFuture.supplyAsync(() -> getStudentAchievementReport(studentGuid, accessToken)))
                     .toList();
             CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
             CompletableFuture<List<InputStream>> result = allFutures.thenApply(v -> futures.stream()
@@ -305,10 +306,10 @@ public class GradBusinessService {
         logger.debug("******** Fetched All {} Student Achievement Reports ******", locations.size());
     }
 
-    private InputStream getStudentAchievementReport(UUID studentGuid) {
-        String accessTokenNext = tokenUtils.getAccessToken();
+    private InputStream getStudentAchievementReport(UUID studentGuid, String accessToken) {
         try {
-            InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getStudentCredentialByType(), studentGuid, "ACHV")).headers(h -> h.setBearerAuth(accessTokenNext)).retrieve().bodyToMono(InputStreamResource.class).block();
+            String finalAccessToken = tokenUtils.isTokenExpired() ? tokenUtils.getAccessToken() : accessToken;
+            InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getStudentCredentialByType(), studentGuid, "ACHV")).headers(h -> h.setBearerAuth(finalAccessToken)).retrieve().bodyToMono(InputStreamResource.class).block();
             if (result != null) {
                 logger.debug("******** Fetched Achievement Report for {} ******", studentGuid);
                 return result.getInputStream();
@@ -367,8 +368,7 @@ public class GradBusinessService {
             String pathToFile = TMP + File.separator + reportFile;
             logger.debug("Save generated PDF {} on the file system", reportFile);
             File fileToSave = new File(pathToFile);
-            boolean isDeleted = Files.deleteIfExists(fileToSave.toPath());
-            if(isDeleted) {
+            if(Files.deleteIfExists(fileToSave.toPath())) {
                 logger.debug("Delete existing PDF {}", reportFile);
             }
             Files.write(fileToSave.toPath(), resultBinary);
