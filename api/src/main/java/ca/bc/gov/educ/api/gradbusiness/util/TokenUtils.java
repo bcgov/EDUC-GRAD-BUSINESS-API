@@ -37,8 +37,12 @@ public class TokenUtils {
         return this.fetchAccessToken();
     }
 
+    public boolean isTokenExpired() {
+        return responseObjCache.isExpired();
+    }
+
     private ResponseObj getTokenResponseObject() {
-        if(responseObjCache.isExpired()){
+        if(isTokenExpired()){
             responseObjCache.setResponseObj(getResponseObj());
         }
         return responseObjCache.getResponseObj();
