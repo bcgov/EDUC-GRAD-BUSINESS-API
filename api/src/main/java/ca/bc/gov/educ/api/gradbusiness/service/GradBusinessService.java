@@ -23,10 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.io.FileOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -42,7 +42,7 @@ public class GradBusinessService {
     private static final String APPLICATION_JSON = "application/json";
     private static final String APPLICATION_PDF = "application/pdf";
     private static final String ACCEPT = "*/*";
-    private static final String TMP = "/tmp";
+    private static final String TMP = File.separator + "tmp";
     /**
      * The Web client.
      */
@@ -292,9 +292,10 @@ public class GradBusinessService {
     private void getStudentAchievementReports(List<List<UUID>> partitions, List<InputStream> locations) {
         logger.debug("******** Getting Student Achievement Reports ******");
         for(List<UUID> studentList: partitions) {
+            String accessToken = tokenUtils.getAccessToken();
             logger.debug("******** Run partition with {} students ******", studentList.size());
             List<CompletableFuture<InputStream>> futures = studentList.stream()
-                    .map(studentGuid -> CompletableFuture.supplyAsync(() -> getStudentAchievementReport(studentGuid)))
+                    .map(studentGuid -> CompletableFuture.supplyAsync(() -> getStudentAchievementReport(studentGuid, accessToken)))
                     .toList();
             CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
             CompletableFuture<List<InputStream>> result = allFutures.thenApply(v -> futures.stream()
@@ -305,10 +306,10 @@ public class GradBusinessService {
         logger.debug("******** Fetched All {} Student Achievement Reports ******", locations.size());
     }
 
-    private InputStream getStudentAchievementReport(UUID studentGuid) {
-        String accessTokenNext = tokenUtils.getAccessToken();
+    private InputStream getStudentAchievementReport(UUID studentGuid, String accessToken) {
         try {
-            InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getStudentCredentialByType(), studentGuid, "ACHV")).headers(h -> h.setBearerAuth(accessTokenNext)).retrieve().bodyToMono(InputStreamResource.class).block();
+            String finalAccessToken = tokenUtils.isTokenExpired() ? tokenUtils.getAccessToken() : accessToken;
+            InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getStudentCredentialByType(), studentGuid, "ACHV")).headers(h -> h.setBearerAuth(finalAccessToken)).retrieve().bodyToMono(InputStreamResource.class).block();
             if (result != null) {
                 logger.debug("******** Fetched Achievement Report for {} ******", studentGuid);
                 return result.getInputStream();
@@ -346,8 +347,9 @@ public class GradBusinessService {
 
     private ResponseEntity<byte[]> handleBinaryResponse(byte[] resultBinary, String reportFile, MediaType contentType) {
         ResponseEntity<byte[]> response;
-
         if(resultBinary.length > 0) {
+            String fileType = contentType.getSubtype().toUpperCase();
+            logger.debug("Sending {} response {} KB", fileType, resultBinary.length/(1024));
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Disposition", "inline; filename=" + reportFile);
             response = ResponseEntity
@@ -363,9 +365,14 @@ public class GradBusinessService {
 
     private void saveBinaryResponseToFile(byte[] resultBinary, String reportFile) throws IOException {
         if(resultBinary.length > 0) {
-            try (OutputStream out = new FileOutputStream(TMP + "/" + reportFile)) {
-                out.write(resultBinary);
+            String pathToFile = TMP + File.separator + reportFile;
+            logger.debug("Save generated PDF {} on the file system", reportFile);
+            File fileToSave = new File(pathToFile);
+            if(Files.deleteIfExists(fileToSave.toPath())) {
+                logger.debug("Delete existing PDF {}", reportFile);
             }
+            Files.write(fileToSave.toPath(), resultBinary);
+            logger.debug("PDF {} saved successfully", pathToFile);
         }
     }
 }
