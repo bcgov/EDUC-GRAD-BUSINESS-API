@@ -13,5 +13,5 @@
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=bcgov_EDUC-GRAD-BUSINESS-API&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=bcgov_EDUC-GRAD-BUSINESS-API) &nbsp;
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=bcgov_EDUC-GRAD-BUSINESS-API&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=bcgov_EDUC-GRAD-BUSINESS-API) &nbsp;
 
-# EDUC-GRAD-BUSINESS-API &nbsp; ![GitHub repo size](https://img.shields.io/github/repo-size/bcgov/EDUC-GRAD-BUSINESS-API)
+# EDUC-GRAD-BUSINESS-API &nbsp; ![GitHub repo size](https://img.shields.io/github/repo-size/bcgov/EDUC-GRAD-BUSINESS-API) ![GitHub Tag](https://img.shields.io/github/v/tag/bcgov/EDUC-GRAD-BUSINESS-API)
 GRAD Business API for external clients
