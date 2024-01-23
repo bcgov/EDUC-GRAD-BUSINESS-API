@@ -7,6 +7,7 @@ GRAD_NAMESPACE=$3
 COMMON_NAMESPACE=$4
 BUSINESS_NAMESPACE=$5
 SPLUNK_TOKEN=$6
+APP_LOG_LEVEL=$7
 
 SPLUNK_URL="gww.splunk.educ.gov.bc.ca"
 FLB_CONFIG="[SERVICE]
@@ -30,6 +31,15 @@ FLB_CONFIG="[SERVICE]
    Name   stdout
    Match  absolutely_nothing_bud
    Log_Level    off
+[OUTPUT]
+   Name  splunk
+   Match *
+   Host  $SPLUNK_URL
+   Port  443
+   TLS         On
+   TLS.Verify  Off
+   Message_Key $APP_NAME
+   Splunk_Token $SPLUNK_TOKEN
 "
 PARSER_CONFIG="
 [PARSER]
@@ -43,7 +53,7 @@ echo Creating config map "$APP_NAME"-config-map
 oc create -n "$GRAD_NAMESPACE"-"$envValue" configmap "$APP_NAME"-config-map \
   --from-literal=GRAD_REPORT_API="http://educ-grad-report-api.$GRAD_NAMESPACE-$envValue.svc.cluster.local:8080/" \
   --from-literal=GRAD_STUDENT_API="http://educ-grad-student-api.$GRAD_NAMESPACE-$envValue.svc.cluster.local:8080/" \
-  --from-literal=APP_LOG_LEVEL="ERROR" \
+  --from-literal=APP_LOG_LEVEL="$APP_LOG_LEVEL" \
   --from-literal=REPORT_API"http://educ-grad-report-api.$GRAD_NAMESPACE-$envValue.svc.cluster.local:8080/" \
   --from-literal=GRAD_GRADUATION_REPORT_API="http://educ-grad-graduation-report-api.$GRAD_NAMESPACE-$envValue.svc.cluster.local:8080/" \
   --from-literal=PEN_API="http://student-api-master.$COMMON_NAMESPACE-$envValue.svc.cluster.local:8080/" \
