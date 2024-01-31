@@ -16,7 +16,7 @@
 # EDUC-GRAD-BUSINESS-API 
 GRAD Business API for external clients
 
-![GitHub repo size](https://img.shields.io/github/repo-size/bcgov/EDUC-GRAD-ALGORITHM-API) &nbsp;
-![GitHub Tag](https://img.shields.io/github/v/tag/bcgov/EDUC-GRAD-ALGORITHM-API) &nbsp;
-![GitHub commits difference between two branches/tags/commits](https://img.shields.io/github/commits-difference/bcgov/EDUC-GRAD-ALGORITHM-API?base=main&head=grad-release&label=grad-release%20-%3E%20main) &nbsp;
-![GitHub commits difference between two branches/tags/commits](https://img.shields.io/github/commits-difference/bcgov/EDUC-GRAD-ALGORITHM-API?base=grad-release&head=main&label=main%20-%3E%20grad-release) &nbsp;
+![GitHub repo size](https://img.shields.io/github/repo-size/bcgov/EDUC-GRAD-BUSINESS-API) &nbsp;
+![GitHub Tag](https://img.shields.io/github/v/tag/bcgov/EDUC-GRAD-BUSINESS-API) &nbsp;
+![GitHub commits difference between two branches/tags/commits](https://img.shields.io/github/commits-difference/bcgov/EDUC-GRAD-BUSINESS-API?base=main&head=grad-release&label=grad-release%20-%3E%20main) &nbsp;
+![GitHub commits difference between two branches/tags/commits](https://img.shields.io/github/commits-difference/bcgov/EDUC-GRAD-BUSINESS-API?base=grad-release&head=main&label=main%20-%3E%20grad-release) &nbsp;
