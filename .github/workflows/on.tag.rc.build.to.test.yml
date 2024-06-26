@@ -17,7 +17,7 @@ jobs:
   buildToTest:
     # Contingent on -RC tag
     if: contains(${{ github.ref }}, '-RC')
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       # Checkout
