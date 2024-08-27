@@ -48,6 +48,15 @@ logging:
         boot:
           autoconfigure:
             logging: ${SPRING_BOOT_AUTOCONFIG_LOG_LEVEL}
+    jdk:
+      management:
+        agent: ERROR
+    sun:
+      management:
+        jmxremote: ERROR
+      rmi:
+        transport:
+          tcp: ERROR
 
 authorization:
   user: ${GRAD_STS_CLIENT_NAME}
