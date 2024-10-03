@@ -34,4 +34,5 @@ build/
 
 ### Environment ###
 *.env
-api/application-local.yaml
+### Local dev ###
+/src/main/resources/application-local.yaml

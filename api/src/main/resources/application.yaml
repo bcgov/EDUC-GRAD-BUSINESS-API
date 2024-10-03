@@ -48,6 +48,15 @@ logging:
         boot:
           autoconfigure:
             logging: ${SPRING_BOOT_AUTOCONFIG_LOG_LEVEL}
+    jdk:
+      management:
+        agent: ERROR
+    sun:
+      management:
+        jmxremote: ERROR
+      rmi:
+        transport:
+          tcp: ERROR
 
 authorization:
   user: ${GRAD_STS_CLIENT_NAME}
@@ -146,3 +155,10 @@ endpoint:
 splunk:
   log-helper:
     enabled: ${ENABLE_SPLUNK_LOG_HELPER}
+
+server:
+  undertow:
+    threads:
+      worker: 128
+      io: 16
+  max-http-request-header-size: 20000
