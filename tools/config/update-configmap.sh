@@ -8,6 +8,8 @@ COMMON_NAMESPACE=$4
 BUSINESS_NAMESPACE=$5
 SPLUNK_TOKEN=$6
 APP_LOG_LEVEL=$7
+CLIENT_ID=$8
+CLIENT_SECRET_NAME=grad-business-api-client-secret
 
 SPLUNK_URL="gww.splunk.educ.gov.bc.ca"
 FLB_CONFIG="[SERVICE]
@@ -68,4 +70,23 @@ echo Creating config map "$APP_NAME"-flb-sc-config-map
 oc create -n "$GRAD_NAMESPACE"-"$envValue" configmap "$APP_NAME"-flb-sc-config-map \
   --from-literal=fluent-bit.conf="$FLB_CONFIG" \
   --from-literal=parsers.conf="$PARSER_CONFIG" \
+  --dry-run=client -o yaml | oc apply -f -
+
+echo Retrieving client ID for grad-business-api-service
+CLIENT_UUID=$(curl -sX GET "https://$SOAM_KC/auth/admin/realms/$SOAM_KC_REALM_ID/clients" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TKN" |
+  jq '.[] | select(.clientId=="'"$CLIENT_ID"'")' | jq -r '.id')
+
+echo
+echo Retrieving client secret for grad-business-api-service
+SERVICE_CLIENT_SECRET=$(curl -sX GET "https://$SOAM_KC/auth/admin/realms/$SOAM_KC_REALM_ID/clients/$CLIENT_UUID/client-secret" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TKN" |
+  jq -r '.value')
+
+echo Creating secret for client
+oc create -n "$GRAD_NAMESPACE"-"$envValue" secret generic $CLIENT_SECRET_NAME \
+  --from-literal=GRAD_BUSINESS_API_CLIENT_NAME="$CLIENT_ID" \
+  --from-literal=GRAD_BUSINESS_API_CLIENT_SECRET="$SERVICE_CLIENT_SECRET" \
   --dry-run=client -o yaml | oc apply -f -
