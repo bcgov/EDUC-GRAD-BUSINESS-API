@@ -5,7 +5,11 @@ import lombok.Data;
 @Data
 public class ServiceException extends RuntimeException {
 
-    private final int statusCode;
+    private int statusCode;
+
+    public ServiceException() {
+        super();
+    }
 
     public ServiceException(String message, int value) {
         super(message);
