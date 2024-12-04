@@ -90,7 +90,7 @@ endpoint:
     getToken: https://soam-dev.apps.silver.devops.gov.bc.ca/auth/realms/master/protocol/openid-connect/token
   grad-graduation-report-api:
     school-report-by-school-id-and-report-type:
-      url: https://educ-grad-graduation-report-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/graduationreports/schoolreport?schoolOfRecordId=%s&reportTypeCode=%s
+      url: http://test
     student-credential-by-type:
       url: https://educ-grad-graduation-report-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/graduationreports/business/studentcredential/%s/%s
   pen-student-api:
