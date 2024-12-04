@@ -45,8 +45,8 @@ public class EducGraduationApiConstants {
     @Value("${endpoint.grad-report-api.report-data-by-xml.url}")
     private String xmlTranscriptReportData;
 
-    @Value("${endpoint.grad-graduation-report-api.school-report-by-mincode.url}")
-    private String schoolReportByMincode;
+    @Value("${endpoint.grad-graduation-report-api.school-report-by-school-id-and-report-type.url}")
+    private String schoolReportBySchoolIdAndReportType;
 
     @Value("${endpoint.grad-graduation-report-api.student-credential-by-type.url}")
     private String studentCredentialByType;
