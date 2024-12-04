@@ -74,13 +74,13 @@ public class RESTServiceGETTest {
 
     @Test(expected = ServiceException.class)
     public void testGetOverride_Given5xxErrorFromService_ExpectServiceError(){
-        when(this.responseMock.bodyToMono(ServiceException.class)).thenReturn(Mono.just(new ServiceException()));
+        when(this.responseMock.bodyToMono(ServiceException.class)).thenReturn(Mono.just(new ServiceException("Error", 500)));
         this.restService.get(TEST_URL_503, String.class);
     }
 
     @Test(expected = ServiceException.class)
     public void testGetOverride_Given4xxErrorFromService_ExpectServiceError(){
-        when(this.responseMock.bodyToMono(ServiceException.class)).thenReturn(Mono.just(new ServiceException()));
+        when(this.responseMock.bodyToMono(ServiceException.class)).thenReturn(Mono.just(new ServiceException("Error", 500)));
         this.restService.get(TEST_URL_403, String.class);
     }
 }

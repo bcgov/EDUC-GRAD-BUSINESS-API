@@ -77,7 +77,7 @@ public class RESTServicePOSTTest {
 
     @Test(expected = ServiceException.class)
     public void testPostOverride_Given4xxErrorFromService_ExpectServiceError() {
-        when(this.responseMock.onStatus(any(), any())).thenThrow(new ServiceException());
+        when(this.responseMock.onStatus(any(), any())).thenThrow(new ServiceException("Error", 500));
         this.restService.post(TEST_URL, TEST_BODY, byte[].class);
     }
 
