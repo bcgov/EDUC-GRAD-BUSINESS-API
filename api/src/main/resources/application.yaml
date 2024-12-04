@@ -24,8 +24,8 @@ spring:
       client:
         registration:
           grad-business-client:
-            client-id: ${GRAD_GRAD_BUSINESS_API_CLIENT_NAME}
-            client-secret: ${GRAD_GRAD_BUSINESS_API_CLIENT_SECRET}
+            client-id: ${GRAD_BUSINESS_API_CLIENT_NAME}
+            client-secret: ${GRAD_BUSINESS_API_CLIENT_SECRET}
             authorization-grant-type: client_credentials
         provider:
           batch-client:
