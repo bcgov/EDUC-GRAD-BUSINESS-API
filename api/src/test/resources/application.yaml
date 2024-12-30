@@ -25,6 +25,16 @@ spring:
         jwt:
           issuer-uri: https://soam-dev.apps.silver.devops.gov.bc.ca/auth/realms/master
           jwk-set-uri: https://soam-dev.apps.silver.devops.gov.bc.ca/auth/realms/master/protocol/openid-connect/certs
+      client:
+        registration:
+          grad-business-client:
+            client-id: my-client
+            client-secret: 123
+            authorization-grant-type: client_credentials
+        provider:
+          grad-business-client:
+            issuer-uri: http://test
+            token-uri: http://test
 
 #Logging properties
 logging:
@@ -79,8 +89,8 @@ endpoint:
   keycloak:
     getToken: https://soam-dev.apps.silver.devops.gov.bc.ca/auth/realms/master/protocol/openid-connect/token
   grad-graduation-report-api:
-    school-report-by-mincode:
-      url: https://educ-grad-graduation-report-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/graduationreports/schoolreport?mincode=%s&reportType=%s
+    school-report-by-school-id-and-report-type:
+      url: http://test
     student-credential-by-type:
       url: https://educ-grad-graduation-report-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/graduationreports/business/studentcredential/%s/%s
   pen-student-api:
@@ -107,6 +117,9 @@ endpoint:
       url: https://educ-grad-student-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/student/demog/pen/%s
     amalgamated-students:
       url: https://educ-grad-student-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/student/amalgamated/schoolreport/%s/type/%s
+  grad-trax-api:
+    search-schools-by-min-code:
+      url: http://test
 
 #Splunk LogHelper
 splunk:
