@@ -5,6 +5,8 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Locale;
+
 @Component
 @Getter
 @Setter
@@ -84,6 +86,10 @@ public class EducGradBusinessApiConstants {
     public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
     public static final String TRAX_DATE_FORMAT = "yyyyMM";
 
+    //V2 constants
+    public static final String SCHOOL_REPORT_PDF_MINCODE_V2 = "/report/{mincode}";
+
+
     //Endpoints
     @Value("${endpoint.pen-student-api.by-studentid.url}")
     private String penStudentApiByStudentIdUrl;
@@ -102,6 +108,9 @@ public class EducGradBusinessApiConstants {
 
     @Value("${endpoint.grad-student-api.amalgamated-students.url}")
     private String studentsForAmalgamatedReport;
+
+    @Value("${endpoint.grad-graduation-report-api.school-report-by-mincode-reporttype.url}")
+    private String schoolReportByMincode;
 
     // Splunk LogHelper Enabled
     @Value("${splunk.log-helper.enabled}")
