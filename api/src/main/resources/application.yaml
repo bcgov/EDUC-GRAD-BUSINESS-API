@@ -28,7 +28,7 @@ spring:
             client-secret: ${GRAD_BUSINESS_API_CLIENT_SECRET}
             authorization-grant-type: client_credentials
         provider:
-          batch-client:
+          grad-business-client:
             issuer-uri: ${TOKEN_ISSUER_URL}
             token-uri: ${TOKEN_ISSUER_URL}/protocol/openid-connect/token
 
