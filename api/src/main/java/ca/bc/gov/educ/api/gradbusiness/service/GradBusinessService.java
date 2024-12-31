@@ -1,11 +1,9 @@
 package ca.bc.gov.educ.api.gradbusiness.service;
 
 import ca.bc.gov.educ.api.gradbusiness.exception.ServiceException;
+import ca.bc.gov.educ.api.gradbusiness.model.dto.School;
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
-import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
-import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessUtil;
-import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
-import ca.bc.gov.educ.api.gradbusiness.util.TokenUtils;
+import ca.bc.gov.educ.api.gradbusiness.util.*;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
 import org.apache.commons.collections4.ListUtils;
@@ -63,17 +61,24 @@ public class GradBusinessService {
      */
     final EducGraduationApiConstants educGraduationApiConstants;
 
+    final SchoolService schoolService;
+    final RESTService restService;
+    final JsonTransformer jsonTransformer;
+
     /**
      * Instantiates a new Grad business service.
      *
      * @param webClient the web client
      */
     @Autowired
-    public GradBusinessService(WebClient webClient, TokenUtils tokenUtils, EducGradBusinessApiConstants educGradStudentApiConstants, EducGraduationApiConstants educGraduationApiConstants) {
+    public GradBusinessService(WebClient webClient, TokenUtils tokenUtils, EducGradBusinessApiConstants educGradStudentApiConstants, EducGraduationApiConstants educGraduationApiConstants, SchoolService schoolService, RESTService restService, JsonTransformer jsonTransformer) {
         this.webClient = webClient;
         this.tokenUtils = tokenUtils;
         this.educGradStudentApiConstants = educGradStudentApiConstants;
         this.educGraduationApiConstants = educGraduationApiConstants;
+        this.schoolService = schoolService;
+        this.restService = restService;
+        this.jsonTransformer = jsonTransformer;
     }
 
     /**
@@ -179,22 +184,26 @@ public class GradBusinessService {
         }
     }
 
-    public ResponseEntity<byte[]> getSchoolReportPDFByMincode(String mincode, String type, String accessToken) {
+    public ResponseEntity<byte[]> getSchoolReportPDFByMincode(String mincode, String type) {
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
         int year = cal.get(Calendar.YEAR);
         String month = String.format("%02d", cal.get(Calendar.MONTH) + 1);
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
-            headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
-            headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_PDF));
-            InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getSchoolReportByMincode(), mincode,type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(InputStreamResource.class).block();
-            byte[] res = new byte[0];
-            if(result != null) {
-                res = result.getInputStream().readAllBytes();
+            List<School> schoolDetails = schoolService.getSchoolDetails(mincode);
+            if (schoolDetails.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
-            return handleBinaryResponse(res, EducGradBusinessUtil.getFileNameSchoolReports(mincode,year,month,type,MediaType.APPLICATION_PDF), MediaType.APPLICATION_PDF);
+            String schoolOfRecordId = schoolDetails.get(0).getSchoolId();
+
+            var result = restService.get(String.format(educGraduationApiConstants.getSchoolReportBySchoolIdAndReportType(), schoolOfRecordId,type), InputStreamResource.class);
+            byte[] response = new byte[0];
+            if (result != null) {
+                response = result.getInputStream().readAllBytes();
+            }
+
+            return handleBinaryResponse(response, EducGradBusinessUtil.getFileNameSchoolReports(mincode,year,month,type,MediaType.APPLICATION_PDF), MediaType.APPLICATION_PDF);
         } catch (Exception e) {
+            logger.error("Error getting school report PDF by mincode: {}", e.getMessage());
             return getInternalServerErrorResponse(e);
         }
     }

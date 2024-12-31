@@ -5,8 +5,6 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Locale;
-
 @Component
 @Getter
 @Setter
@@ -108,6 +106,9 @@ public class EducGradBusinessApiConstants {
 
     @Value("${endpoint.grad-student-api.amalgamated-students.url}")
     private String studentsForAmalgamatedReport;
+
+    @Value("${endpoint.grad-trax-api.search-schools-by-min-code.url}")
+    private String schoolDetails;
 
     @Value("${endpoint.grad-graduation-report-api.school-report-by-mincode-reporttype.url}")
     private String schoolReportByMincode;

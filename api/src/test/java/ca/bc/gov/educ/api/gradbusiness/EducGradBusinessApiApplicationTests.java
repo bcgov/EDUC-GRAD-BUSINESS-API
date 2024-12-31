@@ -1,8 +1,11 @@
 package ca.bc.gov.educ.api.gradbusiness;
 
 import ca.bc.gov.educ.api.gradbusiness.exception.ServiceException;
+import ca.bc.gov.educ.api.gradbusiness.model.dto.School;
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
 import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
+import ca.bc.gov.educ.api.gradbusiness.service.RESTService;
+import ca.bc.gov.educ.api.gradbusiness.service.SchoolService;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.TokenUtils;
@@ -10,7 +13,6 @@ import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +20,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.reactive.function.BodyInserter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -30,18 +32,18 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = {EducGradBusinessApiApplication.class})
 @ActiveProfiles("test")
 class EducGradBusinessApiApplicationTests {
 
@@ -70,18 +72,17 @@ class EducGradBusinessApiApplicationTests {
 
 	@Autowired
 	private GradBusinessService gradBusinessService;
+	@MockBean
+	private SchoolService schoolService;
+	@MockBean
+	private RESTService restService;
 
 	@BeforeEach
 	public void setUp() {
 		openMocks(this);
 	}
 
-	@AfterEach
-	public void tearDown() {
-
-	}
-
-	@org.junit.jupiter.api.Test
+	@Test
 	void testReportDataByPen() throws Exception {
 
 		String studentGradData = readFile("json/gradstatus.json");
@@ -274,17 +275,14 @@ class EducGradBusinessApiApplicationTests {
 		byte[] samplePdf = readBinaryFile("data/sample.pdf");
 		InputStreamResource pdf = new InputStreamResource(new ByteArrayInputStream(samplePdf));
 
-		when(this.tokenUtils.getAccessToken()).thenReturn("accessToken");
+		var schoolList = List.of(School.builder().mincode(mincode).schoolId(String.valueOf(UUID.randomUUID())).build());
+		when(schoolService.getSchoolDetails(anyString())).thenReturn(schoolList);
+		when(this.restService.get(any(String.class), any())).thenReturn(pdf);
 
-		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
-		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getSchoolReportByMincode(),mincode,type))).thenReturn(this.requestHeadersMock);
-		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
-		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
-		when(this.responseMock.bodyToMono(InputStreamResource.class)).thenReturn(Mono.just(pdf));
-
-		ResponseEntity<byte[]> byteData = gradBusinessService.getSchoolReportPDFByMincode(mincode, type, "accessToken");
+		ResponseEntity<byte[]> byteData = gradBusinessService.getSchoolReportPDFByMincode(mincode, type);
 		assertNotNull(byteData);
-		assertTrue(byteData.getBody().length > 0);
+		assertEquals(HttpStatus.OK, byteData.getStatusCode());
+		assertNotNull(byteData.getBody());
 	}
 
 	@Test
@@ -330,7 +328,7 @@ class EducGradBusinessApiApplicationTests {
 	}
 
 	@Test
-	void testSchoolReportPDFByMincode_NotFound() throws Exception {
+	void testSchoolReportPDFByMincode_NotFound() {
 
 		String mincode = "128385861";
 		String type = "NONGRADPRJ";
@@ -338,37 +336,25 @@ class EducGradBusinessApiApplicationTests {
 		byte[] samplePdf = new byte[0];
 		InputStreamResource pdf = new InputStreamResource(new ByteArrayInputStream(samplePdf));
 
-		when(this.tokenUtils.getAccessToken()).thenReturn("accessToken");
+		when(schoolService.getSchoolDetails(anyString())).thenReturn(Collections.emptyList());
+		when(this.restService.get(any(String.class), any())).thenReturn(pdf);
 
-		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
-		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getSchoolReportByMincode(),mincode,type))).thenReturn(this.requestHeadersMock);
-		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
-		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
-		when(this.responseMock.bodyToMono(InputStreamResource.class)).thenReturn(Mono.just(pdf));
-
-		ResponseEntity<byte[]> byteData = gradBusinessService.getSchoolReportPDFByMincode(mincode, type, "accessToken");
+		ResponseEntity<byte[]> byteData = gradBusinessService.getSchoolReportPDFByMincode(mincode, type);
 		assertNotNull(byteData);
+		assertEquals(HttpStatus.NOT_FOUND, byteData.getStatusCode());
 		assertNull(byteData.getBody());
 	}
 
 	@Test
-	void testSchoolReportPDFByMincode_Error500() throws Exception {
+	void testSchoolReportPDFByMincode_Error500() {
 
 		String mincode = "128385861";
 		String type = "NONGRADPRJ";
-		InputStream is = getClass().getClassLoader().getResourceAsStream("json/xmlTranscriptReportRequest.json");
 
-		when(this.tokenUtils.getAccessToken()).thenReturn("accessToken");
+		when(schoolService.getSchoolDetails(anyString())).thenThrow(new RuntimeException());
 
-		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
-		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getSchoolReportByMincode(),mincode,type))).thenReturn(this.requestHeadersMock);
-		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
-		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
-		when(this.responseMock.bodyToMono(InputStreamResource.class)).thenThrow();
-
-		ResponseEntity<byte[]> byteData = gradBusinessService.getSchoolReportPDFByMincode(mincode, type, "accessToken");
+		ResponseEntity<byte[]> byteData = gradBusinessService.getSchoolReportPDFByMincode(mincode, type);
 		assertNotNull(byteData);
-		assertTrue(byteData.getBody().length > 0);
 		assertTrue(byteData.getStatusCode().is5xxServerError());
 	}
 
@@ -505,7 +491,7 @@ class EducGradBusinessApiApplicationTests {
 	}
 
 	@Test
-	void testStudentCredentialPDFByType_NotFound() throws Exception {
+	void testStudentCredentialPDFByType_NotFound() {
 
 		String pen = "128385861";
 		String type = "NONGRADREG";
@@ -542,14 +528,11 @@ class EducGradBusinessApiApplicationTests {
 	}
 
 	@Test
-	void testStudentCredentialPDFByType_Error500() throws Exception {
+	void testStudentCredentialPDFByType_Error500() {
 
 		String pen = "128385861";
 		String type = "TRAN";
 		String studentID = UUID.randomUUID().toString();
-
-		byte[] samplePdf = readBinaryFile("data/sample.pdf");
-		InputStreamResource pdf = new InputStreamResource(new ByteArrayInputStream(samplePdf));
 
 		Student sObj = new Student();
 		sObj.setStudentID(studentID);

@@ -18,6 +18,7 @@ env:
   IMAGE_REGISTRY_PASSWORD: ${{ github.token }}
 
   SPRING_BOOT_IMAGE_NAME: educ-grad-business-api
+  BUSINESS_CLIENT_ID: ${{ secrets.BUSINESS_CLIENT_ID }}
 
   REPO_NAME: "educ-grad-business-api"
   APP_DOMAIN: ${{ vars.APP_DOMAIN }}
@@ -132,7 +133,8 @@ jobs:
           ${{ env.COMMON_NAMESPACE }} \
           ${{ env.BUSINESS_NAMESPACE }} \
           ${{ secrets.SPLUNK_TOKEN }} \
-          ${{ vars.APP_LOG_LEVEL }}
+          ${{ vars.APP_LOG_LEVEL }} \
+          ${{ vars.BUSINESS_CLIENT_ID }}
           
           # OVERRIDE Configmaps
           curl -s https://raw.githubusercontent.com/bcgov/${{ env.REPO_NAME }}/${{ env.BRANCH }}/tools/config/override-configmap-dev.sh \
@@ -143,7 +145,8 @@ jobs:
           ${{ env.COMMON_NAMESPACE }} \
           ${{ env.BUSINESS_NAMESPACE }} \
           ${{ secrets.SPLUNK_TOKEN }} \
-          ${{ vars.APP_LOG_LEVEL }}
+          ${{ vars.APP_LOG_LEVEL }}\
+          ${{ vars.BUSINESS_CLIENT_ID }}
 
           # Start rollout (if necessary) and follow it
           oc rollout restart deployment/${{ env.SPRING_BOOT_IMAGE_NAME }}

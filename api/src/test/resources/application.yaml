@@ -25,6 +25,16 @@ spring:
         jwt:
           issuer-uri: https://soam-dev.apps.silver.devops.gov.bc.ca/auth/realms/master
           jwk-set-uri: https://soam-dev.apps.silver.devops.gov.bc.ca/auth/realms/master/protocol/openid-connect/certs
+      client:
+        registration:
+          grad-business-client:
+            client-id: my-client
+            client-secret: 123
+            authorization-grant-type: client_credentials
+        provider:
+          grad-business-client:
+            issuer-uri: http://test
+            token-uri: http://test
 
 #Logging properties
 logging:
@@ -79,6 +89,8 @@ endpoint:
   keycloak:
     getToken: https://soam-dev.apps.silver.devops.gov.bc.ca/auth/realms/master/protocol/openid-connect/token
   grad-graduation-report-api:
+    school-report-by-school-id-and-report-type:
+      url: http://test
     school-report-by-mincode-v2:
       url: https://educ-grad-graduation-report-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/graduationreports/schoolreport?mincode=%s&reportType=%s
     school-report-by-mincode:
