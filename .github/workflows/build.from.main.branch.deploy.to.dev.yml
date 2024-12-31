@@ -125,7 +125,7 @@ jobs:
           ${{ env.BUSINESS_NAMESPACE }} \
           ${{ secrets.SPLUNK_TOKEN }} \
           ${{ vars.APP_LOG_LEVEL }} \
-          ${{ vars.BUSINESS_CLIENT_ID }}
+          ${{ env.BUSINESS_CLIENT_ID }}
           
           # OVERRIDE Configmaps
           curl -s https://raw.githubusercontent.com/bcgov/${{ env.REPO_NAME }}/${{ env.BRANCH }}/tools/config/override-configmap-dev.sh \
@@ -137,7 +137,7 @@ jobs:
           ${{ env.BUSINESS_NAMESPACE }} \
           ${{ secrets.SPLUNK_TOKEN }} \
           ${{ vars.APP_LOG_LEVEL }}\
-          ${{ vars.BUSINESS_CLIENT_ID }}
+          ${{ env.BUSINESS_CLIENT_ID }}
 
           # Start rollout (if necessary) and follow it
           oc rollout restart deployment/${{ env.SPRING_BOOT_IMAGE_NAME }}
