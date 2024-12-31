@@ -73,6 +73,18 @@ oc create -n "$GRAD_NAMESPACE"-"$envValue" configmap "$APP_NAME"-flb-sc-config-m
   --from-literal=parsers.conf="$PARSER_CONFIG" \
   --dry-run=client -o yaml | oc apply -f -
 
+SOAM_KC_LOAD_USER_ADMIN=$(oc -n $COMMON_NAMESPACE-$envValue -o json get secret sso-admin-${envValue} | sed -n 's/.*"username": "\(.*\)"/\1/p' | base64 --decode)
+SOAM_KC_LOAD_USER_PASS=$(oc -n $COMMON_NAMESPACE-$envValue -o json get secret sso-admin-${envValue} | sed -n 's/.*"password": "\(.*\)",/\1/p' | base64 --decode)
+SOAM_KC=soam-$envValue.apps.silver.devops.gov.bc.ca
+
+echo Fetching SOAM token
+TKN=$(curl -s \
+  -d "client_id=admin-cli" \
+  -d "username=$SOAM_KC_LOAD_USER_ADMIN" \
+  -d "password=$SOAM_KC_LOAD_USER_PASS" \
+  -d "grant_type=password" \
+  "https://$SOAM_KC/auth/realms/$SOAM_KC_REALM_ID/protocol/openid-connect/token" | jq -r '.access_token')
+
 echo Retrieving client ID for grad-business-api-service
 CLIENT_UUID=$(curl -sX GET "https://$SOAM_KC/auth/admin/realms/$SOAM_KC_REALM_ID/clients" \
   -H "Content-Type: application/json" \
