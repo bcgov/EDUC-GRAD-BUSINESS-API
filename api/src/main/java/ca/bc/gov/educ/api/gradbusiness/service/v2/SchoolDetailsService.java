@@ -1,8 +1,12 @@
-package ca.bc.gov.educ.api.gradbusiness.service.institute;
+package ca.bc.gov.educ.api.gradbusiness.service.v2;
 
-import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
+import ca.bc.gov.educ.api.gradbusiness.model.dto.School;
+import ca.bc.gov.educ.api.gradbusiness.service.RESTService;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessUtil;
+import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
+import ca.bc.gov.educ.api.gradbusiness.util.JsonTransformer;
+import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -18,30 +22,40 @@ import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
-@Service("schoolService")
-public class SchoolService {
+@Service("schoolDetailsService")
+public class SchoolDetailsService {
 
 
 	final EducGradBusinessApiConstants constants;
 	final WebClient webClient;
+	final RESTService restService;
+	JsonTransformer jsonTransformer;
+	EducGraduationApiConstants educGraduationApiConstants;
 
-	private static Logger logger = LoggerFactory.getLogger(GradBusinessService.class);
 
-	private static final String APPLICATION_PDF = "application/pdf";
+	private static Logger logger = LoggerFactory.getLogger(SchoolDetailsService.class);
+
 
 	public ResponseEntity<byte[]> getSchoolReportPDFByMincode(String mincode, String type) {
 		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
 		int year = cal.get(Calendar.YEAR);
 		String month = String.format("%02d", cal.get(Calendar.MONTH) + 1);
 		try {
-
-			InputStreamResource result = webClient.get().uri(String.format(constants.getSchoolReportByMincode(), mincode, type)).retrieve().bodyToMono(InputStreamResource.class).block();
-			byte[] res = new byte[0];
-			if (result != null) {
-				res = result.getInputStream().readAllBytes();
+			List<School> schoolDetails = getSchoolDetails(mincode);
+			if (schoolDetails.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 			}
-			return handleBinaryResponse(res, EducGradBusinessUtil.getFileNameSchoolReports(mincode, year, month, type, MediaType.APPLICATION_PDF), MediaType.APPLICATION_PDF);
+			String schoolOfRecordId = schoolDetails.get(0).getSchoolId();
+
+			var result = restService.get(String.format(educGraduationApiConstants.getSchoolReportBySchoolIdAndReportType(), schoolOfRecordId,type), InputStreamResource.class);
+			byte[] response = new byte[0];
+			if (result != null) {
+				response = result.getInputStream().readAllBytes();
+			}
+
+			return handleBinaryResponse(response, EducGradBusinessUtil.getFileNameSchoolReports(mincode,year,month,type,MediaType.APPLICATION_PDF), MediaType.APPLICATION_PDF);
 		} catch (Exception e) {
+			logger.error("Error getting school report PDF by mincode: {}", e.getMessage());
 			return getInternalServerErrorResponse(e);
 		}
 	}
@@ -88,6 +102,11 @@ public class SchoolService {
 			response = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 		}
 		return response;
+	}
+
+	public List<School> getSchoolDetails(String mincode) {
+		var response = this.restService.get(String.format(constants.getSchoolDetails(),mincode), List.class);
+		return jsonTransformer.convertValue(response, new TypeReference<>() {});
 	}
 }
 

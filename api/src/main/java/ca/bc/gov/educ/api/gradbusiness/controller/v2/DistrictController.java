@@ -1,11 +1,7 @@
 package ca.bc.gov.educ.api.gradbusiness.controller.v2;
 
-import ca.bc.gov.educ.api.gradbusiness.model.dto.institute.District;
-import ca.bc.gov.educ.api.gradbusiness.service.institute.DistrictService;
+import ca.bc.gov.educ.api.gradbusiness.service.v2.DistrictService;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
-import ca.bc.gov.educ.api.gradbusiness.util.GradValidation;
-import ca.bc.gov.educ.api.gradbusiness.util.PermissionsConstants;
-import ca.bc.gov.educ.api.gradbusiness.util.ResponseHelper;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -14,24 +10,20 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @CrossOrigin
-@RestController("districtControllerV2")
+@RestController("districtController")
+@RequestMapping("/api/v2/school")
 @Slf4j
-@OpenAPIDefinition(info = @Info(title = "API for School Data.", description = "This Read API is for Reading school data.", version = "2"),
-        security = {@SecurityRequirement(name = "OAUTH2", scopes = {"READ_GRAD_SCHOOL_DATA"})})
+@OpenAPIDefinition(info = @Info(title = "API for District Data.", description = "This Read API is for Reading District data.", version = "2"),
+        security = {@SecurityRequirement(name = "OAUTH2", scopes = {"READ_GRAD_SCHOOL_REPORT"})})
 public class DistrictController {
 
     EducGradBusinessApiConstants educGradBusinessApiConstants;
     DistrictService districtService;
-    GradValidation validation;
-    ResponseHelper response;
 
     @Autowired
     public DistrictController(DistrictService districtService) {
@@ -39,54 +31,11 @@ public class DistrictController {
 
     }
 
-    @PutMapping(EducGradBusinessApiConstants.GRAD_DISTRICT_URL_MAPPING_V2 + EducGradBusinessApiConstants.PUT_DISTRICTS_MAPPING)
-    @PreAuthorize(PermissionsConstants.UPDATE_GRAD_gradbusiness_CACHE)
-    @Operation(summary = "Reload Districts in the cache", description = "Reload Districts in the cache", tags = {"Cache"})
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "422", description = "UNPROCESSABLE CONTENT")})
-    public ResponseEntity<String> reloadDistrictsIntoCache() {
-        log.debug("reloadDistrictsIntoCache : ");
-        try {
-            districtService.initializeDistrictCache(true);
-        } catch (Exception e) {
-            return ResponseEntity.unprocessableEntity().body("Error loading Districts into cache");
-        }
-        return ResponseEntity.ok("Districts loaded into cache!");
-    }
-
-    @GetMapping(EducGradgradbusinessApiConstants.GRAD_DISTRICT_URL_MAPPING_V2)
-    @PreAuthorize(PermissionsConstants.READ_SCHOOL_DATA)
-    @Operation(summary = "Find a District by District Number V2", description = "Get District by District Number V2", tags = { "District" })
+    @GetMapping(EducGradBusinessApiConstants.SCHOOL_REPORT_PDF_DISTCODE_V2)
+    @PreAuthorize("hasAuthority('SCOPE_READ_GRAD_SCHOOL_REPORT')")
+    @Operation(summary = "Get School Report pdf from graduation by distcode and report type", description = "Get School Report pdf from graduation by distcode and report type", tags = { "Graduation Data" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
-    public ResponseEntity<District> getDistrictDetailsByDistNo(@RequestParam(required = true) String distNo) {
-        if(distNo.length() <=3) {
-            District distResponse = districtService.getDistrictByDistNoFromRedisCache(distNo);
-            if (distResponse != null) {
-                return response.GET(distResponse);
-            }
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<byte[]> schoolReportByDistrictCode(@PathVariable String distcode, @RequestParam(name = "type") String type) {
+        return districtService.getSchoolReportPDFByDistcode(distcode, type);
     }
-
-    @GetMapping(EducGradgradbusinessApiConstants.GRAD_DISTRICT_URL_MAPPING_V2 + EducGradgradbusinessApiConstants.GET_DISTRICT_BY_ID_MAPPING)
-    @PreAuthorize(PermissionsConstants.READ_SCHOOL_DATA)
-    @Operation(summary = "Find a District by ID V2", description = "Get District by ID V2", tags = { "District" })
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
-    public ResponseEntity<District> getDistrictDetailsById(@PathVariable String districtId) {
-        District distResponse = districtService.getDistrictByIdFromRedisCache(districtId);
-        if (distResponse != null) {
-            return response.GET(distResponse);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
-    @GetMapping(EducGradgradbusinessApiConstants.GRAD_DISTRICT_URL_MAPPING_V2 + EducGradgradbusinessApiConstants.GET_DISTRICTS_BY_SCHOOL_CATEGORY_MAPPING)
-    @PreAuthorize(PermissionsConstants.READ_SCHOOL_DATA)
-    @Operation(summary = "Get District by school category code V2", description = "Get District by school category code V2", tags = { "District" })
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "204", description = "NO CONTENT")})
-    public ResponseEntity<List<District>> getDistrictsBySchoolCategoryCode(@RequestParam(required = false) String schoolCategoryCode) {
-        return response.GET(districtService.getDistrictsBySchoolCategoryCode(schoolCategoryCode));
-    }
-
 }

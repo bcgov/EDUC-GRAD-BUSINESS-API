@@ -5,12 +5,11 @@ import ca.bc.gov.educ.api.gradbusiness.model.dto.School;
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
 import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
 import ca.bc.gov.educ.api.gradbusiness.service.RESTService;
-import ca.bc.gov.educ.api.gradbusiness.service.SchoolService;
+import ca.bc.gov.educ.api.gradbusiness.service.v2.SchoolDetailsService;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.TokenUtils;
 import org.junit.FixMethodOrder;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runners.MethodSorters;
@@ -73,7 +72,7 @@ class EducGradBusinessApiApplicationTests {
 	@Autowired
 	private GradBusinessService gradBusinessService;
 	@MockBean
-	private SchoolService schoolService;
+	private SchoolDetailsService schoolService;
 	@MockBean
 	private RESTService restService;
 

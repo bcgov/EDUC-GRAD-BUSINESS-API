@@ -1,4 +1,4 @@
-package ca.bc.gov.educ.api.gradbusiness.model.dto.institute;
+package ca.bc.gov.educ.api.gradbusiness.model.dto.v2;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

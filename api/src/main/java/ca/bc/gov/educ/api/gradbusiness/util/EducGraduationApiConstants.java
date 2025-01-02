@@ -48,6 +48,12 @@ public class EducGraduationApiConstants {
     @Value("${endpoint.grad-graduation-report-api.school-report-by-school-id-and-report-type.url}")
     private String schoolReportBySchoolIdAndReportType;
 
+    @Value("${endpoint.grad-graduation-report-api.school-report-by-district-id-and-report-type.url}")
+    private String schoolReportByDistrictIdAndReportType;
+
+    @Value("${endpoint.grad-trax-api.search-district-by-dist-no.url}")
+    private String districtDetails;
+
     @Value("${endpoint.grad-graduation-report-api.student-credential-by-type.url}")
     private String studentCredentialByType;
 
@@ -65,4 +71,5 @@ public class EducGraduationApiConstants {
 
     @Value("${authorization.token-expiry-offset}")
     private int tokenExpiryOffset;
+
 }

@@ -86,6 +86,7 @@ public class EducGradBusinessApiConstants {
 
     //V2 constants
     public static final String SCHOOL_REPORT_PDF_MINCODE_V2 = "/report/{mincode}";
+    public static final String SCHOOL_REPORT_PDF_DISTCODE_V2 = "/report/{distcode}";
 
 
     //Endpoints
@@ -109,9 +110,6 @@ public class EducGradBusinessApiConstants {
 
     @Value("${endpoint.grad-trax-api.search-schools-by-min-code.url}")
     private String schoolDetails;
-
-    @Value("${endpoint.grad-graduation-report-api.school-report-by-mincode-reporttype.url}")
-    private String schoolReportByMincode;
 
     // Splunk LogHelper Enabled
     @Value("${splunk.log-helper.enabled}")

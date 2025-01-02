@@ -103,6 +103,10 @@ public class EducGradBusinessUtil {
         return mincode + "_" + year + month + "_" + type + "." + mediaType.getSubtype();
     }
 
+    public static String getFileNameSchoolReportsForDistrict(String distCode, int year, String month, String type, MediaType mediaType) {
+        return distCode + "_" + year + month + "_" + type + "." + mediaType.getSubtype();
+    }
+
     public static String getFileNameStudentCredentials(String mincode, String pen, String type) {
         return mincode + "_" + pen +"_" + type + ".pdf";
     }

@@ -1,17 +1,14 @@
-package ca.bc.gov.educ.api.gradbusiness.model.dto.institute;
+package ca.bc.gov.educ.api.gradbusiness.model.dto.v2;
 
-import ca.bc.gov.educ.api.gradbusiness.model.dto.institute.BaseModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Component("instituteDistrict")
+@Component("District")
 @NoArgsConstructor
 @AllArgsConstructor
 public class District extends BaseModel {
