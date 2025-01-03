@@ -85,8 +85,8 @@ public class EducGradBusinessApiConstants {
     public static final String TRAX_DATE_FORMAT = "yyyyMM";
 
     //V2 constants
-    public static final String SCHOOL_REPORT_PDF_MINCODE_V2 = "/report/{mincode}";
-    public static final String SCHOOL_REPORT_PDF_DISTCODE_V2 = "/report/{distcode}";
+    public static final String SCHOOL_REPORT_PDF_MINCODE_V2 = "/school/report/{mincode}";
+    public static final String SCHOOL_REPORT_PDF_DISTCODE_V2 = "/district/report/{distcode}";
 
 
     //Endpoints

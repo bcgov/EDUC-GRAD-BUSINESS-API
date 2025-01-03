@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Data
 @Builder
 @EqualsAndHashCode(callSuper = true)
-@Component("District")
+@Component
 @NoArgsConstructor
 @AllArgsConstructor
 public class District extends BaseModel {

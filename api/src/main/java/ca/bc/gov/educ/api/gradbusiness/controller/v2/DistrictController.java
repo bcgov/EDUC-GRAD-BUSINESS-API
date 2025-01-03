@@ -2,6 +2,7 @@ package ca.bc.gov.educ.api.gradbusiness.controller.v2;
 
 import ca.bc.gov.educ.api.gradbusiness.service.v2.DistrictService;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
+import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -15,8 +16,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
-@RestController("districtController")
-@RequestMapping("/api/v2/district")
+@RestController
+@RequestMapping(EducGraduationApiConstants.GRAD_BUSINESS_API_ROOT_MAPPING)
 @Slf4j
 @OpenAPIDefinition(info = @Info(title = "API for District Data.", description = "This Read API is for Reading District data.", version = "2"),
         security = {@SecurityRequirement(name = "OAUTH2", scopes = {"SCOPE_READ_GRAD_SCHOOL_REPORT"})})

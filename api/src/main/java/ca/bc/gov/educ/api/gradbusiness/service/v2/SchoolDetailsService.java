@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,7 @@ import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
-@Service("schoolDetailsService")
+@Service
 public class SchoolDetailsService {
 
 
@@ -32,9 +33,16 @@ public class SchoolDetailsService {
 	JsonTransformer jsonTransformer;
 	EducGraduationApiConstants educGraduationApiConstants;
 
-
 	private static Logger logger = LoggerFactory.getLogger(SchoolDetailsService.class);
 
+	@Autowired
+	public SchoolDetailsService(EducGradBusinessApiConstants constants, WebClient webClient, RESTService restService, JsonTransformer jsonTransformer, EducGraduationApiConstants educGraduationApiConstants) {
+        this.constants = constants;
+        this.webClient = webClient;
+        this.restService = restService;
+        this.jsonTransformer = jsonTransformer;
+		this.educGraduationApiConstants = educGraduationApiConstants;
+	}
 
 	public ResponseEntity<byte[]> getSchoolReportPDFByMincode(String mincode, String type) {
 		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);

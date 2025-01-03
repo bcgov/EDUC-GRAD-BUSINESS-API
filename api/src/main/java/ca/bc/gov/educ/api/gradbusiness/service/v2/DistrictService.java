@@ -3,6 +3,7 @@ package ca.bc.gov.educ.api.gradbusiness.service.v2;
 import ca.bc.gov.educ.api.gradbusiness.model.dto.v2.District;
 import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
 import ca.bc.gov.educ.api.gradbusiness.service.RESTService;
+import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessUtil;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.JsonTransformer;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,16 +25,25 @@ import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
-@Service("districtService")
+@Service
 public class DistrictService {
 
-
+    EducGradBusinessApiConstants constants;
     EducGraduationApiConstants educGraduationApiConstants;
     final WebClient webClient;
     final RESTService restService;
     JsonTransformer jsonTransformer;
 
     private static Logger logger = LoggerFactory.getLogger(DistrictService.class);
+
+    @Autowired
+    public DistrictService(EducGradBusinessApiConstants constants, WebClient webClient, RESTService restService, JsonTransformer jsonTransformer, EducGraduationApiConstants educGraduationApiConstants) {
+        this.constants = constants;
+        this.webClient = webClient;
+        this.restService = restService;
+        this.jsonTransformer = jsonTransformer;
+        this.educGraduationApiConstants = educGraduationApiConstants;
+    }
 
     public ResponseEntity<byte[]> getSchoolReportPDFByDistcode(String distCode, String type) {
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
@@ -102,7 +113,7 @@ public class DistrictService {
     }
 
     public District getDistrictDetails(String distNo) {
-        var response = this.restService.get(String.format(educGraduationApiConstants.getDistrictDetails(),distNo), List.class);
+        var response = this.restService.get(String.format(educGraduationApiConstants.getDistrictDetails(),distNo), District.class);
         return jsonTransformer.convertValue(response, new TypeReference<>() {});
     }
 }

@@ -2,6 +2,7 @@ package ca.bc.gov.educ.api.gradbusiness.controller.v2;
 
 import ca.bc.gov.educ.api.gradbusiness.service.v2.SchoolDetailsService;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
+import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -16,11 +17,11 @@ import org.springframework.web.bind.annotation.*;
 
 
 @CrossOrigin
-@RestController("schoolController")
-@RequestMapping("/api/v2/school")
+@RestController
+@RequestMapping(EducGraduationApiConstants.GRAD_BUSINESS_API_ROOT_MAPPING)
 @Slf4j
 @OpenAPIDefinition(info = @Info(title = "API for School Data.", description = "This Read API is for Reading school data from TRAX.", version = "2"),
-		security = {@SecurityRequirement(name = "OAUTH2", scopes = {"SCOPE_READ_GRAD_SCHOOL_REPORT"})})
+		security = {@SecurityRequirement(name = "OAUTH2", scopes = {"READ_GRAD_SCHOOL_REPORT"})})
 public class SchoolController {
 
     private final SchoolDetailsService schoolDetailsService;

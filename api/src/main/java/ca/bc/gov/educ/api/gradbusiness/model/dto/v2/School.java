@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@Component("School")
+@Component
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class School extends BaseModel {
 
