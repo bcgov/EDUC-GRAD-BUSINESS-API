@@ -1,6 +1,6 @@
 package ca.bc.gov.educ.api.gradbusiness.service.v2;
 
-import ca.bc.gov.educ.api.gradbusiness.model.dto.School;
+import ca.bc.gov.educ.api.gradbusiness.model.dto.v2.School;
 import ca.bc.gov.educ.api.gradbusiness.service.RESTService;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessUtil;

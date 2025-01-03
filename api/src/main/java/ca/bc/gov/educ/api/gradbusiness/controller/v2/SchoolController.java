@@ -20,10 +20,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v2/school")
 @Slf4j
 @OpenAPIDefinition(info = @Info(title = "API for School Data.", description = "This Read API is for Reading school data from TRAX.", version = "2"),
-		security = {@SecurityRequirement(name = "OAUTH2", scopes = {"READ_GRAD_SCHOOL_REPORT"})})
+		security = {@SecurityRequirement(name = "OAUTH2", scopes = {"SCOPE_READ_GRAD_SCHOOL_REPORT"})})
 public class SchoolController {
 
-    EducGradBusinessApiConstants educGradBusinessApiConstants;
     private final SchoolDetailsService schoolDetailsService;
 
     @Autowired

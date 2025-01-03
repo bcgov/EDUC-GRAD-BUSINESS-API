@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
 @RestController("districtController")
-@RequestMapping("/api/v2/school")
+@RequestMapping("/api/v2/district")
 @Slf4j
 @OpenAPIDefinition(info = @Info(title = "API for District Data.", description = "This Read API is for Reading District data.", version = "2"),
-        security = {@SecurityRequirement(name = "OAUTH2", scopes = {"READ_GRAD_SCHOOL_REPORT"})})
+        security = {@SecurityRequirement(name = "OAUTH2", scopes = {"SCOPE_READ_GRAD_SCHOOL_REPORT"})})
 public class DistrictController {
 
     EducGradBusinessApiConstants educGradBusinessApiConstants;

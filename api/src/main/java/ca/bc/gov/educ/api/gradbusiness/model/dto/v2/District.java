@@ -1,12 +1,10 @@
 package ca.bc.gov.educ.api.gradbusiness.model.dto.v2;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.stereotype.Component;
 
 @Data
+@Builder
 @EqualsAndHashCode(callSuper = true)
 @Component("District")
 @NoArgsConstructor

@@ -5,7 +5,7 @@ import ca.bc.gov.educ.api.gradbusiness.model.dto.School;
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
 import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
 import ca.bc.gov.educ.api.gradbusiness.service.RESTService;
-import ca.bc.gov.educ.api.gradbusiness.service.v2.SchoolDetailsService;
+import ca.bc.gov.educ.api.gradbusiness.service.SchoolService;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.TokenUtils;
@@ -71,8 +71,10 @@ class EducGradBusinessApiApplicationTests {
 
 	@Autowired
 	private GradBusinessService gradBusinessService;
-	@MockBean
-	private SchoolDetailsService schoolService;
+
+	@Autowired
+	private SchoolService schoolService;
+
 	@MockBean
 	private RESTService restService;
 
