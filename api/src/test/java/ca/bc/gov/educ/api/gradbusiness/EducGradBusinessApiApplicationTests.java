@@ -312,7 +312,6 @@ class EducGradBusinessApiApplicationTests {
 
 		ResponseEntity<byte[]> byteData = gradBusinessService.getAmalgamatedSchoolReportPDFByMincode(mincode, type, "accessToken");
 		assertNotNull(byteData);
-		//assertNotNull(byteData.getBody());
 
 		pdf = new InputStreamResource(new ByteArrayInputStream(new byte[0]));
 
@@ -324,7 +323,6 @@ class EducGradBusinessApiApplicationTests {
 
 		byteData = gradBusinessService.getAmalgamatedSchoolReportPDFByMincode(mincode, type, "accessToken");
 		assertNotNull(byteData);
-		//assertNull(byteData.getBody());
 
 	}
 

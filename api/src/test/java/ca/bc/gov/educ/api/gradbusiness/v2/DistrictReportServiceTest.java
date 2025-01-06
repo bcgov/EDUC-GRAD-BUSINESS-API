@@ -19,7 +19,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.reactive.function.client.WebClient;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -80,7 +79,6 @@ import static org.mockito.MockitoAnnotations.openMocks;
             when(this.restService.get(any(String.class), any())).thenReturn(pdf);
 
             ResponseEntity<byte[]> byteData = gradBusinessService.getDistrictReportPDFByDistcode(distCode, type);
-            //assertNotNull(byteData);
             assertEquals(HttpStatus.NOT_FOUND, byteData.getStatusCode());
             assertNull(byteData.getBody());
         }
