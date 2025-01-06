@@ -1,6 +1,6 @@
 package ca.bc.gov.educ.api.gradbusiness.controller.v2;
 
-import ca.bc.gov.educ.api.gradbusiness.service.v2.SchoolDetailsService;
+import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -21,22 +21,31 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(EducGraduationApiConstants.GRAD_BUSINESS_API_ROOT_MAPPING)
 @Slf4j
 @OpenAPIDefinition(info = @Info(title = "API for School Data.", description = "This Read API is for Reading school data from TRAX.", version = "2"),
-		security = {@SecurityRequirement(name = "OAUTH2", scopes = {"READ_GRAD_SCHOOL_REPORT"})})
-public class SchoolController {
+		security = {@SecurityRequirement(name = "OAUTH2", scopes = {"GET_GRADUATION_DATA"})})
+public class SchoolAndDistrictController {
 
-    private final SchoolDetailsService schoolDetailsService;
+    private final GradBusinessService gardBusinessService;
+
 
     @Autowired
-    public SchoolController(SchoolDetailsService schoolDetailsService) {
-        this.schoolDetailsService = schoolDetailsService;
+    public SchoolAndDistrictController(GradBusinessService gardBusinessService) {
+        this.gardBusinessService = gardBusinessService;
     }
 
     @GetMapping(EducGradBusinessApiConstants.SCHOOL_REPORT_PDF_MINCODE_V2)
-    @PreAuthorize("hasAuthority('SCOPE_READ_GRAD_SCHOOL_REPORT')")
+    @PreAuthorize("hasAuthority('SCOPE_GET_GRADUATION_DATA')")
     @Operation(summary = "Get School Report pdf from graduation by mincode and report type", description = "Get School Report pdf from graduation by mincode and report type", tags = { "Graduation Data" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
     public ResponseEntity<byte[]> schoolReportByMincode(@PathVariable String mincode,@RequestParam(name = "type") String type) {
-        return schoolDetailsService.getSchoolReportPDFByMincode(mincode, type);
+        return gardBusinessService.getSchoolReportPDFByMincode(mincode, type);
+    }
+
+    @GetMapping(EducGradBusinessApiConstants.DISTRICT_REPORT_PDF_DISTCODE_V2)
+    @PreAuthorize("hasAuthority('SCOPE_GET_GRADUATION_DATA')")
+    @Operation(summary = "Get District Report pdf from graduation by distcode and report type", description = "Get District Report pdf from graduation by distcode and report type", tags = { "Graduation Data" })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
+    public ResponseEntity<byte[]> districtReportByDistrictCode(@PathVariable String distcode, @RequestParam(name = "type") String type) {
+        return gardBusinessService.getDistrictReportPDFByDistcode(distcode, type);
     }
 
 }

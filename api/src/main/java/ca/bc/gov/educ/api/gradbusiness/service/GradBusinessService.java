@@ -3,6 +3,7 @@ package ca.bc.gov.educ.api.gradbusiness.service;
 import ca.bc.gov.educ.api.gradbusiness.exception.ServiceException;
 import ca.bc.gov.educ.api.gradbusiness.model.dto.School;
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
+import ca.bc.gov.educ.api.gradbusiness.model.dto.District;
 import ca.bc.gov.educ.api.gradbusiness.util.*;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
@@ -62,6 +63,7 @@ public class GradBusinessService {
     final EducGraduationApiConstants educGraduationApiConstants;
 
     final SchoolService schoolService;
+    final DistrictService districtService;
     final RESTService restService;
     final JsonTransformer jsonTransformer;
 
@@ -71,12 +73,13 @@ public class GradBusinessService {
      * @param webClient the web client
      */
     @Autowired
-    public GradBusinessService(WebClient webClient, TokenUtils tokenUtils, EducGradBusinessApiConstants educGradStudentApiConstants, EducGraduationApiConstants educGraduationApiConstants, SchoolService schoolService, RESTService restService, JsonTransformer jsonTransformer) {
+    public GradBusinessService(WebClient webClient, TokenUtils tokenUtils, EducGradBusinessApiConstants educGradStudentApiConstants, EducGraduationApiConstants educGraduationApiConstants, SchoolService schoolService, DistrictService districtService, RESTService restService, JsonTransformer jsonTransformer) {
         this.webClient = webClient;
         this.tokenUtils = tokenUtils;
         this.educGradStudentApiConstants = educGradStudentApiConstants;
         this.educGraduationApiConstants = educGraduationApiConstants;
         this.schoolService = schoolService;
+        this.districtService = districtService;
         this.restService = restService;
         this.jsonTransformer = jsonTransformer;
     }
@@ -201,9 +204,32 @@ public class GradBusinessService {
                 response = result.getInputStream().readAllBytes();
             }
 
-            return handleBinaryResponse(response, EducGradBusinessUtil.getFileNameSchoolReports(mincode,year,month,type,MediaType.APPLICATION_PDF), MediaType.APPLICATION_PDF);
+            return handleBinaryResponse(response, EducGradBusinessUtil.getReportsFileNameForSchoolAndDistrict(mincode,year,month,type,MediaType.APPLICATION_PDF), MediaType.APPLICATION_PDF);
         } catch (Exception e) {
             logger.error("Error getting school report PDF by mincode: {}", e.getMessage());
+            return getInternalServerErrorResponse(e);
+        }
+    }
+
+    public ResponseEntity<byte[]> getDistrictReportPDFByDistcode(String distCode, String type) {
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
+        int year = cal.get(Calendar.YEAR);
+        String month = String.format("%02d", cal.get(Calendar.MONTH) + 1);
+        try {
+            Optional<District> districtDetails = Optional.ofNullable(districtService.getDistrictDetails(distCode));
+            if (districtDetails.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            String districtId = districtDetails.get().getDistrictId();
+            var result = restService.get(String.format(educGraduationApiConstants.getDistrictReportByDistrictIdAndReportType(), districtId, type), InputStreamResource.class);
+            byte[] response = new byte[0];
+            if (result != null) {
+                response = result.getInputStream().readAllBytes();
+            }
+
+            return handleBinaryResponse(response, EducGradBusinessUtil.getReportsFileNameForSchoolAndDistrict(distCode,year,month,type, MediaType.APPLICATION_PDF), MediaType.APPLICATION_PDF);
+        } catch (Exception e) {
+            logger.error("Error getting district report PDF by distCode: {}", e.getMessage());
             return getInternalServerErrorResponse(e);
         }
     }
@@ -220,7 +246,7 @@ public class GradBusinessService {
             Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
             int year = cal.get(Calendar.YEAR);
             String month = "00";
-            String fileName = EducGradBusinessUtil.getFileNameSchoolReports(mincode, year, month, type, MediaType.APPLICATION_PDF);
+            String fileName = EducGradBusinessUtil.getReportsFileNameForSchoolAndDistrict(mincode, year, month, type, MediaType.APPLICATION_PDF);
             try {
                 logger.debug("******** Merging Documents Started ******");
                 byte[] res = EducGradBusinessUtil.mergeDocumentsPDFs(locations);

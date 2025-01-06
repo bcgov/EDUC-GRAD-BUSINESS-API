@@ -26,10 +26,9 @@ spring:
           grad-business-client:
             client-id: ${GRAD_BUSINESS_API_CLIENT_NAME}
             client-secret: ${GRAD_BUSINESS_API_CLIENT_SECRET}
-            provider: grad-business-provider
             authorization-grant-type: client_credentials
         provider:
-          grad-business-provider:
+          grad-business-client:
             issuer-uri: ${TOKEN_ISSUER_URL}
             token-uri: ${TOKEN_ISSUER_URL}/protocol/openid-connect/token
 
@@ -159,7 +158,7 @@ endpoint:
   grad-graduation-report-api:
     school-report-by-school-id-and-report-type:
       url: ${GRAD_GRADUATION_REPORT_API}api/v2/graduationreports/schoolreports?schoolOfRecordId=%s&reportTypeCode=%s
-    school-report-by-district-id-and-report-type:
+    district-report-by-district-id-and-report-type:
       url: ${GRAD_GRADUATION_REPORT_API}api/v2/graduationreports/district-report?districtId=%s&reportTypeCode=%s
     student-credential-by-type:
       url: ${GRAD_GRADUATION_REPORT_API}api/v1/graduationreports/business/studentcredential/%s/%s

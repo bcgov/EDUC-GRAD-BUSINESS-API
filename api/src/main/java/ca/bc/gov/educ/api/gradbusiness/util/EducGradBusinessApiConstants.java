@@ -86,7 +86,7 @@ public class EducGradBusinessApiConstants {
 
     //V2 constants
     public static final String SCHOOL_REPORT_PDF_MINCODE_V2 = "/school/report/{mincode}";
-    public static final String SCHOOL_REPORT_PDF_DISTCODE_V2 = "/district/report/{distcode}";
+    public static final String DISTRICT_REPORT_PDF_DISTCODE_V2 = "/district/report/{distcode}";
 
 
     //Endpoints

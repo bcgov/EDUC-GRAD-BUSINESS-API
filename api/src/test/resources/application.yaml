@@ -91,7 +91,7 @@ endpoint:
   grad-graduation-report-api:
     school-report-by-school-id-and-report-type:
       url: https://educ-grad-graduation-report-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v2/graduationreports/schoolreports?schoolOfRecordId=%s&reportTypeCode=%s
-    school-report-by-district-id-and-report-type:
+    district-report-by-district-id-and-report-type:
       url: https://educ-grad-graduation-report-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v2/graduationreports/district-report?districtId=%s&reportTypeCode=%s
     student-credential-by-type:
       url: https://educ-grad-graduation-report-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/graduationreports/business/studentcredential/%s/%s

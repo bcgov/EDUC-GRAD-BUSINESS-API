@@ -1,11 +1,9 @@
 package ca.bc.gov.educ.api.gradbusiness.v2;
 
 
-import ca.bc.gov.educ.api.gradbusiness.controller.v2.SchoolController;
-import ca.bc.gov.educ.api.gradbusiness.controller.v2.DistrictController;
+import ca.bc.gov.educ.api.gradbusiness.controller.v2.SchoolAndDistrictController;
+import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
 import ca.bc.gov.educ.api.gradbusiness.service.RESTService;
-import ca.bc.gov.educ.api.gradbusiness.service.v2.SchoolDetailsService;
-import ca.bc.gov.educ.api.gradbusiness.service.v2.DistrictService;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.TokenUtils;
 import org.junit.FixMethodOrder;
@@ -35,16 +33,10 @@ class SchoolAndDistrictControllerTest {
     private TokenUtils tokenUtils;
 
     @Mock
-    private SchoolDetailsService schoolDetailsService;
-
-    @Mock
-    private DistrictService districtService;
+    private GradBusinessService gradBusinessService;
 
     @InjectMocks
-    private SchoolController schoolController;
-
-    @InjectMocks
-    private DistrictController districtController;
+    private SchoolAndDistrictController schoolAndDistrictController;
 
     @Autowired
     private EducGraduationApiConstants educGraduationApiConstants;
@@ -64,14 +56,14 @@ class SchoolAndDistrictControllerTest {
                 .contentType(MediaType.APPLICATION_XML)
                 .body(greBPack);
 
-        Mockito.when(schoolDetailsService.getSchoolReportPDFByMincode("12312321", "GRAD")).thenReturn(response);
-        schoolController.schoolReportByMincode("12312321","GRAD");
-        Mockito.verify(schoolDetailsService).getSchoolReportPDFByMincode("12312321","GRAD");
+        Mockito.when(gradBusinessService.getSchoolReportPDFByMincode("12312321", "GRAD")).thenReturn(response);
+        schoolAndDistrictController.schoolReportByMincode("12312321","GRAD");
+        Mockito.verify(gradBusinessService).getSchoolReportPDFByMincode("12312321","GRAD");
 
     }
 
     @Test
-    void testSchoolReportBydistCode() throws Exception {
+    void testDistrictReportBydistCode() throws Exception {
         byte[] greBPack = "Any String you want".getBytes();
 
         HttpHeaders headers = new HttpHeaders();
@@ -82,9 +74,9 @@ class SchoolAndDistrictControllerTest {
                 .contentType(MediaType.APPLICATION_XML)
                 .body(greBPack);
 
-        Mockito.when(districtService.getSchoolReportPDFByDistcode("12312321", "GRAD")).thenReturn(response);
-        districtController.schoolReportByDistrictCode("12312321","GRAD");
-        Mockito.verify(districtService).getSchoolReportPDFByDistcode("12312321","GRAD");
+        Mockito.when(gradBusinessService.getDistrictReportPDFByDistcode("12312321", "GRAD")).thenReturn(response);
+        schoolAndDistrictController.districtReportByDistrictCode("12312321","GRAD");
+        Mockito.verify(gradBusinessService).getDistrictReportPDFByDistcode("12312321","GRAD");
 
     }
 }

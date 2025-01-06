@@ -50,8 +50,8 @@ public class EducGraduationApiConstants {
     @Value("${endpoint.grad-graduation-report-api.school-report-by-school-id-and-report-type.url}")
     private String schoolReportBySchoolIdAndReportType;
 
-    @Value("${endpoint.grad-graduation-report-api.school-report-by-district-id-and-report-type.url}")
-    private String schoolReportByDistrictIdAndReportType;
+    @Value("${endpoint.grad-graduation-report-api.district-report-by-district-id-and-report-type.url}")
+    private String districtReportByDistrictIdAndReportType;
 
     @Value("${endpoint.grad-trax-api.search-district-by-dist-no.url}")
     private String districtDetails;

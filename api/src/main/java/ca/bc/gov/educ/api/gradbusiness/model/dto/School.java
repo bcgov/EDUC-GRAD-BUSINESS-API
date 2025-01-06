@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @EqualsAndHashCode
 @Component("instituteSchool")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class School {
+public class School extends BaseModel{
 
     private String schoolId;
     private String districtId;
