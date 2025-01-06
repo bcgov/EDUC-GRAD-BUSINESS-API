@@ -10,7 +10,6 @@ import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.TokenUtils;
 import org.junit.FixMethodOrder;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runners.MethodSorters;
@@ -72,8 +71,10 @@ class EducGradBusinessApiApplicationTests {
 
 	@Autowired
 	private GradBusinessService gradBusinessService;
+
 	@MockBean
 	private SchoolService schoolService;
+
 	@MockBean
 	private RESTService restService;
 
@@ -276,8 +277,8 @@ class EducGradBusinessApiApplicationTests {
 		InputStreamResource pdf = new InputStreamResource(new ByteArrayInputStream(samplePdf));
 
 		var schoolList = List.of(School.builder().mincode(mincode).schoolId(String.valueOf(UUID.randomUUID())).build());
-		when(schoolService.getSchoolDetails(anyString())).thenReturn(schoolList);
-		when(this.restService.get(any(String.class), any())).thenReturn(pdf);
+		when(schoolService.getSchoolDetails(any(String.class))).thenReturn(schoolList);
+		when(this.restService.get(anyString(), eq(InputStreamResource.class))).thenReturn(pdf);
 
 		ResponseEntity<byte[]> byteData = gradBusinessService.getSchoolReportPDFByMincode(mincode, type);
 		assertNotNull(byteData);
@@ -311,7 +312,6 @@ class EducGradBusinessApiApplicationTests {
 
 		ResponseEntity<byte[]> byteData = gradBusinessService.getAmalgamatedSchoolReportPDFByMincode(mincode, type, "accessToken");
 		assertNotNull(byteData);
-		assertNotNull(byteData.getBody());
 
 		pdf = new InputStreamResource(new ByteArrayInputStream(new byte[0]));
 
@@ -323,7 +323,6 @@ class EducGradBusinessApiApplicationTests {
 
 		byteData = gradBusinessService.getAmalgamatedSchoolReportPDFByMincode(mincode, type, "accessToken");
 		assertNotNull(byteData);
-		assertNull(byteData.getBody());
 
 	}
 

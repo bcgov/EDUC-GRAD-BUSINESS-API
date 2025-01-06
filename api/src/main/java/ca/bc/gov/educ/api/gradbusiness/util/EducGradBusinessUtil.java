@@ -99,8 +99,8 @@ public class EducGradBusinessUtil {
         return Optional.ofNullable(System.getProperty("java.io.tmpdir")).orElse("/tmp").concat(File.pathSeparator);
     }
 
-    public static String getFileNameSchoolReports(String mincode, int year, String month, String type, MediaType mediaType) {
-        return mincode + "_" + year + month + "_" + type + "." + mediaType.getSubtype();
+    public static String getReportsFileNameForSchoolAndDistrict(String code, int year, String month, String type, MediaType mediaType) {
+        return code + "_" + year + month + "_" + type + "." + mediaType.getSubtype();
     }
 
     public static String getFileNameStudentCredentials(String mincode, String pen, String type) {
