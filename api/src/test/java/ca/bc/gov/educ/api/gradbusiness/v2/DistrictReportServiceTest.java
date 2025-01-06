@@ -9,6 +9,7 @@ import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.InputStreamResource;
@@ -18,6 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.reactive.function.client.WebClient;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -32,7 +34,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
         @MockBean
         WebClient webClient;
 
-        @MockBean
+        @Autowired
         private GradBusinessService gradBusinessService;
 
         @MockBean
@@ -74,12 +76,11 @@ import static org.mockito.MockitoAnnotations.openMocks;
             byte[] samplePdf = new byte[0];
             InputStreamResource pdf = new InputStreamResource(new ByteArrayInputStream(samplePdf));
 
-            var district = District.builder().districtNumber(distCode).districtId(String.valueOf(UUID.randomUUID())).build();
-            when(districtService.getDistrictDetails(anyString())).thenReturn(district);
+            when(districtService.getDistrictDetails(anyString())).thenReturn(null);
             when(this.restService.get(any(String.class), any())).thenReturn(pdf);
 
             ResponseEntity<byte[]> byteData = gradBusinessService.getDistrictReportPDFByDistcode(distCode, type);
-            assertNotNull(byteData);
+            //assertNotNull(byteData);
             assertEquals(HttpStatus.NOT_FOUND, byteData.getStatusCode());
             assertNull(byteData.getBody());
         }
