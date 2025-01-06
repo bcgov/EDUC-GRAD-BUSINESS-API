@@ -1,10 +1,9 @@
 package ca.bc.gov.educ.api.gradbusiness.v2;
 
 
-import ca.bc.gov.educ.api.gradbusiness.controller.v2.SchoolAndDistrictController;
+import ca.bc.gov.educ.api.gradbusiness.controller.v2.SchoolAndDistrictReportsController;
 import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
 import ca.bc.gov.educ.api.gradbusiness.service.RESTService;
-import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.TokenUtils;
 import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,6 @@ import org.junit.runners.MethodSorters;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
@@ -27,7 +25,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
-class SchoolAndDistrictControllerTest {
+class SchoolAndDistrictReportsControllerTest {
 
     @MockBean
     private TokenUtils tokenUtils;
@@ -36,10 +34,7 @@ class SchoolAndDistrictControllerTest {
     private GradBusinessService gradBusinessService;
 
     @InjectMocks
-    private SchoolAndDistrictController schoolAndDistrictController;
-
-    @Autowired
-    private EducGraduationApiConstants educGraduationApiConstants;
+    private SchoolAndDistrictReportsController schoolAndDistrictReportsController;
 
     @MockBean
     private RESTService restService;
@@ -57,7 +52,7 @@ class SchoolAndDistrictControllerTest {
                 .body(greBPack);
 
         Mockito.when(gradBusinessService.getSchoolReportPDFByMincode("12312321", "GRAD")).thenReturn(response);
-        schoolAndDistrictController.schoolReportByMincode("12312321","GRAD");
+        schoolAndDistrictReportsController.schoolReportByMincode("12312321","GRAD");
         Mockito.verify(gradBusinessService).getSchoolReportPDFByMincode("12312321","GRAD");
 
     }
@@ -75,7 +70,7 @@ class SchoolAndDistrictControllerTest {
                 .body(greBPack);
 
         Mockito.when(gradBusinessService.getDistrictReportPDFByDistcode("12312321", "GRAD")).thenReturn(response);
-        schoolAndDistrictController.districtReportByDistrictCode("12312321","GRAD");
+        schoolAndDistrictReportsController.districtReportByDistrictCode("12312321","GRAD");
         Mockito.verify(gradBusinessService).getDistrictReportPDFByDistcode("12312321","GRAD");
 
     }
