@@ -35,7 +35,7 @@ public class SchoolAndDistrictReportsController {
     @PreAuthorize("hasAuthority('SCOPE_GET_GRADUATION_DATA')")
     @Operation(summary = "Get School Report pdf from graduation by mincode and report type", description = "Get School Report pdf from graduation by mincode and report type", tags = { "Graduation Data" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR.")})
     public ResponseEntity<byte[]> schoolReportByMincode(@PathVariable String mincode,@RequestParam(name = "type") String type) {
         return gardBusinessService.getSchoolReportPDFByMincode(mincode, type);
@@ -45,7 +45,7 @@ public class SchoolAndDistrictReportsController {
     @PreAuthorize("hasAuthority('SCOPE_GET_GRADUATION_DATA')")
     @Operation(summary = "Get District Report pdf from graduation by distcode and report type", description = "Get District Report pdf from graduation by distcode and report type", tags = { "Graduation Data" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR.")})
     public ResponseEntity<byte[]> districtReportByDistrictCode(@PathVariable String distcode, @RequestParam(name = "type") String type) {
         return gardBusinessService.getDistrictReportPDFByDistcode(distcode, type);
