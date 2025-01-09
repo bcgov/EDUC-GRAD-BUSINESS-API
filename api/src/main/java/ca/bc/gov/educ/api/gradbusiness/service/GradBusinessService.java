@@ -236,32 +236,35 @@ public class GradBusinessService {
 
     public ResponseEntity<byte[]> getAmalgamatedSchoolReportPDFByMincode(String mincode, String type, String accessToken) {
         logger.debug("******** Retrieve List of Students for Amalgamated School Report ******");
-        List<UUID> studentList = webClient.get().uri(String.format(educGradStudentApiConstants.getStudentsForAmalgamatedReport(), mincode, type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(new ParameterizedTypeReference<List<UUID>>() {
-        }).block();
         List<InputStream> locations = new ArrayList<>();
-        if (studentList != null && !studentList.isEmpty()) {
-            logger.debug("******** Fetched {} students ******", studentList.size());
-            List<List<UUID>> partitions = ListUtils.partition(studentList, 200);
-            getStudentAchievementReports(partitions, locations);
-            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
-            int year = cal.get(Calendar.YEAR);
-            String month = "00";
-            String fileName = EducGradBusinessUtil.getReportsFileNameForSchoolAndDistrict(mincode, year, month, type, MediaType.APPLICATION_PDF);
-            try {
-                logger.debug("******** Merging Documents Started ******");
-                byte[] res = EducGradBusinessUtil.mergeDocumentsPDFs(locations);
-                logger.debug("******** Merged {} Documents ******", locations.size());
-                HttpHeaders headers = new HttpHeaders();
-                headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
-                headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
-                headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_PDF));
-                saveBinaryResponseToFile(res, fileName);
-                return handleBinaryResponse(res, fileName, MediaType.APPLICATION_PDF);
-            } catch (Exception e) {
-                return getInternalServerErrorResponse(e);
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
+        int year = cal.get(Calendar.YEAR);
+        String month = "00";
+
+        try {
+            List<School> schoolDetails = schoolService.getSchoolDetails(mincode);
+            if (schoolDetails.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
+            String schoolOfRecordId = schoolDetails.get(0).getSchoolId();
+
+            List<UUID> studentList = webClient.get().uri(String.format(educGradStudentApiConstants.getStudentsForAmalgamatedReport(), schoolOfRecordId, type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(new ParameterizedTypeReference<List<UUID>>() {}).block();
+
+            if (studentList != null && !studentList.isEmpty()) {
+                logger.debug("******** Fetched {} students ******", studentList.size());
+                List<List<UUID>> partitions = ListUtils.partition(studentList, 200);
+                getStudentAchievementReports(partitions, locations);
+            }
+            String fileName = EducGradBusinessUtil.getReportsFileNameForSchoolAndDistrict(mincode, year, month, type, MediaType.APPLICATION_PDF);
+            logger.debug("******** Merging Documents Started ******");
+            byte[] res = EducGradBusinessUtil.mergeDocumentsPDFs(locations);
+            logger.debug("******** Merged {} Documents ******", locations.size());
+            saveBinaryResponseToFile(res, fileName);
+            return handleBinaryResponse(res, fileName, MediaType.APPLICATION_PDF);
+        } catch (Exception e) {
+            logger.error("Error getting amalgamated report PDF by mincode: {}", e.getMessage());
+            return getInternalServerErrorResponse(e);
         }
-        return null;
     }
 
     @Transactional
