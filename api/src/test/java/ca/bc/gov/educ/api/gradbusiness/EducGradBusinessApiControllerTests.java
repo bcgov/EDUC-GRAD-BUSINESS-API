@@ -203,9 +203,9 @@ class EducGradBusinessApiControllerTests {
 				.contentType(MediaType.APPLICATION_XML)
 				.body(greBPack);
 
-		Mockito.when(gradBusinessService.getAmalgamatedSchoolReportPDFByMincode("12312321", "TVRNONGRAD","accessToken")).thenReturn(response);
-		gradBusinessController.amalgamatedSchoolReportByMincode("12312321","TVRNONGRAD", "accessToken");
-		Mockito.verify(gradBusinessService).getAmalgamatedSchoolReportPDFByMincode("12312321","TVRNONGRAD", "accessToken");
+		Mockito.when(gradBusinessService.getAmalgamatedSchoolReportPDFByMincode("12312321", "TVRNONGRAD")).thenReturn(response);
+		gradBusinessController.amalgamatedSchoolReportByMincode("12312321","TVRNONGRAD");
+		Mockito.verify(gradBusinessService).getAmalgamatedSchoolReportPDFByMincode("12312321","TVRNONGRAD");
 
 	}
 

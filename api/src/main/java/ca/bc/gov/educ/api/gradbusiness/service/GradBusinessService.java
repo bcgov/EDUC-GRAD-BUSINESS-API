@@ -235,7 +235,7 @@ public class GradBusinessService {
         }
     }
 
-    public ResponseEntity<byte[]> getAmalgamatedSchoolReportPDFByMincode(String mincode, String type, String accessToken) {
+    public ResponseEntity<byte[]> getAmalgamatedSchoolReportPDFByMincode(String mincode, String type) {
         logger.debug("******** Retrieve List of Students for Amalgamated School Report ******");
         List<InputStream> locations = new ArrayList<>();
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);

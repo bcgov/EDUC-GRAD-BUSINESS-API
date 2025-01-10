@@ -295,7 +295,6 @@ class EducGradBusinessApiApplicationTests {
 		byte[] samplePdf = readBinaryFile("data/sample.pdf");
 		InputStreamResource pdf = new InputStreamResource(new ByteArrayInputStream(samplePdf));
 
-		when(this.tokenUtils.getAccessToken()).thenReturn("accessToken");
 
 		UUID studentID = UUID.randomUUID();
 		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
@@ -310,7 +309,7 @@ class EducGradBusinessApiApplicationTests {
 		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
 		when(this.responseMock.bodyToMono(InputStreamResource.class)).thenReturn(Mono.just(pdf));
 
-		ResponseEntity<byte[]> byteData = gradBusinessService.getAmalgamatedSchoolReportPDFByMincode(mincode, type, "accessToken");
+		ResponseEntity<byte[]> byteData = gradBusinessService.getAmalgamatedSchoolReportPDFByMincode(mincode, type);
 		assertNotNull(byteData);
 
 		pdf = new InputStreamResource(new ByteArrayInputStream(new byte[0]));
@@ -321,7 +320,7 @@ class EducGradBusinessApiApplicationTests {
 		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
 		when(this.responseMock.bodyToMono(InputStreamResource.class)).thenReturn(Mono.just(pdf));
 
-		byteData = gradBusinessService.getAmalgamatedSchoolReportPDFByMincode(mincode, type, "accessToken");
+		byteData = gradBusinessService.getAmalgamatedSchoolReportPDFByMincode(mincode, type);
 		assertNotNull(byteData);
 
 	}

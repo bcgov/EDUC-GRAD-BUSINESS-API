@@ -148,8 +148,8 @@ public class GradBusinessController {
     @PreAuthorize("hasAuthority('SCOPE_GET_GRADUATION_DATA')")
     @Operation(summary = "Get School Report pdf from graduation by mincode and report type", description = "Get School Report pdf from graduation by mincode and report type", tags = { "Graduation Data" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
-    public ResponseEntity<byte[]> amalgamatedSchoolReportByMincode(@PathVariable String mincode, @RequestParam(name = "type") String type, @RequestHeader(name="Authorization") String accessToken) {
-        return gradBusinessService.getAmalgamatedSchoolReportPDFByMincode(mincode, type, accessToken.replace(BEARER, ""));
+    public ResponseEntity<byte[]> amalgamatedSchoolReportByMincode(@PathVariable String mincode, @RequestParam(name = "type") String type) {
+        return gradBusinessService.getAmalgamatedSchoolReportPDFByMincode(mincode, type);
     }
 
 
