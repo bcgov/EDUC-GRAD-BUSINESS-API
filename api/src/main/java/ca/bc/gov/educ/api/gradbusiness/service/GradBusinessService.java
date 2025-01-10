@@ -5,6 +5,7 @@ import ca.bc.gov.educ.api.gradbusiness.model.dto.School;
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
 import ca.bc.gov.educ.api.gradbusiness.model.dto.District;
 import ca.bc.gov.educ.api.gradbusiness.util.*;
+import com.fasterxml.jackson.core.type.TypeReference;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
 import org.apache.commons.collections4.ListUtils;
@@ -247,9 +248,8 @@ public class GradBusinessService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
             String schoolOfRecordId = schoolDetails.get(0).getSchoolId();
-
-            List<UUID> studentList = webClient.get().uri(String.format(educGradStudentApiConstants.getStudentsForAmalgamatedReport(), schoolOfRecordId, type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(new ParameterizedTypeReference<List<UUID>>() {}).block();
-
+            var response = restService.get(String.format(educGradStudentApiConstants.getStudentsForAmalgamatedReport(), schoolOfRecordId, type), List.class);
+            List<UUID> studentList = jsonTransformer.convertValue(response, new TypeReference<>() {});
             if (studentList != null && !studentList.isEmpty()) {
                 logger.debug("******** Fetched {} students ******", studentList.size());
                 List<List<UUID>> partitions = ListUtils.partition(studentList, 200);
