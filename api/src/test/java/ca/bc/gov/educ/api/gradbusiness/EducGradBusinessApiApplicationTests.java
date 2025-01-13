@@ -286,7 +286,7 @@ class EducGradBusinessApiApplicationTests {
 	}
 
 	@Test
-	void testgetAmalgamatedSchoolReportPDFByMincode() throws Exception {
+	void testAmalgamatedSchoolReportPDFByMincode() throws Exception {
 
 		String mincode = "128385861";
 		String type = "TVRNONGRAD";
@@ -311,6 +311,19 @@ class EducGradBusinessApiApplicationTests {
 		assertEquals(HttpStatus.NO_CONTENT, byteData.getStatusCode());
 	}
 
+	@Test
+	void testAmalgamatedSchoolReportPDFByMincode_NotFound() {
+
+		String mincode = "128385861";
+		String type = "TVRNONGRAD";
+		String schoolOfRecordId = "14453395-ecf0-7f81-998f-506940d94c2d";
+
+		when(this.restService.get(String.format(educGradStudentApiConstants.getStudentsForAmalgamatedReport(), schoolOfRecordId, type), List.class)).thenThrow(new RuntimeException());
+
+		ResponseEntity<byte[]> byteData = gradBusinessService.getSchoolReportPDFByMincode(mincode, type);
+		assertNotNull(byteData);
+		assertEquals(HttpStatus.NOT_FOUND, byteData.getStatusCode());
+	}
 	@Test
 	void testSchoolReportPDFByMincode_NotFound() {
 
