@@ -291,7 +291,7 @@ class EducGradBusinessApiApplicationTests {
 		String mincode = "128385861";
 		String type = "TVRNONGRAD";
 		String schoolOfRecordId = "14453395-ecf0-7f81-998f-506940d94c2d";
-		String uuId = UUID.randomUUID().toString();
+		String uuId = String.valueOf(UUID.randomUUID());
 		List<UUID> studentList = new ArrayList<>();
 		studentList.add(UUID.randomUUID());
 		studentList.add(UUID.randomUUID());
@@ -316,14 +316,32 @@ class EducGradBusinessApiApplicationTests {
 
 		String mincode = "128385861";
 		String type = "TVRNONGRAD";
-		String schoolOfRecordId = "14453395-ecf0-7f81-998f-506940d94c2d";
+		String uuId = String.valueOf(UUID.randomUUID());
 
-		when(this.restService.get(String.format(educGradStudentApiConstants.getStudentsForAmalgamatedReport(), schoolOfRecordId, type), List.class)).thenThrow(new RuntimeException());
+		byte[] samplePdf = new byte[0];
+		InputStreamResource pdf = new InputStreamResource(new ByteArrayInputStream(samplePdf));
+
+		when(this.restService.get(String.format(educGraduationApiConstants.getStudentCredentialByType(), uuId, "ACHV"), InputStreamResource.class)).thenReturn(pdf);
+		when(this.restService.get(anyString(), eq(InputStreamResource.class))).thenReturn(pdf);
 
 		ResponseEntity<byte[]> byteData = gradBusinessService.getAmalgamatedSchoolReportPDFByMincode(mincode, type);
 		assertNotNull(byteData);
 		assertEquals(HttpStatus.NOT_FOUND, byteData.getStatusCode());
 	}
+
+	@Test
+	void testAmalgamatedSchoolReportPDFByMincode_Error500() {
+
+		String mincode = "128385861";
+		String type = "TVRNONGRAD";
+
+		when(schoolService.getSchoolDetails(mincode)).thenThrow(new RuntimeException());
+
+		ResponseEntity<byte[]> byteData = gradBusinessService.getAmalgamatedSchoolReportPDFByMincode(mincode, type);
+		assertNotNull(byteData);
+		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, byteData.getStatusCode());
+	}
+
 	@Test
 	void testSchoolReportPDFByMincode_NotFound() {
 
