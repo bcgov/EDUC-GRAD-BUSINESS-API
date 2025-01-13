@@ -320,7 +320,7 @@ class EducGradBusinessApiApplicationTests {
 
 		when(this.restService.get(String.format(educGradStudentApiConstants.getStudentsForAmalgamatedReport(), schoolOfRecordId, type), List.class)).thenThrow(new RuntimeException());
 
-		ResponseEntity<byte[]> byteData = gradBusinessService.getSchoolReportPDFByMincode(mincode, type);
+		ResponseEntity<byte[]> byteData = gradBusinessService.getAmalgamatedSchoolReportPDFByMincode(mincode, type);
 		assertNotNull(byteData);
 		assertEquals(HttpStatus.NOT_FOUND, byteData.getStatusCode());
 	}
