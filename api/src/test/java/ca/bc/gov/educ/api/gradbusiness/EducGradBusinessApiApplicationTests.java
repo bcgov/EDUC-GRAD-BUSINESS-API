@@ -7,6 +7,7 @@ import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
 import ca.bc.gov.educ.api.gradbusiness.service.RESTService;
 import ca.bc.gov.educ.api.gradbusiness.service.SchoolService;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
+import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessUtil;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.TokenUtils;
 import org.junit.FixMethodOrder;
@@ -31,9 +32,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -291,38 +290,25 @@ class EducGradBusinessApiApplicationTests {
 
 		String mincode = "128385861";
 		String type = "TVRNONGRAD";
+		String schoolOfRecordId = "14453395-ecf0-7f81-998f-506940d94c2d";
+		String uuId = UUID.randomUUID().toString();
+		List<UUID> studentList = new ArrayList<>();
+		studentList.add(UUID.randomUUID());
+		studentList.add(UUID.randomUUID());
 
 		byte[] samplePdf = readBinaryFile("data/sample.pdf");
 		InputStreamResource pdf = new InputStreamResource(new ByteArrayInputStream(samplePdf));
 
 
-		UUID studentID = UUID.randomUUID();
-		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
-		when(this.requestHeadersUriMock.uri(String.format(educGradStudentApiConstants.getStudentsForAmalgamatedReport(),mincode,type))).thenReturn(this.requestHeadersMock);
-		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
-		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
-		when(this.responseMock.bodyToMono(new ParameterizedTypeReference<List<UUID>>() {})).thenReturn(Mono.just(List.of(studentID)));
-
-		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
-		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getStudentCredentialByType(),studentID,"ACHV"))).thenReturn(this.requestHeadersMock);
-		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
-		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
-		when(this.responseMock.bodyToMono(InputStreamResource.class)).thenReturn(Mono.just(pdf));
+		var schoolList = List.of(School.builder().mincode(mincode).schoolId(String.valueOf(UUID.randomUUID())).build());
+		when(schoolService.getSchoolDetails(any(String.class))).thenReturn(schoolList);
+		when(this.restService.get(String.format(educGradStudentApiConstants.getStudentsForAmalgamatedReport(), schoolOfRecordId, type), List.class)).thenReturn(studentList);
+		when(this.restService.get(anyString(), eq(InputStreamResource.class))).thenReturn(pdf);
+		when(this.restService.get(String.format(educGraduationApiConstants.getStudentCredentialByType(), uuId, "ACHV"), InputStreamResource.class)).thenReturn(pdf);
 
 		ResponseEntity<byte[]> byteData = gradBusinessService.getAmalgamatedSchoolReportPDFByMincode(mincode, type);
 		assertNotNull(byteData);
-
-		pdf = new InputStreamResource(new ByteArrayInputStream(new byte[0]));
-
-		when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
-		when(this.requestHeadersUriMock.uri(String.format(educGraduationApiConstants.getStudentCredentialByType(),studentID,"ACHV"))).thenReturn(this.requestHeadersMock);
-		when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
-		when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
-		when(this.responseMock.bodyToMono(InputStreamResource.class)).thenReturn(Mono.just(pdf));
-
-		byteData = gradBusinessService.getAmalgamatedSchoolReportPDFByMincode(mincode, type);
-		assertNotNull(byteData);
-
+		assertEquals(HttpStatus.NO_CONTENT, byteData.getStatusCode());
 	}
 
 	@Test
