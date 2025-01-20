@@ -22,7 +22,7 @@ jobs:
     steps:
       # Checkout
       - name: Git checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       # Build
       - name: Run a one-line script
         run: echo Building!
