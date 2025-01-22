@@ -174,7 +174,7 @@ class EducGradBusinessApiControllerTests {
 	}
 
 	@Test
-	void testSchoolReportByMincode() throws Exception {
+	void testSchoolReportByMincode()  {
 		byte[] greBPack = "Any String you want".getBytes();
 
 		HttpHeaders headers = new HttpHeaders();
