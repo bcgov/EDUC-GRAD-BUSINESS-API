@@ -1,0 +1,19 @@
+meta {
+  name: Get School Report pdf from graduation by mincode and report type
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/api/v1/amalgamated/schoolreport/:mincode
+  body: none
+  auth: none
+}
+
+params:query {
+  type: 
+}
+
+params:path {
+  mincode: 
+}

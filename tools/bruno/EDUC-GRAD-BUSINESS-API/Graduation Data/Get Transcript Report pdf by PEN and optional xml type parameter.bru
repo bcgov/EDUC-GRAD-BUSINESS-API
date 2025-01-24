@@ -1,0 +1,24 @@
+meta {
+  name: Get Transcript Report pdf by PEN and optional xml type parameter
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/api/v1/studenttranscript/:pen
+  body: none
+  auth: none
+}
+
+params:query {
+  ~type: 
+  ~interim: 
+}
+
+params:path {
+  pen: 
+}
+
+headers {
+  Authorization: 
+}

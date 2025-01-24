@@ -1,0 +1,20 @@
+meta {
+  name: Get Student Transcript or TVR Report pdf by PEN and report type
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/api/v1/studentcredential/:pen/type/:type
+  body: none
+  auth: none
+}
+
+params:path {
+  pen: 
+  type: 
+}
+
+headers {
+  Authorization: 
+}

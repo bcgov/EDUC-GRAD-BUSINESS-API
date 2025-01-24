@@ -1,0 +1,19 @@
+meta {
+  name: Get Certificate Report data from graduation by student pen
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/api/v1/certificate/report/data/:pen
+  body: none
+  auth: none
+}
+
+params:path {
+  pen: 
+}
+
+headers {
+  Authorization: 
+}
