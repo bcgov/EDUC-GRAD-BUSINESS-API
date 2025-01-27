@@ -1,0 +1,20 @@
+meta {
+  name: Get student document by PEN
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/v1/document/:pen
+  body: none
+  auth: none
+}
+
+params:query {
+  ~docType: 
+  ~docFormat: 
+}
+
+params:path {
+  pen: 
+}

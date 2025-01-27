@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "EDUC-GRAD-BUSINESS-API",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

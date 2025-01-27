@@ -1,0 +1,15 @@
+meta {
+  name: Get Xml Data for transcript reporting
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/v1/transcript/xml/report/data
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: 
+}

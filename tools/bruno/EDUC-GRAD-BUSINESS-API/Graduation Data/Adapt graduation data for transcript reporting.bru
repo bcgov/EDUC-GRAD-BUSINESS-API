@@ -1,0 +1,19 @@
+meta {
+  name: Adapt graduation data for transcript reporting
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/v1/transcript/report/data
+  body: json
+  auth: none
+}
+
+params:query {
+  ~type: 
+}
+
+headers {
+  Authorization: 
+}
