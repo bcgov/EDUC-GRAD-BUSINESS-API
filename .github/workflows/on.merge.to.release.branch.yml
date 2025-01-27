@@ -20,7 +20,7 @@ jobs:
     - name: Git pull
       uses: actions/checkout@v3
     - name: Login to Artifactory
-      uses: docker/login-action@v1
+      uses: docker/login-action@v3
       with:
         registry: ${{ secrets.DOCKER_ARTIFACTORY_REPO }}
         username: ${{ secrets.DOCKER_ARTIFACTORY_USERNAME }}
