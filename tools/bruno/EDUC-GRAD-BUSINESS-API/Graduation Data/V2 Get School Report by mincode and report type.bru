@@ -1,0 +1,19 @@
+meta {
+  name: V2 Get School Report by mincode and report type
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/api/v2/school/report/:mincode?type
+  body: none
+  auth: none
+}
+
+params:query {
+  type: 
+}
+
+params:path {
+  mincode: 
+}
