@@ -1,4 +1,4 @@
-name: Deploy to TEST
+name: Deploy latest to TEST
 # This workflow deploys the image tagged as 'latest' to the TEST environment
 # It can be used to push changes that are current in dev directly to TEST without a tagged release
 
