@@ -17,7 +17,7 @@ env:
   REPO_NAME: "educ-grad-business-api"
   APP_DOMAIN: ${{ vars.APP_DOMAIN }}
   TAG: "latest"
-  BRANCH: "main"
+  BRANCH: "grad-release"
 
   MIN_CPU: "30m"
   MAX_CPU: "120m"
