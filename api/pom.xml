@@ -29,6 +29,7 @@
             src/main/java/ca/bc/gov/educ/api/gradbusiness/config/**,
             src/main/java/ca/bc/gov/educ/api/gradbusiness/model/**,
             src/main/java/ca/bc/gov/educ/api/gradbusiness/util/**,
+            src/main/java/ca/bc/gov/educ/api/gradbusiness/controller/APIMetadataController.java,
             src/test/java/ca/bc/gov/educ/api/gradbusiness/**
         </sonar.coverage.exclusions>
         <java.version>18</java.version>
