@@ -49,7 +49,6 @@ public class RestWebClient {
                         .build())
                 .apply(filter.oauth2Configuration())
                 .filter(setRequestHeaders())
-                .filter(logRequestHeaders())
                 .filter(this.log())
                 .build();
     }
@@ -64,16 +63,6 @@ public class RestWebClient {
                 clientRegistrationRepository, authorizedClientRepository);
         authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
         return authorizedClientManager;
-    }
-
-    private static ExchangeFilterFunction logRequestHeaders() {
-        return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
-            System.out.println("Request Headers:");
-            clientRequest.headers().forEach((name, values) ->
-                    values.forEach(value -> System.out.println(name + ": " + value))
-            );
-            return Mono.just(clientRequest);
-        });
     }
 
     private ExchangeFilterFunction setRequestHeaders() {
@@ -97,7 +86,6 @@ public class RestWebClient {
                         .maxInMemorySize(300 * 1024 * 1024))  // 300MB
                     .build())
                 .filter(setRequestHeaders())
-                .filter(logRequestHeaders())
                 .filter(this.log())
                 .build();
     }
@@ -110,6 +98,7 @@ public class RestWebClient {
                         clientRequest.url().toString(),
                         clientResponse.statusCode().value(),
                         clientRequest.headers().get(EducGradBusinessApiConstants.CORRELATION_ID),
+                        clientRequest.headers().get(EducGradBusinessApiConstants.REQUEST_SOURCE),
                         constants.isSplunkLogHelperEnabled())
                 ));
     }
