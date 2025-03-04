@@ -2,6 +2,7 @@ package ca.bc.gov.educ.api.gradbusiness.config;
 
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.LogHelper;
+import ca.bc.gov.educ.api.gradbusiness.util.ThreadLocalStateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,9 +14,13 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+import java.util.UUID;
 
 @Configuration
 @Profile("!test")
@@ -43,6 +48,8 @@ public class RestWebClient {
                                 .maxInMemorySize(50 * 1024 * 1024))
                         .build())
                 .apply(filter.oauth2Configuration())
+                .filter(setRequestHeaders())
+                .filter(logRequestHeaders())
                 .filter(this.log())
                 .build();
     }
@@ -59,6 +66,26 @@ public class RestWebClient {
         return authorizedClientManager;
     }
 
+    private static ExchangeFilterFunction logRequestHeaders() {
+        return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
+            System.out.println("Request Headers:");
+            clientRequest.headers().forEach((name, values) ->
+                    values.forEach(value -> System.out.println(name + ": " + value))
+            );
+            return Mono.just(clientRequest);
+        });
+    }
+
+    private ExchangeFilterFunction setRequestHeaders() {
+        return (clientRequest, next) -> {
+            ClientRequest modifiedRequest = ClientRequest.from(clientRequest)
+                    .header(EducGradBusinessApiConstants.CORRELATION_ID, ThreadLocalStateUtil.getCorrelationID())
+                    .header(EducGradBusinessApiConstants.USER_NAME, ThreadLocalStateUtil.getCurrentUser())
+                    .header(EducGradBusinessApiConstants.REQUEST_SOURCE, EducGradBusinessApiConstants.API_NAME)
+                    .build();
+            return next.exchange(modifiedRequest);
+        };
+    }
     /**
      * Old web client. You can use a @Qualifier('default') to summon it.
      */
@@ -69,6 +96,8 @@ public class RestWebClient {
                         .defaultCodecs()
                         .maxInMemorySize(300 * 1024 * 1024))  // 300MB
                     .build())
+                .filter(setRequestHeaders())
+                .filter(logRequestHeaders())
                 .filter(this.log())
                 .build();
     }
