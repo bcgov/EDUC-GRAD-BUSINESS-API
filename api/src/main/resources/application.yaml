@@ -21,6 +21,16 @@ spring:
         jwt:
           issuer-uri: ${TOKEN_ISSUER_URL}
           jwk-set-uri: ${TOKEN_ISSUER_URL}/protocol/openid-connect/certs
+      client:
+        registration:
+          grad-business-client:
+            client-id: ${GRAD_BUSINESS_API_CLIENT_NAME}
+            client-secret: ${GRAD_BUSINESS_API_CLIENT_SECRET}
+            authorization-grant-type: client_credentials
+        provider:
+          grad-business-client:
+            issuer-uri: ${TOKEN_ISSUER_URL}
+            token-uri: ${TOKEN_ISSUER_URL}/protocol/openid-connect/token
 
 #Logging properties
 logging:
@@ -146,10 +156,17 @@ endpoint:
     amalgamated-students:
       url: ${GRAD_STUDENT_API}api/v1/student/amalgamated/schoolreport/%s/type/%s
   grad-graduation-report-api:
-    school-report-by-mincode:
-      url: ${GRAD_GRADUATION_REPORT_API}api/v1/graduationreports/schoolreport?mincode=%s&reportType=%s
+    school-report-by-school-id-and-report-type:
+      url: ${GRAD_GRADUATION_REPORT_API}api/v2/graduationreports/schoolreports?schoolOfRecordId=%s&reportTypeCode=%s
+    district-report-by-district-id-and-report-type:
+      url: ${GRAD_GRADUATION_REPORT_API}api/v2/graduationreports/district-report?districtId=%s&reportTypeCode=%s
     student-credential-by-type:
       url: ${GRAD_GRADUATION_REPORT_API}api/v1/graduationreports/business/studentcredential/%s/%s
+  grad-trax-api:
+    search-schools-by-min-code:
+      url: ${GRAD_TRAX_API}api/v2/trax/school/search?mincode=%s
+    search-district-by-dist-no:
+      url: ${GRAD_TRAX_API}api/v2/trax/district?distNo=%s
 
 #Splunk LogHelper
 splunk:
@@ -161,4 +178,5 @@ server:
     threads:
       worker: 128
       io: 16
+  #port: ${HTTP_PORT}
   max-http-request-header-size: 20000

@@ -17,6 +17,8 @@ public class EducGraduationApiConstants {
     //API end-point Mapping constants
     public static final String API_ROOT_MAPPING = "";
     public static final String API_VERSION = "v1";
+    public static final String API_VERSION2 = "v2";
+    public static final String GRAD_BUSINESS_API_ROOT_MAPPING = "/api/" + API_VERSION2;
     public static final String GRADUATE_TRANSCRIPT_REPORT_DATA_BY_PEN = "/transcript/report/data/{pen}";
     public static final String GRADUATE_TRANSCRIPT_REPORT_DATA = "/transcript/report/data";
     public static final String GRADUATE_TRANSCRIPT_XML_REPORT_DATA = "/transcript/xml/report/data";
@@ -45,8 +47,14 @@ public class EducGraduationApiConstants {
     @Value("${endpoint.grad-report-api.report-data-by-xml.url}")
     private String xmlTranscriptReportData;
 
-    @Value("${endpoint.grad-graduation-report-api.school-report-by-mincode.url}")
-    private String schoolReportByMincode;
+    @Value("${endpoint.grad-graduation-report-api.school-report-by-school-id-and-report-type.url}")
+    private String schoolReportBySchoolIdAndReportType;
+
+    @Value("${endpoint.grad-graduation-report-api.district-report-by-district-id-and-report-type.url}")
+    private String districtReportByDistrictIdAndReportType;
+
+    @Value("${endpoint.grad-trax-api.search-district-by-dist-no.url}")
+    private String districtDetails;
 
     @Value("${endpoint.grad-graduation-report-api.student-credential-by-type.url}")
     private String studentCredentialByType;
@@ -65,4 +73,5 @@ public class EducGraduationApiConstants {
 
     @Value("${authorization.token-expiry-offset}")
     private int tokenExpiryOffset;
+
 }

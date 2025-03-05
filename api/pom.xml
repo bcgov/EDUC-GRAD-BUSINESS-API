@@ -11,7 +11,7 @@
     </parent>
     <groupId>ca.bc.gov</groupId>
     <artifactId>educ-grad-business-api</artifactId>
-    <version>1.8.30</version>
+    <version>1.8.31</version>
     <name>educ-grad-business-api</name>
     <description>GRAD Business API for external clients</description>
 
@@ -29,6 +29,7 @@
             src/main/java/ca/bc/gov/educ/api/gradbusiness/config/**,
             src/main/java/ca/bc/gov/educ/api/gradbusiness/model/**,
             src/main/java/ca/bc/gov/educ/api/gradbusiness/util/**,
+            src/main/java/ca/bc/gov/educ/api/gradbusiness/controller/APIMetadataController.java,
             src/test/java/ca/bc/gov/educ/api/gradbusiness/**
         </sonar.coverage.exclusions>
         <java.version>18</java.version>

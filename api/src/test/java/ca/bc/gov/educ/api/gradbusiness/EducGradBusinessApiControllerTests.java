@@ -143,7 +143,7 @@ class EducGradBusinessApiControllerTests {
 	}
 
 	@Test
-	void testGetGradStudentByPenFromStudentAPI() throws Exception {
+	void testGetGradStudentByPenFromStudentAPI() {
 
 		Student obj = new Student();
 		obj.setPen("12312321");
@@ -156,7 +156,7 @@ class EducGradBusinessApiControllerTests {
 	}
 
 	@Test
-	void testGetGradStudentDemographicsByPen() throws Exception {
+	void testGetGradStudentDemographicsByPen() {
 		byte[] greBPack = "Any String you want".getBytes();
 
 		HttpHeaders headers = new HttpHeaders();
@@ -185,14 +185,14 @@ class EducGradBusinessApiControllerTests {
 				.contentType(MediaType.APPLICATION_XML)
 				.body(greBPack);
 
-		Mockito.when(gradBusinessService.getSchoolReportPDFByMincode("12312321", "GRAD","accessToken")).thenReturn(response);
-		gradBusinessController.schoolReportByMincode("12312321","GRAD", "accessToken");
-		Mockito.verify(gradBusinessService).getSchoolReportPDFByMincode("12312321","GRAD", "accessToken");
+		Mockito.when(gradBusinessService.getSchoolReportPDFByMincode("12312321", "GRAD")).thenReturn(response);
+		gradBusinessController.schoolReportByMincode("12312321","GRAD");
+		Mockito.verify(gradBusinessService).getSchoolReportPDFByMincode("12312321","GRAD");
 
 	}
 
 	@Test
-	void testAmalgamatedSchoolReportByMincode() throws Exception {
+	void testAmalgamatedSchoolReportByMincode() {
 		byte[] greBPack = "Any String you want".getBytes();
 
 		HttpHeaders headers = new HttpHeaders();
@@ -203,14 +203,14 @@ class EducGradBusinessApiControllerTests {
 				.contentType(MediaType.APPLICATION_XML)
 				.body(greBPack);
 
-		Mockito.when(gradBusinessService.getAmalgamatedSchoolReportPDFByMincode("12312321", "TVRNONGRAD","accessToken")).thenReturn(response);
-		gradBusinessController.amalgamatedSchoolReportByMincode("12312321","TVRNONGRAD", "accessToken");
-		Mockito.verify(gradBusinessService).getAmalgamatedSchoolReportPDFByMincode("12312321","TVRNONGRAD", "accessToken");
+		Mockito.when(gradBusinessService.getAmalgamatedSchoolReportPDFByMincode("12312321", "TVRNONGRAD")).thenReturn(response);
+		gradBusinessController.amalgamatedSchoolReportByMincode("12312321","TVRNONGRAD");
+		Mockito.verify(gradBusinessService).getAmalgamatedSchoolReportPDFByMincode("12312321","TVRNONGRAD");
 
 	}
 
 	@Test
-	void testStudentCredentialByType() throws Exception {
+	void testStudentCredentialByType() {
 		byte[] greBPack = "Any String you want".getBytes();
 
 		HttpHeaders headers = new HttpHeaders();
@@ -228,7 +228,7 @@ class EducGradBusinessApiControllerTests {
 	}
 
 	@Test
-	void testStudentTranscriptPDFByType() throws Exception {
+	void testStudentTranscriptPDFByType() {
 		byte[] greBPack = "Any String you want".getBytes();
 
 		HttpHeaders headers = new HttpHeaders();

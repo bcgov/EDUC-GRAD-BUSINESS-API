@@ -1,11 +1,11 @@
 package ca.bc.gov.educ.api.gradbusiness.service;
 
 import ca.bc.gov.educ.api.gradbusiness.exception.ServiceException;
+import ca.bc.gov.educ.api.gradbusiness.model.dto.School;
 import ca.bc.gov.educ.api.gradbusiness.model.dto.Student;
-import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
-import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessUtil;
-import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
-import ca.bc.gov.educ.api.gradbusiness.util.TokenUtils;
+import ca.bc.gov.educ.api.gradbusiness.model.dto.District;
+import ca.bc.gov.educ.api.gradbusiness.util.*;
+import com.fasterxml.jackson.core.type.TypeReference;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
 import org.apache.commons.collections4.ListUtils;
@@ -63,17 +63,26 @@ public class GradBusinessService {
      */
     final EducGraduationApiConstants educGraduationApiConstants;
 
+    final SchoolService schoolService;
+    final DistrictService districtService;
+    final RESTService restService;
+    final JsonTransformer jsonTransformer;
+
     /**
      * Instantiates a new Grad business service.
      *
      * @param webClient the web client
      */
     @Autowired
-    public GradBusinessService(WebClient webClient, TokenUtils tokenUtils, EducGradBusinessApiConstants educGradStudentApiConstants, EducGraduationApiConstants educGraduationApiConstants) {
+    public GradBusinessService(WebClient webClient, TokenUtils tokenUtils, EducGradBusinessApiConstants educGradStudentApiConstants, EducGraduationApiConstants educGraduationApiConstants, SchoolService schoolService, DistrictService districtService, RESTService restService, JsonTransformer jsonTransformer) {
         this.webClient = webClient;
         this.tokenUtils = tokenUtils;
         this.educGradStudentApiConstants = educGradStudentApiConstants;
         this.educGraduationApiConstants = educGraduationApiConstants;
+        this.schoolService = schoolService;
+        this.districtService = districtService;
+        this.restService = restService;
+        this.jsonTransformer = jsonTransformer;
     }
 
     /**
@@ -179,54 +188,83 @@ public class GradBusinessService {
         }
     }
 
-    public ResponseEntity<byte[]> getSchoolReportPDFByMincode(String mincode, String type, String accessToken) {
+    public ResponseEntity<byte[]> getSchoolReportPDFByMincode(String mincode, String type) {
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
         int year = cal.get(Calendar.YEAR);
         String month = String.format("%02d", cal.get(Calendar.MONTH) + 1);
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
-            headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
-            headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_PDF));
-            InputStreamResource result = webClient.get().uri(String.format(educGraduationApiConstants.getSchoolReportByMincode(), mincode,type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(InputStreamResource.class).block();
-            byte[] res = new byte[0];
-            if(result != null) {
-                res = result.getInputStream().readAllBytes();
+            List<School> schoolDetails = schoolService.getSchoolDetails(mincode);
+            if (schoolDetails.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
-            return handleBinaryResponse(res, EducGradBusinessUtil.getFileNameSchoolReports(mincode,year,month,type,MediaType.APPLICATION_PDF), MediaType.APPLICATION_PDF);
+            String schoolOfRecordId = schoolDetails.get(0).getSchoolId();
+
+            var result = restService.get(String.format(educGraduationApiConstants.getSchoolReportBySchoolIdAndReportType(), schoolOfRecordId,type), InputStreamResource.class);
+            byte[] response = new byte[0];
+            if (result != null) {
+                response = result.getInputStream().readAllBytes();
+            }
+
+            return handleBinaryResponse(response, EducGradBusinessUtil.getReportsFileNameForSchoolAndDistrict(mincode,year,month,type,MediaType.APPLICATION_PDF), MediaType.APPLICATION_PDF);
         } catch (Exception e) {
+            logger.error("Error getting school report PDF by mincode: {}", e.getMessage());
             return getInternalServerErrorResponse(e);
         }
     }
 
-    public ResponseEntity<byte[]> getAmalgamatedSchoolReportPDFByMincode(String mincode, String type, String accessToken) {
-        logger.debug("******** Retrieve List of Students for Amalgamated School Report ******");
-        List<UUID> studentList = webClient.get().uri(String.format(educGradStudentApiConstants.getStudentsForAmalgamatedReport(), mincode, type)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(new ParameterizedTypeReference<List<UUID>>() {
-        }).block();
-        List<InputStream> locations = new ArrayList<>();
-        if (studentList != null && !studentList.isEmpty()) {
-            logger.debug("******** Fetched {} students ******", studentList.size());
-            List<List<UUID>> partitions = ListUtils.partition(studentList, 200);
-            getStudentAchievementReports(partitions, locations);
-            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
-            int year = cal.get(Calendar.YEAR);
-            String month = "00";
-            String fileName = EducGradBusinessUtil.getFileNameSchoolReports(mincode, year, month, type, MediaType.APPLICATION_PDF);
-            try {
-                logger.debug("******** Merging Documents Started ******");
-                byte[] res = EducGradBusinessUtil.mergeDocumentsPDFs(locations);
-                logger.debug("******** Merged {} Documents ******", locations.size());
-                HttpHeaders headers = new HttpHeaders();
-                headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(BEARER + accessToken));
-                headers.put(HttpHeaders.ACCEPT, Collections.singletonList(APPLICATION_PDF));
-                headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(APPLICATION_PDF));
-                saveBinaryResponseToFile(res, fileName);
-                return handleBinaryResponse(res, fileName, MediaType.APPLICATION_PDF);
-            } catch (Exception e) {
-                return getInternalServerErrorResponse(e);
+    public ResponseEntity<byte[]> getDistrictReportPDFByDistcode(String distCode, String type) {
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
+        int year = cal.get(Calendar.YEAR);
+        String month = String.format("%02d", cal.get(Calendar.MONTH) + 1);
+        try {
+            Optional<District> districtDetails = Optional.ofNullable(districtService.getDistrictDetails(distCode));
+            if (districtDetails.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
+            String districtId = districtDetails.get().getDistrictId();
+            var result = restService.get(String.format(educGraduationApiConstants.getDistrictReportByDistrictIdAndReportType(), districtId, type), InputStreamResource.class);
+            byte[] response = new byte[0];
+            if (result != null) {
+                response = result.getInputStream().readAllBytes();
+            }
+
+            return handleBinaryResponse(response, EducGradBusinessUtil.getReportsFileNameForSchoolAndDistrict(distCode,year,month,type, MediaType.APPLICATION_PDF), MediaType.APPLICATION_PDF);
+        } catch (Exception e) {
+            logger.error("Error getting district report PDF by distCode: {}", e.getMessage());
+            return getInternalServerErrorResponse(e);
         }
-        return null;
+    }
+
+    public ResponseEntity<byte[]> getAmalgamatedSchoolReportPDFByMincode(String mincode, String type) {
+        logger.debug("******** Retrieve List of Students for Amalgamated School Report ******");
+        List<InputStream> locations = new ArrayList<>();
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
+        int year = cal.get(Calendar.YEAR);
+        String month = "00";
+
+        try {
+            List<School> schoolDetails = schoolService.getSchoolDetails(mincode);
+            if (schoolDetails.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            String schoolOfRecordId = schoolDetails.get(0).getSchoolId();
+            var response = restService.get(String.format(educGradStudentApiConstants.getStudentsForAmalgamatedReport(), schoolOfRecordId, type), List.class);
+            List<UUID> studentList = jsonTransformer.convertValue(response, new TypeReference<>() {});
+            if (studentList != null && !studentList.isEmpty()) {
+                logger.debug("******** Fetched {} students ******", studentList.size());
+                List<List<UUID>> partitions = ListUtils.partition(studentList, 200);
+                getStudentAchievementReports(partitions, locations);
+            }
+            String fileName = EducGradBusinessUtil.getReportsFileNameForSchoolAndDistrict(mincode, year, month, type, MediaType.APPLICATION_PDF);
+            logger.debug("******** Merging Documents Started ******");
+            byte[] res = EducGradBusinessUtil.mergeDocumentsPDFs(locations);
+            logger.debug("******** Merged {} Documents ******", locations.size());
+            saveBinaryResponseToFile(res, fileName);
+            return handleBinaryResponse(res, fileName, MediaType.APPLICATION_PDF);
+        } catch (Exception e) {
+            logger.error("Error getting amalgamated report PDF by mincode: {}", e.getMessage());
+            return getInternalServerErrorResponse(e);
+        }
     }
 
     @Transactional

@@ -25,6 +25,16 @@ spring:
         jwt:
           issuer-uri: https://soam-dev.apps.silver.devops.gov.bc.ca/auth/realms/master
           jwk-set-uri: https://soam-dev.apps.silver.devops.gov.bc.ca/auth/realms/master/protocol/openid-connect/certs
+      client:
+        registration:
+          grad-business-client:
+            client-id: my-client
+            client-secret: 123
+            authorization-grant-type: client_credentials
+        provider:
+          grad-business-client:
+            issuer-uri: http://test
+            token-uri: http://test
 
 #Logging properties
 logging:
@@ -79,10 +89,17 @@ endpoint:
   keycloak:
     getToken: https://soam-dev.apps.silver.devops.gov.bc.ca/auth/realms/master/protocol/openid-connect/token
   grad-graduation-report-api:
-    school-report-by-mincode:
-      url: https://educ-grad-graduation-report-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/graduationreports/schoolreport?mincode=%s&reportType=%s
+    school-report-by-school-id-and-report-type:
+      url: https://educ-grad-graduation-report-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v2/graduationreports/schoolreports?schoolOfRecordId=%s&reportTypeCode=%s
+    district-report-by-district-id-and-report-type:
+      url: https://educ-grad-graduation-report-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v2/graduationreports/district-report?districtId=%s&reportTypeCode=%s
     student-credential-by-type:
       url: https://educ-grad-graduation-report-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/graduationreports/business/studentcredential/%s/%s
+  grad-trax-api:
+    search-schools-by-min-code:
+      url: https://educ-grad-trax-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v2/trax/school/search?mincode=%s
+    search-district-by-dist-no:
+      url: https://educ-grad-trax-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v2/trax/district?distno=%s
   pen-student-api:
     by-studentid:
       url: https://student-api-75e61b-tools.apps.silver.devops.gov.bc.ca/api/v1/student/%s

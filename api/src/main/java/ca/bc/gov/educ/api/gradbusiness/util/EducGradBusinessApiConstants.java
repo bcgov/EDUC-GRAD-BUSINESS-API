@@ -84,6 +84,11 @@ public class EducGradBusinessApiConstants {
     public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
     public static final String TRAX_DATE_FORMAT = "yyyyMM";
 
+    //V2 constants
+    public static final String SCHOOL_REPORT_PDF_MINCODE_V2 = "/school/report/{mincode}";
+    public static final String DISTRICT_REPORT_PDF_DISTCODE_V2 = "/district/report/{distcode}";
+
+
     //Endpoints
     @Value("${endpoint.pen-student-api.by-studentid.url}")
     private String penStudentApiByStudentIdUrl;
@@ -102,6 +107,9 @@ public class EducGradBusinessApiConstants {
 
     @Value("${endpoint.grad-student-api.amalgamated-students.url}")
     private String studentsForAmalgamatedReport;
+
+    @Value("${endpoint.grad-trax-api.search-schools-by-min-code.url}")
+    private String schoolDetails;
 
     // Splunk LogHelper Enabled
     @Value("${splunk.log-helper.enabled}")

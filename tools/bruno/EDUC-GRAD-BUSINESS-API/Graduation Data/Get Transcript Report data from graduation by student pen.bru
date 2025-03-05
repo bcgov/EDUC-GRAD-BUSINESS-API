@@ -1,0 +1,21 @@
+meta {
+  name: Get Transcript Report data from graduation by student pen
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/api/v1/transcript/report/data/:pen
+  body: none
+  auth: none
+}
+
+params:query {
+  ~type: 
+}
+
+params:path {
+  pen: 
+}
+
+
