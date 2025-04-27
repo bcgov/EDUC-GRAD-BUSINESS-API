@@ -7,7 +7,6 @@ import ca.bc.gov.educ.api.gradbusiness.service.GradBusinessService;
 import ca.bc.gov.educ.api.gradbusiness.service.RESTService;
 import ca.bc.gov.educ.api.gradbusiness.service.SchoolService;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
-import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessUtil;
 import ca.bc.gov.educ.api.gradbusiness.util.EducGraduationApiConstants;
 import ca.bc.gov.educ.api.gradbusiness.util.TokenUtils;
 import org.junit.FixMethodOrder;
