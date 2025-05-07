@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.io.File;
 import java.io.IOException;
@@ -106,13 +107,22 @@ public class GradBusinessService {
      * @return the response entity
      */
     public ResponseEntity<byte[]> prepareReportDataByPen(String pen, String type, String accessToken) {
-        type = Optional.ofNullable(type).orElse("");
+        String effectiveType = Optional.ofNullable(type).orElse("");
+        String uri = String.format(educGraduationApiConstants.getGraduateReportDataByPenUrl(), pen) + "?type=" + effectiveType;
+
         try {
-            byte[] result = webClient.get().uri(String.format(educGraduationApiConstants.getGraduateReportDataByPenUrl(), pen) + "?type=" + type).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(byte[].class).block();
+            byte[] result = webClient.get().uri(uri)
+                    .headers(h -> h.setBearerAuth(accessToken))
+                    .retrieve()
+                    .bodyToMono(byte[].class)
+                    .block();
             if(result == null) {
                 result = new byte[0];
             }
             return handleBinaryResponse(result, "graduation_report_data.json", MediaType.APPLICATION_JSON);
+        } catch (WebClientResponseException.NotFound nfe) {
+            logger.error("Report data not found (404) for PEN {} from downstream service {}.", pen, uri);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return getInternalServerErrorResponse(e);
         }
@@ -290,7 +300,14 @@ public class GradBusinessService {
     @Transactional
     public ResponseEntity<byte[]> getStudentTranscriptPDFByType(String pen, String type, String interim, String accessToken) {
         try {
-            byte[] reportData = prepareReportDataByPen(pen, type, accessToken).getBody();
+            ResponseEntity<byte[]> reportDataResponse = prepareReportDataByPen(pen, type, accessToken);
+
+            if (reportDataResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
+                logger.warn("Aborting PDF generation for PEN {}: Report data not found (404).", pen);
+                return reportDataResponse;
+            }
+            byte[] reportData =  reportDataResponse.getBody();
+
             boolean isPreview = (StringUtils.isNotBlank(type) && StringUtils.equalsAnyIgnoreCase(type, "xml", "interim") ||
                     StringUtils.isNotBlank(interim) && StringUtils.equalsAnyIgnoreCase(interim, "xml", "interim"));
             StringBuilder reportRequest = new StringBuilder();
