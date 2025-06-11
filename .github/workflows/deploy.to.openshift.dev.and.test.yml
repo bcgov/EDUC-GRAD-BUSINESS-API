@@ -20,7 +20,6 @@ env:
   MAX_MEM: "1200Mi"
   MIN_REPLICAS: "3"
   MAX_REPLICAS: "5"
-  STORAGE_LIMIT: 16Gi
 
 on:
   # https://docs.github.com/en/actions/reference/events-that-trigger-workflows
@@ -43,6 +42,7 @@ jobs:
       OPENSHIFT_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}-dev
       KEYCLOAK_URL: ${{ secrets.KEYCLOAK_URL }}
       KEYCLOAK_REALM: ${{ secrets.KEYCLOAK_REALM }}
+      STORAGE_LIMIT: 16Gi
 
     steps:
       - name: Check out repository
@@ -169,6 +169,7 @@ jobs:
       OPENSHIFT_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}-test
       KEYCLOAK_URL: ${{ secrets.KEYCLOAK_URL }}
       KEYCLOAK_REALM: ${{ secrets.KEYCLOAK_REALM }}
+      STORAGE_LIMIT: 32Gi
 
     steps:
       - name: Check out repository
