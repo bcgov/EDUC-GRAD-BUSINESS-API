@@ -40,7 +40,7 @@ class SchoolAndDistrictReportsControllerTest {
     private RESTService restService;
 
     @Test
-    void testSchoolReportByMincode() throws Exception {
+    void testSchoolReportByMincode()  {
         byte[] greBPack = "Any String you want".getBytes();
 
         HttpHeaders headers = new HttpHeaders();
@@ -58,7 +58,7 @@ class SchoolAndDistrictReportsControllerTest {
     }
 
     @Test
-    void testDistrictReportBydistCode() throws Exception {
+    void testDistrictReportBydistCode()  {
         byte[] greBPack = "Any String you want".getBytes();
 
         HttpHeaders headers = new HttpHeaders();
