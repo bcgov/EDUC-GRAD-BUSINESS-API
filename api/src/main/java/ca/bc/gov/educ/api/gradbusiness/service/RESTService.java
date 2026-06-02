@@ -1,8 +1,6 @@
 package ca.bc.gov.educ.api.gradbusiness.service;
 
 import ca.bc.gov.educ.api.gradbusiness.exception.ServiceException;
-import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessApiConstants;
-import ca.bc.gov.educ.api.gradbusiness.util.ThreadLocalStateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
