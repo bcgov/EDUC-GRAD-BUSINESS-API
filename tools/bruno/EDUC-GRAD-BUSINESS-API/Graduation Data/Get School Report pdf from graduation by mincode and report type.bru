@@ -5,15 +5,15 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/api/v1/amalgamated/schoolreport/:mincode
+  url: {{baseUrl}}/api/v1/amalgamated/schoolreport/:mincode?type=TVRONGRAD
   body: none
-  auth: none
+  auth: inherit
 }
 
 params:query {
-  type: 
+  type: TVRONGRAD
 }
 
 params:path {
-  mincode: 
+  mincode: 06161048
 }
