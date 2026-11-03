@@ -31,13 +31,20 @@ objects:
           containers:
             - image: image-registry.openshift-image-registry.svc:5000/${IS_NAMESPACE}/${REPO_NAME}:${TAG_NAME}
               imagePullPolicy: Always
-              readinessProbe:
-                tcpSocket:
+              startupProbe:
+                httpGet:
+                  path: /actuator/health
                   port: 8080
-                initialDelaySeconds: 30
-                periodSeconds: 60
-                timeoutSeconds: 10
-                failureThreshold: 10
+                periodSeconds: 10
+                timeoutSeconds: 5
+                failureThreshold: 18
+              readinessProbe:
+                httpGet:
+                  path: /actuator/health
+                  port: 8080
+                periodSeconds: 10
+                timeoutSeconds: 5
+                failureThreshold: 3
                 successThreshold: 1
               livenessProbe:
                 httpGet:

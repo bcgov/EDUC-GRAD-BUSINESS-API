@@ -19,8 +19,8 @@ env:
   TAG: "latest"
   BRANCH: "grad-release"
 
-  MIN_CPU: "30m"
-  MAX_CPU: "120m"
+  MIN_CPU: "100m"
+  MAX_CPU: "500m"
   MIN_MEM: "350Mi"
   MAX_MEM: "1200Mi"
   MIN_REPLICAS: "3"
