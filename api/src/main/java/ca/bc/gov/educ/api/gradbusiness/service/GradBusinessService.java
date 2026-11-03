@@ -199,7 +199,7 @@ public class GradBusinessService {
     }
 
     public ResponseEntity<byte[]> getSchoolReportPDFByMincode(String mincode, String type) {
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone(EducGradBusinessApiConstants.BC_TIME_ZONE), Locale.CANADA);
         int year = cal.get(Calendar.YEAR);
         String month = String.format("%02d", cal.get(Calendar.MONTH) + 1);
         try {
@@ -223,7 +223,7 @@ public class GradBusinessService {
     }
 
     public ResponseEntity<byte[]> getDistrictReportPDFByDistcode(String distCode, String type) {
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone(EducGradBusinessApiConstants.BC_TIME_ZONE), Locale.CANADA);
         int year = cal.get(Calendar.YEAR);
         String month = String.format("%02d", cal.get(Calendar.MONTH) + 1);
         try {
@@ -248,7 +248,7 @@ public class GradBusinessService {
     public ResponseEntity<byte[]> getAmalgamatedSchoolReportPDFByMincode(String mincode, String type) {
         logger.debug("******** Retrieve List of Students for Amalgamated School Report ******");
         List<InputStream> locations = new ArrayList<>();
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"), Locale.CANADA);
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone(EducGradBusinessApiConstants.BC_TIME_ZONE), Locale.CANADA);
         int year = cal.get(Calendar.YEAR);
         String month = "00";
 
