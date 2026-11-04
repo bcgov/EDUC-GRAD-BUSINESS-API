@@ -24,10 +24,8 @@ public class IOUtils {
     private IOUtils(){}
 
     /** Saves each generated report under a new path, never replacing a cleanup candidate. */
-    public static Path savePdfReport(Path directory, String reportFile, byte[] content) throws IOException {
-        String filename = Path.of(reportFile).getFileName().toString();
-        String prefix = filename.substring(0, filename.length() - ".pdf".length());
-        Path destination = directory.resolve(prefix + "_" + UUID.randomUUID() + ".pdf");
+    public static Path savePdfReport(Path directory, byte[] content) throws IOException {
+        Path destination = directory.resolve("report_" + UUID.randomUUID() + ".pdf");
         return Files.write(destination, content, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
     }
 

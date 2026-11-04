@@ -28,14 +28,16 @@ class PdfCleanupServiceTest {
         byte[] firstContent = "first generation".getBytes(java.nio.charset.StandardCharsets.UTF_8);
         byte[] secondContent = "second generation".getBytes(java.nio.charset.StandardCharsets.UTF_8);
 
-        Path first = IOUtils.savePdfReport(directory, reportName, firstContent);
-        Path second = IOUtils.savePdfReport(directory, reportName, secondContent);
+        Path first = IOUtils.savePdfReport(directory, firstContent);
+        Path second = IOUtils.savePdfReport(directory, secondContent);
         Files.setLastModifiedTime(first, FileTime.from(NOW));
         Files.setLastModifiedTime(second, FileTime.from(NOW));
 
         assertNotEquals(first, second);
         assertNotEquals(expired, first);
         assertNotEquals(expired, second);
+        assertEquals(directory, first.getParent());
+        assertTrue(first.getFileName().toString().matches("report_[0-9a-f-]{36}\\.pdf"));
         assertEquals("report", Files.readString(expired));
         new PdfCleanupService(directory, 1, CLOCK).cleanUp();
 

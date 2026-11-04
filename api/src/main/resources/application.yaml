@@ -1,6 +1,5 @@
 pdf-cleanup:
   enabled: ${PDF_CLEANUP_ENABLED:true}
-  directory: ${PDF_CLEANUP_DIRECTORY:/tmp}
   retention-days: ${PDF_CLEANUP_RETENTION_DAYS:1}
   cron: ${PDF_CLEANUP_CRON:0 0 3 * * *}
   zone: ${PDF_CLEANUP_ZONE:America/Vancouver}

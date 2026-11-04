@@ -1,5 +1,6 @@
 package ca.bc.gov.educ.api.gradbusiness.service;
 
+import ca.bc.gov.educ.api.gradbusiness.util.EducGradBusinessUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,8 @@ public class PdfCleanupService {
     private final Clock clock;
 
     @Autowired
-    public PdfCleanupService(@Value("${pdf-cleanup.directory}") String directory,
-                             @Value("${pdf-cleanup.retention-days}") long retentionDays) {
-        this(Path.of(directory), retentionDays, Clock.systemUTC());
+    public PdfCleanupService(@Value("${pdf-cleanup.retention-days}") long retentionDays) {
+        this(Path.of(EducGradBusinessUtil.TMP_DIR), retentionDays, Clock.systemUTC());
     }
 
     PdfCleanupService(Path directory, long retentionDays, Clock clock) {

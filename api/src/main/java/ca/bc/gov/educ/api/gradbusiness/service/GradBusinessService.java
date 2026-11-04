@@ -24,7 +24,6 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -43,7 +42,6 @@ public class GradBusinessService {
     private static final String APPLICATION_JSON = "application/json";
     private static final String APPLICATION_PDF = "application/pdf";
     private static final String ACCEPT = "*/*";
-    private static final String TMP = File.separator + "tmp";
     /**
      * The Web client.
      */
@@ -421,7 +419,7 @@ public class GradBusinessService {
     private void saveBinaryResponseToFile(byte[] resultBinary, String reportFile) throws IOException {
         if(resultBinary.length > 0) {
             logger.debug("Save generated PDF {} on the file system", reportFile);
-            Path pathToFile = IOUtils.savePdfReport(Path.of(TMP), reportFile, resultBinary);
+            Path pathToFile = IOUtils.savePdfReport(Path.of(EducGradBusinessUtil.TMP_DIR), resultBinary);
             logger.debug("PDF {} saved successfully", pathToFile);
         }
     }

@@ -62,7 +62,6 @@ oc create -n "$GRAD_NAMESPACE"-"$envValue" configmap "$APP_NAME"-config-map \
   --from-literal=PEN_API="http://student-api-master.$COMMON_NAMESPACE-$envValue.svc.cluster.local:8080/" \
   --from-literal=MAX_RETRY_ATTEMPTS="3" \
   --from-literal=PDF_CLEANUP_ENABLED="true" \
-  --from-literal=PDF_CLEANUP_DIRECTORY="/tmp" \
   --from-literal=PDF_CLEANUP_RETENTION_DAYS="1" \
   --from-literal=PDF_CLEANUP_CRON="0 0 3 * * *" \
   --from-literal=PDF_CLEANUP_ZONE="America/Vancouver" \
