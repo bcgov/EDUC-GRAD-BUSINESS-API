@@ -16,6 +16,38 @@
 # EDUC-GRAD-BUSINESS-API 
 GRAD Business API for external clients
 
+## PDF retention
+
+The business API removes regular PDF files directly under `/tmp` whose last
+modification time is more than 24 hours old. Cleanup runs daily at 03:00 in
+`America/Vancouver`; files can therefore remain for almost 48 hours. It does not
+traverse subdirectories or follow symbolic links. The filename year is not used.
+The first scheduled run after deployment also removes existing expired PDFs.
+
+Each generated report copy uses a server-generated `report_<UUID>.pdf` filename and is never
+overwritten. This prevents cleanup of an expired path from deleting a freshly
+regenerated report, including when different replicas generate reports. The
+download filename returned to the caller is unchanged. Existing reports with the
+old filename format are still cleaned up normally.
+Report writing and cleanup both use the fixed `/tmp` directory; request parameters
+are not included in the stored filename.
+
+Cleanup settings are populated in the application's ConfigMap by
+`tools/config/update-configmap.sh` and loaded into the container as environment
+variables. Restart the pods after changing these values in the ConfigMap.
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `PDF_CLEANUP_ENABLED` | `true` | Set to `false` to disable cleanup. |
+| `PDF_CLEANUP_RETENTION_DAYS` | `1` | Retention in 24-hour days; must be at least 1. |
+| `PDF_CLEANUP_CRON` | `0 0 3 * * *` | Spring cron expression (including seconds). |
+| `PDF_CLEANUP_ZONE` | `America/Vancouver` | Schedule time zone. |
+
+Each replica runs cleanup against the shared PVC. Deletion is idempotent and
+missing files are tolerated, so no distributed scheduler lock is required.
+Cleanup logs the number of files deleted and their total size in bytes; individual
+deletion failures are logged and do not prevent processing the remaining files.
+
 ![GitHub repo size](https://img.shields.io/github/repo-size/bcgov/EDUC-GRAD-BUSINESS-API) &nbsp;
 ![GitHub Tag](https://img.shields.io/github/v/tag/bcgov/EDUC-GRAD-BUSINESS-API) &nbsp;
 ![GitHub commits difference between two branches/tags/commits](https://img.shields.io/github/commits-difference/bcgov/EDUC-GRAD-BUSINESS-API?base=main&head=grad-release&label=grad-release%20-%3E%20main) &nbsp;

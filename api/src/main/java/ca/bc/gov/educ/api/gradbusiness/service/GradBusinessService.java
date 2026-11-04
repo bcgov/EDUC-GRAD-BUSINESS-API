@@ -24,10 +24,9 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -43,7 +42,6 @@ public class GradBusinessService {
     private static final String APPLICATION_JSON = "application/json";
     private static final String APPLICATION_PDF = "application/pdf";
     private static final String ACCEPT = "*/*";
-    private static final String TMP = File.separator + "tmp";
     /**
      * The Web client.
      */
@@ -418,15 +416,13 @@ public class GradBusinessService {
         return response;
     }
 
+    // OpenShift mounts the non-publicly-writable business-data PVC at /tmp (tools/openshift/api.dc.yaml).
+    // Stored filenames are server-generated UUIDs and are created with CREATE_NEW, preventing replacement.
+    @SuppressWarnings("java:S5443")
     private void saveBinaryResponseToFile(byte[] resultBinary, String reportFile) throws IOException {
         if(resultBinary.length > 0) {
-            String pathToFile = TMP + File.separator + reportFile;
             logger.debug("Save generated PDF {} on the file system", reportFile);
-            File fileToSave = new File(pathToFile);
-            if(Files.deleteIfExists(fileToSave.toPath())) {
-                logger.debug("Delete existing PDF {}", reportFile);
-            }
-            Files.write(fileToSave.toPath(), resultBinary);
+            Path pathToFile = IOUtils.savePdfReport(Path.of(EducGradBusinessUtil.TMP_DIR), resultBinary);
             logger.debug("PDF {} saved successfully", pathToFile);
         }
     }
