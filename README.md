@@ -24,7 +24,9 @@ modification time is more than 24 hours old. Cleanup runs daily at 03:00 in
 traverse subdirectories or follow symbolic links. The filename year is not used.
 The first scheduled run after deployment also removes existing expired PDFs.
 
-Configure cleanup through these environment variables:
+Cleanup settings are populated in the application's ConfigMap by
+`tools/config/update-configmap.sh` and loaded into the container as environment
+variables. Restart the pods after changing these values in the ConfigMap.
 
 | Variable | Default | Purpose |
 | --- | --- | --- |

@@ -61,6 +61,11 @@ oc create -n "$GRAD_NAMESPACE"-"$envValue" configmap "$APP_NAME"-config-map \
   --from-literal=GRAD_GRADUATION_REPORT_API="http://educ-grad-graduation-report-api.$GRAD_NAMESPACE-$envValue.svc.cluster.local:8080/" \
   --from-literal=PEN_API="http://student-api-master.$COMMON_NAMESPACE-$envValue.svc.cluster.local:8080/" \
   --from-literal=MAX_RETRY_ATTEMPTS="3" \
+  --from-literal=PDF_CLEANUP_ENABLED="true" \
+  --from-literal=PDF_CLEANUP_DIRECTORY="/tmp" \
+  --from-literal=PDF_CLEANUP_RETENTION_DAYS="1" \
+  --from-literal=PDF_CLEANUP_CRON="0 0 3 * * *" \
+  --from-literal=PDF_CLEANUP_ZONE="America/Vancouver" \
   --from-literal=GRAD_GRADUATION_API="http://educ-grad-graduation-api.$GRAD_NAMESPACE-$envValue.svc.cluster.local:8080/" \
   --from-literal=KEYCLOAK_TOKEN_URL="https://soam-$envValue.apps.silver.devops.gov.bc.ca/" \
   --from-literal=GRAD_STUDENT_GRADUATION_API="http://educ-grad-student-graduation-api.$GRAD_NAMESPACE-$envValue.svc.cluster.local:8080/" \

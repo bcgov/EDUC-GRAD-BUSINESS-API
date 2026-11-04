@@ -30,8 +30,8 @@ public class PdfCleanupService {
     private final Clock clock;
 
     @Autowired
-    public PdfCleanupService(@Value("${pdf-cleanup.directory:/tmp}") String directory,
-                             @Value("${pdf-cleanup.retention-days:1}") long retentionDays) {
+    public PdfCleanupService(@Value("${pdf-cleanup.directory}") String directory,
+                             @Value("${pdf-cleanup.retention-days}") long retentionDays) {
         this(Path.of(directory), retentionDays, Clock.systemUTC());
     }
 
@@ -44,7 +44,7 @@ public class PdfCleanupService {
         this.clock = clock;
     }
 
-    @Scheduled(cron = "${pdf-cleanup.cron:0 0 3 * * *}", zone = "${pdf-cleanup.zone:America/Vancouver}")
+    @Scheduled(cron = "${pdf-cleanup.cron}", zone = "${pdf-cleanup.zone}")
     public void cleanUp() {
         Instant cutoff = clock.instant().minus(retention);
         long deleted = 0;
