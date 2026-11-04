@@ -416,6 +416,9 @@ public class GradBusinessService {
         return response;
     }
 
+    // OpenShift mounts the non-publicly-writable business-data PVC at /tmp (tools/openshift/api.dc.yaml).
+    // Stored filenames are server-generated UUIDs and are created with CREATE_NEW, preventing replacement.
+    @SuppressWarnings("java:S5443")
     private void saveBinaryResponseToFile(byte[] resultBinary, String reportFile) throws IOException {
         if(resultBinary.length > 0) {
             logger.debug("Save generated PDF {} on the file system", reportFile);
