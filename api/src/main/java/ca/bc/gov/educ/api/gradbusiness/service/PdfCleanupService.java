@@ -31,6 +31,9 @@ public class PdfCleanupService {
     private final Clock clock;
 
     @Autowired
+    // OpenShift mounts the non-publicly-writable business-data PVC at /tmp (tools/openshift/api.dc.yaml).
+    // Cleanup only removes regular PDFs and does not follow symbolic links.
+    @SuppressWarnings("java:S5443")
     public PdfCleanupService(@Value("${pdf-cleanup.retention-days}") long retentionDays) {
         this(Path.of(EducGradBusinessUtil.TMP_DIR), retentionDays, Clock.systemUTC());
     }
