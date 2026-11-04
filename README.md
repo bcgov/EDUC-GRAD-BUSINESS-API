@@ -24,6 +24,12 @@ modification time is more than 24 hours old. Cleanup runs daily at 03:00 in
 traverse subdirectories or follow symbolic links. The filename year is not used.
 The first scheduled run after deployment also removes existing expired PDFs.
 
+Each generated report copy uses a unique filename with a UUID suffix and is never
+overwritten. This prevents cleanup of an expired path from deleting a freshly
+regenerated report, including when different replicas generate reports. The
+download filename returned to the caller is unchanged. Existing reports with the
+old filename format are still cleaned up normally.
+
 Cleanup settings are populated in the application's ConfigMap by
 `tools/config/update-configmap.sh` and loaded into the container as environment
 variables. Restart the pods after changing these values in the ConfigMap.

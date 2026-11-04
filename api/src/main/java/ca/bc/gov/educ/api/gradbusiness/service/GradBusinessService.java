@@ -27,7 +27,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -420,13 +420,8 @@ public class GradBusinessService {
 
     private void saveBinaryResponseToFile(byte[] resultBinary, String reportFile) throws IOException {
         if(resultBinary.length > 0) {
-            String pathToFile = TMP + File.separator + reportFile;
             logger.debug("Save generated PDF {} on the file system", reportFile);
-            File fileToSave = new File(pathToFile);
-            if(Files.deleteIfExists(fileToSave.toPath())) {
-                logger.debug("Delete existing PDF {}", reportFile);
-            }
-            Files.write(fileToSave.toPath(), resultBinary);
+            Path pathToFile = IOUtils.savePdfReport(Path.of(TMP), reportFile, resultBinary);
             logger.debug("PDF {} saved successfully", pathToFile);
         }
     }

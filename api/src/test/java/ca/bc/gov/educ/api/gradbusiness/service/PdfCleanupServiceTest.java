@@ -1,5 +1,6 @@
 package ca.bc.gov.educ.api.gradbusiness.service;
 
+import ca.bc.gov.educ.api.gradbusiness.util.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -19,6 +20,29 @@ class PdfCleanupServiceTest {
 
     @TempDir
     Path directory;
+
+    @Test
+    void regeneratingReportNeverReplacesExpiredCleanupCandidate() throws IOException {
+        String reportName = "09292007_202600_TVRGRAD.pdf";
+        Path expired = file(reportName, NOW.minusSeconds(172800));
+        byte[] firstContent = "first generation".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        byte[] secondContent = "second generation".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+
+        Path first = IOUtils.savePdfReport(directory, reportName, firstContent);
+        Path second = IOUtils.savePdfReport(directory, reportName, secondContent);
+        Files.setLastModifiedTime(first, FileTime.from(NOW));
+        Files.setLastModifiedTime(second, FileTime.from(NOW));
+
+        assertNotEquals(first, second);
+        assertNotEquals(expired, first);
+        assertNotEquals(expired, second);
+        assertEquals("report", Files.readString(expired));
+        new PdfCleanupService(directory, 1, CLOCK).cleanUp();
+
+        assertFalse(Files.exists(expired));
+        assertArrayEquals(firstContent, Files.readAllBytes(first));
+        assertArrayEquals(secondContent, Files.readAllBytes(second));
+    }
 
     @Test
     void deletesOnlyPdfsStrictlyOlderThanRetention() throws IOException {
