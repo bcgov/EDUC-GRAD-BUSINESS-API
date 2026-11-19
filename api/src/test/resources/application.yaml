@@ -129,3 +129,6 @@ endpoint:
 splunk:
   log-helper:
     enabled: false
+
+pdf-cleanup:
+  enabled: false

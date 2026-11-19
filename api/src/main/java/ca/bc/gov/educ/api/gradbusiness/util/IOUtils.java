@@ -10,16 +10,24 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Set;
+import java.util.UUID;
 
 public class IOUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(IOUtils.class);
 
     private IOUtils(){}
+
+    /** Saves each generated report under a new path, never replacing a cleanup candidate. */
+    public static Path savePdfReport(Path directory, byte[] content) throws IOException {
+        Path destination = directory.resolve("report_" + UUID.randomUUID() + ".pdf");
+        return Files.write(destination, content, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
+    }
 
     /**
      * Creates a secured temp dir for processing files, it is up to
