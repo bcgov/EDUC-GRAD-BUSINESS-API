@@ -11,8 +11,14 @@ on:
 env:
   APP_NAME: grad-business-api
       
+permissions:
+  contents: read
+
 jobs:
   build-and-deploy:
+    permissions:
+      contents: read
+      packages: write
     name: Build, package and deploy to Dev
     environment: dev
     runs-on: ubuntu-22.04
